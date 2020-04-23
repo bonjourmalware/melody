@@ -1,0 +1,8 @@
+Dropper:
+    layer: tcp
+    payload:
+        values:
+            - "r:.*wget.*"
+    tags:
+        - "dropper"
+

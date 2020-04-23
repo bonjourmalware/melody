@@ -1,0 +1,51 @@
+CVE-2017-17215 (Huawei routers):
+  layer: http
+  uri:
+    values:
+      - "e:/ctrlt/DeviceUpgrade_1"
+  tags:
+    - "cve-2017-17215"
+    - "router"
+    - "huawei"
+    -
+CVE-2020-8515 (DrayTek routers):
+  layer: http
+  uri:
+    values:
+      - "r:/cgi-bin/mainfunction.cgi.*"
+  tags:
+    - "cve-2020-8515"
+    - "router"
+    - "draytek"
+
+CVE-2014-8361 (Realtek SDK Miniigd UPnP SOAP):
+  layer: http
+  uri:
+    values:
+      - "e:/picsdesc.xml"
+  tags:
+    - "cve-2014-8361"
+    - "router"
+    - "realtek"
+    - "soap"
+
+ZyXEL Eir D1000:
+  layer: http
+  uri:
+    values:
+      - "e:/UD/act?1"
+  tags:
+    - "router"
+    - "zyxel"
+    - "soap"
+
+Linksys routers (Moon worm):
+  layer: http
+  uri:
+    values:
+      - "e:/tmUnblock.cgi"
+  tags:
+    - "router"
+    - "linksys"
+    - "moon worm"
+    - "worm"
