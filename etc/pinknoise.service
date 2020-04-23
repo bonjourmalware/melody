@@ -1,0 +1,12 @@
+[Unit]
+Description=TCP/ICMP/HTTP sensor with tagging capabilities
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/pinknoise
+ExecStart=/opt/pinknoise/pinknoise
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
