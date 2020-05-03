@@ -1,9 +1,14 @@
 package logger
 
 import (
+	"log"
 	"os"
 
-	"gitlab.com/Alvoras/pinknoise/internal/events"
+	"github.com/bonjourmalware/pinknoise/internal/events"
+)
+
+var (
+	Std = log.New(os.Stderr, "", 1)
 )
 
 type Logger struct {

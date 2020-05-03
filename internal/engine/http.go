@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"gitlab.com/Alvoras/pinknoise/internal/events"
-	"gitlab.com/Alvoras/pinknoise/internal/rules"
+	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/pinknoise/internal/rules"
 )
 
 func qualifyHTTPEvent(ev *events.HTTPEvent) {

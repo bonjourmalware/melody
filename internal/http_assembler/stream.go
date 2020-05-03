@@ -2,14 +2,13 @@ package http_assembler
 
 import (
 	"bufio"
-	"io"
-	"net/http"
-
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/tcpassembly"
 	"github.com/google/gopacket/tcpassembly/tcpreader"
-	"gitlab.com/Alvoras/pinknoise/internal/engine"
-	"gitlab.com/Alvoras/pinknoise/internal/events"
+	"github.com/bonjourmalware/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/events"
+	"io"
+	"net/http"
 )
 
 // HttpStreamFactory implements tcpassembly.StreamFactory

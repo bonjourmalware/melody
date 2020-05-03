@@ -1,8 +1,9 @@
 CVE-2020-19781 (Citrix ADC):
   layer: http
   uri:
-    values:
-      - "r:.*/vpns/.*"
+    contains:
+      - "/vpns/"
+    match: any
   tags:
     - "cve-2020-19781"
     - "vpn"
@@ -11,8 +12,9 @@ CVE-2020-19781 (Citrix ADC):
 CVE-2018-13379 (Fortinet FortiOS SSL VPN):
   layer: http
   uri:
-    values:
-      - "r:/remote/fgt_lang?.*"
+    startswith:
+      - "/remote/fgt_lang?"
+    match: any
   tags:
     - "cve-2018-13379"
     - "vpn"

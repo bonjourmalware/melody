@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/c2h5oh/datasize"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/go-yaml/yaml"
@@ -56,34 +57,34 @@ func (cfg *Config) Load() {
 
 	cfgData, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("Failed to read config file at [%s]", filepath))
-		fmt.Println(err)
+		log.Println(fmt.Sprintf("Failed to read config file at [%s]", filepath))
+		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := httpByteSize.UnmarshalText([]byte(cfg.MaxPOSTDataSizeRaw)); err != nil {
 		fmt.Printf("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
 		fmt.Printf("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := yaml.Unmarshal(cfgData, &cfg); err != nil {
 		fmt.Printf("Failed to load the config file [%s]\n", filepath)
-		fmt.Println(err)
+		log.Println(err)
 		os.Exit(1)
 	}
 
 	if Cfg.BPFFilterFile != "" {
 		bpfData, err := ioutil.ReadFile(Cfg.BPFFilterFile)
 		if err != nil {
-			fmt.Println(fmt.Sprintf("Failed to read BPF file at [%s]", Cfg.BPFFilterFile))
-			fmt.Println(err)
+			log.Println(fmt.Sprintf("Failed to read BPF file at [%s]", Cfg.BPFFilterFile))
+			log.Println(err)
 			os.Exit(1)
 		}
 
@@ -96,7 +97,7 @@ func (cfg *Config) Load() {
 	if Cli.PcapFilePath != nil && *Cli.PcapFilePath != "" {
 		f, err := os.Open(*Cli.PcapFilePath)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			os.Exit(1)
 		}
 

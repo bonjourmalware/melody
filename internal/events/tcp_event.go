@@ -1,12 +1,13 @@
 package events
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
-	"gitlab.com/Alvoras/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
-	"gitlab.com/Alvoras/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
@@ -46,6 +47,7 @@ func (ev TCPEvent) ToLog() TCPEventLog {
 
 	ev.LogData = TCPEventLog{}
 	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort

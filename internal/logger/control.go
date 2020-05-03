@@ -1,15 +1,14 @@
 package logger
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/natefinch/lumberjack"
 
-	"gitlab.com/Alvoras/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
-	"gitlab.com/Alvoras/pinknoise/internal/events"
+	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
 var (
@@ -44,7 +43,7 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 		case ev := <-TCPIPLoggerChan:
 			logdata, err := ev.ToLog().String()
 			if err != nil {
-				fmt.Println("failed to stringify JSON payload while writing to log file")
+				log.Println("failed to stringify JSON payload while writing to log file")
 				continue
 			}
 
@@ -53,7 +52,7 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 		case ev := <-HTTPLoggerChan:
 			logdata, err := ev.ToLog().String()
 			if err != nil {
-				fmt.Println("failed to stringify JSON payload while writing to log file")
+				log.Println("failed to stringify JSON payload while writing to log file")
 				continue
 			}
 
@@ -62,7 +61,7 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 		case ev := <-ICMPv4LoggerChan:
 			logdata, err := ev.ToLog().String()
 			if err != nil {
-				fmt.Println("failed to stringify JSON payload while writing to log file")
+				log.Println("failed to stringify JSON payload while writing to log file")
 				continue
 			}
 

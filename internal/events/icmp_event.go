@@ -1,6 +1,7 @@
 package events
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,7 +15,6 @@ type ICMPv4Event struct {
 	LogData      ICMPv4EventLog
 	Event
 }
-
 
 func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	var ev = &ICMPv4Event{}
@@ -40,6 +40,7 @@ func (ev ICMPv4Event) ToLog() ICMPv4EventLog {
 
 	ev.LogData = ICMPv4EventLog{}
 	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort

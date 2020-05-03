@@ -1,18 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"gitlab.com/Alvoras/pinknoise/internal/rules"
+	"github.com/bonjourmalware/pinknoise/internal/engine"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"gitlab.com/Alvoras/pinknoise/internal/logger"
-	"gitlab.com/Alvoras/pinknoise/internal/sensor"
+	"github.com/bonjourmalware/pinknoise/internal/rules"
+
+	"github.com/bonjourmalware/pinknoise/internal/logger"
+	"github.com/bonjourmalware/pinknoise/internal/sensor"
 
 	"github.com/pborman/getopt"
-	"gitlab.com/Alvoras/pinknoise/internal/config"
-	"gitlab.com/Alvoras/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 )
 
 var (
@@ -45,18 +45,18 @@ func main() {
 	engine.Start(quitErrChan, shutdownChan, engineStoppedChan)
 	sensor.Start(quitErrChan, shutdownChan, sensorStoppedChan)
 
-	fmt.Println("All system started")
+	logger.Std.Println("All systems started")
 
 	select {
 	case err := <-quitErrChan:
-		fmt.Println(err)
+		logger.Std.Println(err)
 		close(shutdownChan)
 		break
 	case <-quitSigChan:
 		close(shutdownChan)
 		break
 	case <-shutdownChan:
-		fmt.Println("Shutting down...")
+		logger.Std.Println("Shutting down...")
 		break
 	}
 
@@ -64,5 +64,5 @@ func main() {
 	<-engineStoppedChan
 	<-loggerStoppedChan
 
-	fmt.Println("Exited")
+	logger.Std.Println("Exited")
 }

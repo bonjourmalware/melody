@@ -18,15 +18,16 @@ type Payload struct {
 }
 
 type LogData struct {
-	Timestamp  string              `json:"timestamp"`
-	Session    string              `json:"session"`
-	Type       string              `json:"type"`
-	SourceIP   string              `json:"src_ip"`
-	DestPort   uint                `json:"dst_port"`
-	Tags       []string            `json:"pk_tags"`
-	Metadata   map[string]string   `json:"metadata"`
-	References map[string][]string `json:"references"`
-	Statements []string            `json:"statements"`
+	NsTimestamp string              `json:"ns_timestamp"`
+	Timestamp   string              `json:"timestamp"`
+	Session     string              `json:"session"`
+	Type        string              `json:"type"`
+	SourceIP    string              `json:"src_ip"`
+	DestPort    uint                `json:"dst_port"`
+	Tags        []string            `json:"pk_tags"`
+	Metadata    map[string]string   `json:"metadata"`
+	References  map[string][]string `json:"references"`
+	Statements  []string            `json:"statements"`
 }
 
 type ICMPv4EventLog struct {
@@ -78,16 +79,16 @@ type IPLogData struct {
 }
 
 type HTTPLogData struct {
-	Verb       string `json:"verb"`
-	Proto      string `json:"proto"`
-	RequestURI string `json:"URI"`
-	RemoteAddr string `json:"remote_address"`
-	SourcePort uint64 `json:"src_port"`
-	DestHost   string `json:"dst_host"`
-	Headers map[string]string `json:"headers"`
-	Errors  []string          `json:"errors"`
-	Body    Payload           `json:"body"`
-	IsTLS   bool              `json:"is_tls"`
+	Verb       string            `json:"verb"`
+	Proto      string            `json:"proto"`
+	RequestURI string            `json:"URI"`
+	RemoteAddr string            `json:"remote_address"`
+	SourcePort uint64            `json:"src_port"`
+	DestHost   string            `json:"dst_host"`
+	Headers    map[string]string `json:"headers"`
+	Errors     []string          `json:"errors"`
+	Body       Payload           `json:"body"`
+	IsTLS      bool              `json:"is_tls"`
 }
 
 func (eventLog TCPEventLog) String() (string, error) {

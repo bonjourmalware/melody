@@ -1,8 +1,9 @@
 CVE-2020-7961 (Liferay Portal):
   layer: http
   uri:
-    values:
-      - "r:/api/jsonws/.*"
+    startswith:
+      - "/api/jsonws/"
+    match: any
   tags:
     - "cve-2020-7961"
     - "cms"

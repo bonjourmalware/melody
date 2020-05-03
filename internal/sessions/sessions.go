@@ -1,8 +1,9 @@
 package sessions
 
 import (
-	"strconv"
 	"time"
+
+	"github.com/rs/xid"
 )
 
 type Session struct {
@@ -25,7 +26,9 @@ func (sessions SessionMap) GetUID(flow string) string {
 }
 
 func (sessions *SessionMap) add(flow string) string {
-	var ts = strconv.FormatInt(time.Now().UnixNano(), 10)
+	//var ts = strconv.FormatInt(time.Now().UnixNano(), 10)
+	var ts = xid.New().String()
+
 	(*sessions)[flow] = &Session{
 		uid:      ts,
 		lastSeen: time.Now(),

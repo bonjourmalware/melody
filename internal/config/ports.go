@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -27,8 +28,8 @@ func (p *EnabledPorts) ParseRules(rules []string) {
 			if strings.Contains(rule, "-") {
 				err := p.RemoveRange(rule)
 				if err != nil {
-					fmt.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
-					//fmt.Println(err)
+					log.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
+					//log.Println(err)
 					os.Exit(1)
 				}
 				continue
@@ -36,8 +37,8 @@ func (p *EnabledPorts) ParseRules(rules []string) {
 
 			err := p.Remove(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
-				//fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
+				//log.Println(err)
 				os.Exit(1)
 			}
 			continue
@@ -46,15 +47,15 @@ func (p *EnabledPorts) ParseRules(rules []string) {
 		if strings.Contains(rule, "-") {
 			err := p.AddRange(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
-				//fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
+				//log.Println(err)
 				os.Exit(1)
 			}
 		} else {
 			err := p.Add(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
-				//fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse a port rule [%s]", rule))
+				//log.Println(err)
 				os.Exit(1)
 			}
 		}
@@ -137,14 +138,14 @@ func (p *EnabledPorts) Remove(port string) error {
 
 func checkValidPort(port int) {
 	if !isValidPort(port) {
-		fmt.Println(fmt.Sprintf("[%d] is not a valid port", port))
+		log.Println(fmt.Sprintf("[%d] is not a valid port", port))
 		os.Exit(1)
 	}
 }
 
 func checkValidPortRange(from int, to int) {
 	if !isValidPortRange(from, to) {
-		fmt.Println(fmt.Sprintf("[%d - %d] is not a valid port range", from, to))
+		log.Println(fmt.Sprintf("[%d - %d] is not a valid port range", from, to))
 		os.Exit(1)
 	}
 }

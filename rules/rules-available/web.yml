@@ -1,8 +1,8 @@
 Dropper:
     layer: tcp
     payload:
-        values:
-            - "r:.*wget.*"
+        contains:
+            - "wget"
+        match: any
     tags:
         - "dropper"
-

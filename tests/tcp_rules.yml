@@ -1,0 +1,99 @@
+ok_ttl:
+  layer: tcp
+  id: 8f9605a3-e559-4c34-9ec5-77d555460a45
+  ttl: 64
+
+nok_ttl:
+  layer: tcp
+  id: 0ed5934f-93aa-42ba-8c5c-b6ceb3d380a1
+  ttl: 0
+
+ok_tos:
+  layer: tcp
+  id: b56a2f75-044d-4079-a8b0-3614cba209bc
+  tos: 0
+
+nok_tos:
+  layer: tcp
+  id: 957abfe6-e02a-4df4-8f58-6ccbe85c126e
+  tos: 1
+
+ok_ack:
+  layer: tcp
+  id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
+  ack: 1335620269
+
+nok_ack:
+  layer: tcp
+  id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
+  ack: 0
+
+ok_seq:
+  layer: tcp
+  id: dc65fcd2-90bc-4b00-894b-7fe936be0298
+  seq: 283559482
+
+nok_seq:
+  layer: tcp
+  id: 4c27b748-9c53-49d7-b16f-8e58dfeaa591
+  seq: 0
+
+ok_window:
+  layer: tcp
+  id: 48594d79-193e-4796-8fc3-33c9d3d189f7
+  window: 512
+
+nok_window:
+  layer: tcp
+  id: 49572418-8656-46ee-b141-0b6379e09bae
+  window: 0
+
+ok_flags:
+  layer: tcp
+  id: b533a5c4-3ac0-40ce-8c3b-08aaf1577ab5
+  flags:
+    - "FA"
+
+nok_flags:
+  layer: tcp
+  id: d6e3b799-3e03-46d5-b24b-c4cb0a5bbfca
+  flags:
+    - "0"
+
+ok_fragbits:
+  layer: tcp
+  id: a29da618-a354-4b3c-9475-824876e4c4de
+  fragbits:
+    - "D"
+
+nok_fragbits:
+  layer: tcp
+  id: a0e477e7-aa5c-4246-b59b-902f6ccc79c3
+  fragbits:
+    - "M"
+
+ok_dsize:
+  layer: tcp
+  id: dc65fcd2-90bc-4b00-894b-7fe936be0298
+  dsize: 78
+
+nok_dsize:
+  layer: tcp
+  id: 67c669bf-585d-4935-8c0c-4d3d18d996fc
+  dsize: 0
+
+ok_payload:
+  layer: tcp
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    is:
+      - "GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: curl/7.58.0\r\nAccept: */*\r\n\r\n"
+    match: any
+
+nok_payload:
+  layer: tcp
+  id: ae6de878-80fc-4052-bc64-a92beb425248
+  payload:
+    is:
+      - "nonexistent"
+    match: any

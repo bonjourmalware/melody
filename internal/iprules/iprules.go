@@ -3,6 +3,7 @@ package iprules
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"strings"
@@ -37,16 +38,16 @@ func (iprl *IPRules) ParseRules(rules []string) {
 			if strings.Contains(rule, "-") {
 				err := iprl.BlacklistRange(rule)
 				if err != nil {
-					fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-					fmt.Println(err)
+					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+					log.Println(err)
 					os.Exit(1)
 				}
 				continue
 			} else if strings.Contains(rule, "/") {
 				err := iprl.BlacklistCIDR(rule)
 				if err != nil {
-					fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-					fmt.Println(err)
+					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+					log.Println(err)
 					os.Exit(1)
 				}
 				continue
@@ -54,8 +55,8 @@ func (iprl *IPRules) ParseRules(rules []string) {
 
 			err := iprl.Blacklist(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				//fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				//log.Println(err)
 				os.Exit(1)
 			}
 			continue
@@ -64,23 +65,23 @@ func (iprl *IPRules) ParseRules(rules []string) {
 		if strings.Contains(rule, "-") {
 			err := iprl.WhitelistRange(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				log.Println(err)
 				os.Exit(1)
 			}
 		} else if strings.Contains(rule, "/") {
 			err := iprl.WhitelistCIDR(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				//fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				//log.Println(err)
 				os.Exit(1)
 			}
 			continue
 		} else {
 			err := iprl.Whitelist(rule)
 			if err != nil {
-				fmt.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				fmt.Println(err)
+				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				log.Println(err)
 				os.Exit(1)
 			}
 		}
@@ -319,14 +320,14 @@ func (iprl *IPRules) Blacklist(ip string) error {
 // Checks
 func checkValidIP(ipstr string) {
 	if !isValidIPString(ipstr) {
-		fmt.Println(fmt.Sprintf("[%s] is not a valid IP address", ipstr))
+		log.Println(fmt.Sprintf("[%s] is not a valid IP address", ipstr))
 		os.Exit(1)
 	}
 }
 
 func checkValidIPRange(lower net.IP, upper net.IP) {
 	if !isValidIPRange(lower, upper) {
-		fmt.Println(fmt.Sprintf("[%s-%s] is not a valid host range", lower.String(), upper.String()))
+		log.Println(fmt.Sprintf("[%s-%s] is not a valid host range", lower.String(), upper.String()))
 		os.Exit(1)
 	}
 }

@@ -2,14 +2,28 @@ package rules
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
+
+var (
+	GlobalRules []Rules
+)
+
+type GlobalRawRules []RawRules
 
 func LoadRulesDir(rulesDir string) {
 	var globalRawRules GlobalRawRules
 	var total uint
+
+	skiplist := []string{
+		".gitkeep",
+	}
 
 	err := filepath.Walk(rulesDir,
 		func(path string, info os.FileInfo, err error) error {
@@ -20,19 +34,31 @@ func LoadRulesDir(rulesDir string) {
 				return nil
 			}
 
-			fmt.Println("Parsing", path)
+			for _, skipped := range skiplist {
+				if info.Name() == skipped {
+					return nil
+				}
+			}
+
+			log.Println("Parsing", path)
 			if strings.HasSuffix(path, ".yml") {
-				globalRawRules = append(globalRawRules, parseYAMLRulesFile(path))
+				parsed, err := ParseYAMLRulesFile(path)
+				if err != nil {
+					log.Println(fmt.Sprintf("Failed to read YAML rule file [%s]", path))
+					log.Println(err)
+					os.Exit(1)
+				}
+				globalRawRules = append(globalRawRules, parsed)
 			} else {
-				fmt.Println("invalid rule file (wanted : .yml) :", path)
+				log.Println("invalid rule file (wanted : .yml) :", path)
 			}
 
 			return nil
 		})
 
 	if err != nil {
-		fmt.Println(fmt.Sprintf("Failed to parse rule directory [%s]", rulesDir))
-		fmt.Println(err)
+		log.Println(fmt.Sprintf("Failed to parse rule directory [%s]", rulesDir))
+		log.Println(err)
 		os.Exit(1)
 	}
 
@@ -53,5 +79,19 @@ func LoadRulesDir(rulesDir string) {
 		total += uint(len(ruleset))
 	}
 
-	fmt.Println(fmt.Sprintf("Loaded %d rules", total))
+	log.Println(fmt.Sprintf("Loaded %d rules", total))
+}
+
+func ParseYAMLRulesFile(filepath string) (RawRules, error) {
+	rawRules := RawRules{}
+	rulesData, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return RawRules{}, err
+	}
+
+	if err := yaml.Unmarshal(rulesData, &rawRules); err != nil {
+		return RawRules{}, err
+	}
+
+	return rawRules, nil
 }

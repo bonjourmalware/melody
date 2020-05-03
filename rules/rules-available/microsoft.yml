@@ -1,8 +1,9 @@
 CVE-2020-0618 (Microsoft SSRS - SQL Server Reporting Services):
   layer: http
   uri:
-    values:
-      - "r:/ReportServer.*"
+    startswith:
+      - "/ReportServer"
+    match: any
   tags:
     - "cve-2020-0618"
     - "ssrs"

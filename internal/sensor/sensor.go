@@ -1,20 +1,19 @@
 package sensor
 
 import (
-	"fmt"
+	"github.com/google/gopacket/layers"
+	"github.com/bonjourmalware/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/events"
+	"log"
 	"time"
 
-	"gitlab.com/Alvoras/pinknoise/internal/engine"
-	"gitlab.com/Alvoras/pinknoise/internal/events"
-
-	"gitlab.com/Alvoras/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
 	"github.com/google/gopacket"
-	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/tcpassembly"
-	"gitlab.com/Alvoras/pinknoise/internal/config"
-	"gitlab.com/Alvoras/pinknoise/internal/http_assembler"
+	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/http_assembler"
 )
 
 func Start(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan chan bool) {
@@ -85,7 +84,7 @@ loop:
 						event, err := events.NewICMPv4Event(packet)
 						if err != nil {
 							//TODO: write to error log
-							fmt.Println("ERROR", err)
+							log.Println("ERROR", err)
 							continue
 						}
 
@@ -95,7 +94,7 @@ loop:
 						event, err := events.NewTCPEvent(packet)
 						if err != nil {
 							//TODO: write to error log
-							fmt.Println("ERROR", err)
+							log.Println("ERROR", err)
 							continue
 						}
 

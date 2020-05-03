@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"gitlab.com/Alvoras/pinknoise/internal/logger"
+	"github.com/bonjourmalware/pinknoise/internal/logger"
 
-	"gitlab.com/Alvoras/pinknoise/internal/events"
+	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
 var (

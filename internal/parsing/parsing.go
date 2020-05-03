@@ -3,7 +3,7 @@ package parsing
 import (
 	"bytes"
 	"fmt"
-	"gitlab.com/Alvoras/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 	"io"
 	"io/ioutil"
 	"net/http"

@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.com/Alvoras/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
-	"gitlab.com/Alvoras/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/google/gopacket"
-	"gitlab.com/Alvoras/pinknoise/internal/parsing"
+	"github.com/bonjourmalware/pinknoise/internal/parsing"
 )
 
 type HTTPEvent struct {
@@ -33,6 +33,7 @@ type HTTPEvent struct {
 func (ev HTTPEvent) ToLog() HTTPEventLog {
 	ev.LogData = HTTPEventLog{}
 	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort
