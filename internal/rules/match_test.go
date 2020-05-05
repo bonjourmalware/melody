@@ -12,6 +12,78 @@ import (
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
+func TestMatchingLogicFlow(t *testing.T) {
+	ruleFilename := "logic_flow_rules.yml"
+	pcapFilename := "logic_flow.pcap"
+	rawPackets := false
+	var rule Rule
+
+	ruleset, err := LoadRuleFile(ruleFilename)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	filteredEvents, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if filteredEvents[0] == nil {
+		t.Error("No TCP packets has been read from pcap")
+		return
+	}
+
+	tests := []struct {
+		Ok     []string
+		Nok    []string
+		Packet events.TCPEvent
+	}{
+		{
+			Ok: []string{
+				"ok_any_sub",
+				"ok_all_sub",
+				"ok_all_upper",
+				"ok_any_upper",
+				"ok_any_upper_mixed",
+				"ok_all_upper_mixed",
+				"ok_all_all_full_mixed",
+				"ok_all_any_full_mixed",
+				"ok_any_any_full_mixed",
+			},
+			Nok: []string{
+				"nok_any_sub",
+				"nok_all_sub",
+				"nok_all_upper",
+				"nok_any_upper",
+				"nok_any_upper_mixed",
+				"nok_all_upper_mixed",
+				"nok_all_all_full_mixed",
+				"nok_any_any_full_mixed",
+			},
+			Packet: *(filteredEvents[2].(*events.TCPEvent)),
+		},
+	}
+
+	for _, suite := range tests {
+		for _, rulename := range suite.Ok {
+			rule = ruleset[rulename]
+			if ok := rule.MatchTCPEvent(suite.Packet); !ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+		for _, rulename := range suite.Nok {
+			rule = ruleset[rulename]
+			if ok := rule.MatchTCPEvent(suite.Packet); ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+	}
+}
+
 func TestMatchICMPv4Event(t *testing.T) {
 	ruleFilename := "icmp_rules.yml"
 	pcapFilename := "icmp_values.pcap"

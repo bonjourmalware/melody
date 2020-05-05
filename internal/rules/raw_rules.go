@@ -98,5 +98,9 @@ func (rawRule RawRule) Parse() Rule {
 		},
 	}
 
+	if rule.Options.MatchAll == false && rule.Options.MatchAny == false {
+		rule.Options.MatchAll = true
+	}
+
 	return rule
 }

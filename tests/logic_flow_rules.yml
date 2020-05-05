@@ -1,0 +1,224 @@
+# Default matching mode at rule level is all
+
+ok_any_sub:
+  layer: tcp
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    is:
+      - "GET / HTTP/1.1\r\nHost: localhost:8080\r\nUser-Agent: curl/7.58.0\r\nAccept: */*\r\n\r\n"
+    contains:
+      - "nonexistent"
+    match: any
+
+nok_any_sub:
+  layer: tcp
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    contains:
+      - "nonexistent"
+      - "neither"
+    match: any
+
+ok_all_sub:
+  layer: tcp
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "localhost:8080"
+    endswith:
+      - "\n\r\n"
+    match: all
+
+nok_all_sub:
+  layer: tcp
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "localhost:8080"
+    endswith:
+      - "wrong end"
+    match: all
+
+ok_all_upper:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    match: any
+  flags:
+    - "AP"
+
+nok_all_upper:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    match: any
+  flags:
+    - "0"
+
+ok_any_upper:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    match: any
+  flags:
+    - "0"
+
+nok_any_upper:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "nonexistent"
+    match: any
+  flags:
+    - "0"
+
+ok_any_upper_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "nonexistent"
+    match: all
+  flags:
+    - "PA"
+
+nok_any_upper_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "nonexistent"
+    match: all
+  flags:
+    - "0"
+
+ok_all_upper_mixed:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "localhost"
+    match: all
+  flags:
+    - "PA"
+
+nok_all_upper_mixed:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains:
+      - "nonexistent"
+    match: all
+  flags:
+    - "PA"
+
+ok_all_all_full_mixed:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains|all:
+      - "localhost"
+      - "curl"
+    match: all
+  flags:
+    - "PA"
+
+nok_all_all_full_mixed:
+  layer: tcp
+  match: all
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains|all:
+      - "localhost"
+      - "nonexistent"
+    match: all
+  flags:
+    - "PA"
+
+ok_all_any_full_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains|all:
+      - "localhost"
+      - "curl"
+    match: all
+  flags:
+    - "0"
+
+nok_all_any_full_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "GET"
+    contains|all:
+      - "neither"
+      - "nonexistent"
+    match: all
+  flags:
+    - "0"
+
+ok_any_any_full_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "nonexistent"
+    contains|all:
+      - "localhost"
+      - "curl"
+    match: any
+  flags:
+    - "0"
+
+nok_any_any_full_mixed:
+  layer: tcp
+  match: any
+  id: 93e28e66-b3e3-4a28-8b27-be50269c84a0
+  payload:
+    startswith:
+      - "nonexistent"
+    contains|all:
+      - "neither"
+      - "nonexistent"
+    match: any
+  flags:
+    - "0"
