@@ -1,19 +1,20 @@
 package sensor
 
 import (
-	"github.com/google/gopacket/layers"
-	"github.com/bonjourmalware/pinknoise/internal/engine"
-	"github.com/bonjourmalware/pinknoise/internal/events"
 	"log"
 	"time"
 
+	"github.com/bonjourmalware/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/google/gopacket/layers"
+
 	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
+	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/pinknoise/internal/http_assembler"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/tcpassembly"
-	"github.com/bonjourmalware/pinknoise/internal/config"
-	"github.com/bonjourmalware/pinknoise/internal/http_assembler"
 )
 
 func Start(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan chan bool) {
@@ -89,6 +90,16 @@ loop:
 						}
 
 						engine.ICMPv4EventChan <- event
+
+					case layers.IPProtocolUDP:
+						event, err := events.NewUDPEvent(packet)
+						if err != nil {
+							//TODO: write to error log
+							log.Println("ERROR", err)
+							continue
+						}
+
+						engine.UDPEventChan <- event
 
 					case layers.IPProtocolTCP:
 						event, err := events.NewTCPEvent(packet)

@@ -1,6 +1,7 @@
 package events
 
 const (
+	UDPKind     = "udp"
 	TCPKind     = "tcp"
 	ICMPv4Kind  = "icmpv4"
 	HTTPKind    = "http"

@@ -68,6 +68,12 @@ func (rule *Rule) MatchICMPv4Event(ev events.ICMPv4Event) bool {
 	return false
 }
 
+func (rule *Rule) MatchUDPEvent(ev events.UDPEvent) bool {
+	//var condOK bool
+
+
+	return false
+}
 func (rule *Rule) MatchTCPEvent(ev events.TCPEvent) bool {
 	var condOK bool
 

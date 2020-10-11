@@ -37,21 +37,26 @@ type Config struct {
 	EnableWhitelist    bool           `yaml:"EnableWhitelist"`
 	MaxPOSTDataSizeRaw string         `yaml:"MaxPOSTDataSize"`
 	MaxTCPDataSizeRaw  string         `yaml:"MaxTCPDataSize"`
+	MaxUDPDataSizeRaw  string         `yaml:"MaxUDPDataSize"`
+
 	HomeNet            []string       `yaml:"HomeNet"`
 	MaxPOSTDataSize    uint64
 	MaxTCPDataSize     uint64
+	MaxUDPDataSize     uint64
 	PcapFile           *os.File
 }
 
 func (cfg *Config) Load() {
 	var httpByteSize datasize.ByteSize
 	var tcpByteSize datasize.ByteSize
+	var udpByteSize datasize.ByteSize
 
 	filepath := "config.yml"
 
 	// Default value
 	cfg.MaxPOSTDataSizeRaw = "1kb"
 	cfg.MaxTCPDataSizeRaw = "1kb"
+	cfg.MaxUDPDataSizeRaw = "1kb"
 
 	cfg.LogMaxSize = 200
 
@@ -70,6 +75,12 @@ func (cfg *Config) Load() {
 
 	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
 		fmt.Printf("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	if err := udpByteSize.UnmarshalText([]byte(cfg.MaxUDPDataSizeRaw)); err != nil {
+		fmt.Printf("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -93,6 +104,7 @@ func (cfg *Config) Load() {
 
 	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
 	cfg.MaxTCPDataSize = tcpByteSize.Bytes()
+	cfg.MaxUDPDataSize = udpByteSize.Bytes()
 
 	if Cli.PcapFilePath != nil && *Cli.PcapFilePath != "" {
 		f, err := os.Open(*Cli.PcapFilePath)

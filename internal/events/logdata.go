@@ -43,6 +43,13 @@ type TCPEventLog struct {
 	//LogDataIface
 }
 
+type UDPEventLog struct {
+	UDP UDPLogData `json:"udp"`
+	IP  IPLogData  `json:"ip"`
+	LogData
+	//LogDataIface
+}
+
 type HTTPEventLog struct {
 	HTTPLogData `json:"http"`
 	LogData
@@ -64,6 +71,12 @@ type TCPLogData struct {
 	Flags      string  `json:"flags"`
 	Urgent     uint16  `json:"urgent"`
 	Payload    Payload `json:"payload"`
+}
+
+type UDPLogData struct{
+	Payload    Payload `json:"payload"`
+	Length uint16 `json:"length"`
+	Checksum uint16 `json:"checksum"`
 }
 
 type IPLogData struct {
@@ -115,14 +128,23 @@ func (eventLog ICMPv4EventLog) String() (string, error) {
 	return string(data), nil
 }
 
-func NewPayload(tcpPayload []byte, maxLength uint64) Payload {
+func (eventLog UDPEventLog) String() (string, error) {
+	data, err := json.Marshal(eventLog)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+func NewPayload(data []byte, maxLength uint64) Payload {
 	var pl = Payload{}
 
-	if uint64(len(tcpPayload)) > maxLength {
-		tcpPayload = tcpPayload[:maxLength]
+	if uint64(len(data)) > maxLength {
+		data = data[:maxLength]
 		pl.Truncated = true
 	}
-	pl.Content = string(tcpPayload)
-	pl.Base64 = base64.StdEncoding.EncodeToString(tcpPayload)
+	pl.Content = string(data)
+	pl.Base64 = base64.StdEncoding.EncodeToString(data)
 	return pl
 }
+
