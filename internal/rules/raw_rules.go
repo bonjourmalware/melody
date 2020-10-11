@@ -26,6 +26,8 @@ type RawRule struct {
 	Flags      RawTCPFlagsList     `yaml:"flags"`
 	Seq        *uint32             `yaml:"seq"`
 	Ack        *uint32             `yaml:"ack"`
+	UDPLength  *uint16             `yaml:"udplength"`
+	Checksum   *uint16             `yaml:"checksum"`
 	Payload    RawConditions       `yaml:"payload"`
 	IPProtocol RawConditions       `yaml:"ip_protocol"`
 	URI        RawConditions       `yaml:"uri"`
@@ -84,6 +86,8 @@ func (rawRule RawRule) Parse() Rule {
 		Fragbits:   rawRule.Fragbits.ParseList(),
 		Flags:      rawRule.Flags.ParseList(),
 		Window:     rawRule.Window,
+		UDPLength:  rawRule.UDPLength,
+		Checksum:   rawRule.Checksum,
 		Id:         rawRule.Id,
 		Layer:      rawRule.Layer,
 		IPs:        ipsList,

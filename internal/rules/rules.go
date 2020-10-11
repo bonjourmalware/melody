@@ -32,6 +32,10 @@ type Rule struct {
 
 	IPProtocol *ConditionsList
 
+	// UDP
+	UDPLength   *uint16
+	Checksum *uint16
+
 	//	HTTP
 	URI     *ConditionsList
 	Body    *ConditionsList
@@ -49,8 +53,8 @@ type Rule struct {
 }
 
 type RuleOptions struct {
-	Depth  int
-	Offset int
+	Depth    int
+	Offset   int
 	MatchAll bool
 	MatchAny bool
 }

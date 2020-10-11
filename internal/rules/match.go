@@ -1,6 +1,8 @@
 package rules
 
 import (
+	"fmt"
+
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
@@ -69,11 +71,116 @@ func (rule *Rule) MatchICMPv4Event(ev events.ICMPv4Event) bool {
 }
 
 func (rule *Rule) MatchUDPEvent(ev events.UDPEvent) bool {
-	//var condOK bool
+	var condOK bool
 
+	if len(rule.Ports) > 0 {
+		for _, port := range rule.Ports {
+			// If at least one port is valid
+			if port == ev.DestPort {
+				break
+			}
+		}
+	}
+
+	// The rule fails if the source IP is blacklisted
+	if len(rule.IPs.BlacklistedIPs) > 0 {
+		for _, iprange := range rule.IPs.BlacklistedIPs {
+			if iprange.ContainsIPString(ev.SourceIP) {
+				return false
+			}
+		}
+	}
+
+	// The rule fails if the source IP is not in the whitelisted addresses
+	if len(rule.IPs.WhitelistedIPs) > 0 {
+		condOK = false
+
+		for _, iprange := range rule.IPs.WhitelistedIPs {
+			if iprange.ContainsIPString(ev.SourceIP) {
+				condOK = true
+				break
+			}
+		}
+
+		if !condOK {
+			return false
+		}
+	}
+
+	if rule.Options.MatchAll {
+		if rule.TTL != nil {
+			if ev.IPHeader.TTL != *rule.TTL {
+				return false
+			}
+		}
+
+		if rule.TOS != nil {
+			if ev.IPHeader.TOS != *rule.TOS {
+				return false
+			}
+		}
+
+		//TODO : Add <, > and <> operators
+		fmt.Println("rule.Length", rule.Length)
+		fmt.Println("ev.UDPHeader.Length", ev.UDPHeader.Length)
+
+		if rule.Length != nil {
+			if ev.UDPHeader.Length != *rule.UDPLength {
+				return false
+			}
+		}
+
+		if rule.Checksum != nil {
+			if ev.UDPHeader.Checksum != *rule.Checksum {
+				return false
+			}
+		}
+
+		if rule.Payload != nil {
+			if !rule.Payload.Match(ev.UDPHeader.Payload, rule.Options) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	if rule.TTL != nil {
+		if ev.IPHeader.TTL == *rule.TTL {
+			return true
+		}
+	}
+
+	if rule.TOS != nil {
+		if ev.IPHeader.TOS == *rule.TOS {
+			return true
+		}
+	}
+
+	fmt.Println("rule.Length", rule.Length)
+	fmt.Println("ev.UDPHeader.Length", ev.UDPHeader.Length)
+	//TODO : Add <, > and <> operators
+	if rule.Length != nil {
+		if ev.UDPHeader.Length == *rule.Length {
+			return true
+		}
+	}
+
+	if rule.Checksum != nil {
+		if ev.UDPHeader.Checksum == *rule.Checksum {
+			return true
+		}
+	}
+
+	if rule.Payload != nil {
+		if rule.Payload.Match(ev.UDPHeader.Payload, rule.Options) {
+			return true
+		}
+	}
 
 	return false
 }
+
 func (rule *Rule) MatchTCPEvent(ev events.TCPEvent) bool {
 	var condOK bool
 
@@ -145,7 +252,7 @@ func (rule *Rule) MatchTCPEvent(ev events.TCPEvent) bool {
 		}
 
 		if rule.Payload != nil {
-			if rule.Payload.Match(ev.TCPHeader.Payload, rule.Options) == false {
+			if !rule.Payload.Match(ev.TCPHeader.Payload, rule.Options) {
 				return false
 			}
 		}
@@ -221,7 +328,7 @@ func (rule *Rule) MatchTCPEvent(ev events.TCPEvent) bool {
 	}
 
 	if rule.Payload != nil {
-		if rule.Payload.Match(ev.TCPHeader.Payload, rule.Options) == true {
+		if rule.Payload.Match(ev.TCPHeader.Payload, rule.Options) {
 			return true
 		}
 	}
