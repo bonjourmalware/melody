@@ -1,7 +1,6 @@
 CVE-2020-9054 (ZyXEL NAS):
   layer: http
   uri:
-    values:
     startswith:
       - "/adv,/cgi-bin/weblogin.cgi?username=admin"
     match: any
