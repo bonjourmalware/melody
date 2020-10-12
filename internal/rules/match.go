@@ -1,8 +1,6 @@
 package rules
 
 import (
-	"fmt"
-
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
@@ -121,10 +119,7 @@ func (rule *Rule) MatchUDPEvent(ev events.UDPEvent) bool {
 		}
 
 		//TODO : Add <, > and <> operators
-		fmt.Println("rule.Length", rule.Length)
-		fmt.Println("ev.UDPHeader.Length", ev.UDPHeader.Length)
-
-		if rule.Length != nil {
+		if rule.UDPLength != nil {
 			if ev.UDPHeader.Length != *rule.UDPLength {
 				return false
 			}
@@ -157,11 +152,9 @@ func (rule *Rule) MatchUDPEvent(ev events.UDPEvent) bool {
 		}
 	}
 
-	fmt.Println("rule.Length", rule.Length)
-	fmt.Println("ev.UDPHeader.Length", ev.UDPHeader.Length)
 	//TODO : Add <, > and <> operators
-	if rule.Length != nil {
-		if ev.UDPHeader.Length == *rule.Length {
+	if rule.UDPLength != nil {
+		if ev.UDPHeader.Length == *rule.UDPLength {
 			return true
 		}
 	}
