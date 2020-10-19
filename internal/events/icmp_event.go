@@ -10,10 +10,11 @@ import (
 )
 
 type ICMPv4Event struct {
-	ICMPv4Header *layers.ICMPv4
-	IPHeader     *layers.IPv4
+	//ICMPv4Header *layers.ICMPv4
 	LogData      ICMPv4EventLog
-	Event
+	BaseEvent
+	IPLayer
+	ICMPv4Layer
 }
 
 func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
@@ -23,11 +24,11 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	ev.Session = "n/a"
 
 	ICMPv4Header, _ := packet.Layer(layers.LayerTypeICMPv4).(*layers.ICMPv4)
+	ev.ICMPv4Layer = ICMPv4Layer{Header: ICMPv4Header}
 
-	ev.ICMPv4Header = ICMPv4Header
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPHeader = IPHeader
-	ev.SourceIP = IPHeader.SrcIP.String()
+	ev.IPLayer = IPLayer{Header: IPHeader}
+	ev.SourceIP = ev.IPLayer.Header.SrcIP.String()
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
 	ev.Statements = []string{}
@@ -35,7 +36,15 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	return ev, nil
 }
 
-func (ev ICMPv4Event) ToLog() ICMPv4EventLog {
+//func (ev ICMPv4Event) GetIPHeader() *layers.IPv4 {
+//	return ev.IPHeader
+//}
+
+//func (ev ICMPv4Event) Match(rule rules.Rule) bool {
+//	return false
+//}
+
+func (ev ICMPv4Event) ToLog() EventLog {
 	var ipFlagsStr []string
 
 	ev.LogData = ICMPv4EventLog{}
@@ -63,30 +72,30 @@ func (ev ICMPv4Event) ToLog() ICMPv4EventLog {
 	}
 
 	ev.LogData.ICMPv4 = ICMPv4LogData{
-		TypeCode: ev.ICMPv4Header.TypeCode,
-		Checksum: ev.ICMPv4Header.Checksum,
-		Id:       ev.ICMPv4Header.Id,
-		Seq:      ev.ICMPv4Header.Seq,
+		TypeCode: ev.ICMPv4Layer.Header.TypeCode,
+		Checksum: ev.ICMPv4Layer.Header.Checksum,
+		Id:       ev.ICMPv4Layer.Header.Id,
+		Seq:      ev.ICMPv4Layer.Header.Seq,
 	}
 
 	ev.LogData.IP = IPLogData{
-		Version:    ev.IPHeader.Version,
-		IHL:        ev.IPHeader.IHL,
-		TOS:        ev.IPHeader.TOS,
-		Length:     ev.IPHeader.Length,
-		Id:         ev.IPHeader.Id,
-		FragOffset: ev.IPHeader.FragOffset,
-		TTL:        ev.IPHeader.TTL,
-		Protocol:   ev.IPHeader.Protocol,
+		Version:    ev.IPLayer.Header.Version,
+		IHL:        ev.IPLayer.Header.IHL,
+		TOS:        ev.IPLayer.Header.TOS,
+		Length:     ev.IPLayer.Header.Length,
+		Id:         ev.IPLayer.Header.Id,
+		FragOffset: ev.IPLayer.Header.FragOffset,
+		TTL:        ev.IPLayer.Header.TTL,
+		Protocol:   ev.IPLayer.Header.Protocol,
 	}
 
-	if ev.IPHeader.Flags&layers.IPv4EvilBit != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4EvilBit != 0 {
 		ipFlagsStr = append(ipFlagsStr, "EV")
 	}
-	if ev.IPHeader.Flags&layers.IPv4DontFragment != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4DontFragment != 0 {
 		ipFlagsStr = append(ipFlagsStr, "DF")
 	}
-	if ev.IPHeader.Flags&layers.IPv4MoreFragments != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4MoreFragments != 0 {
 		ipFlagsStr = append(ipFlagsStr, "MF")
 	}
 

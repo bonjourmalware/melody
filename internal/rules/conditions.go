@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/logger"
+	//"github.com/bonjourmalware/pinknoise/internal/logger"
 )
 
 type RawConditions struct {
@@ -139,7 +139,7 @@ func (condsList *ConditionsList) ParseMatchType(matchType string, ruleId string)
 	}
 
 	if !condsList.MatchAny && !condsList.MatchAll {
-		logger.Std.Printf("No match behaviour defined for rule %s, defaulting to \"any\"\n", ruleId)
+		//logger.Std.Printf("No match behaviour defined for rule %s, defaulting to \"any\"\n", ruleId)
 		condsList.MatchAny = true
 	}
 }

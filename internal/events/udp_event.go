@@ -14,11 +14,12 @@ import (
 )
 
 type UDPEvent struct {
-	IPHeader  *layers.IPv4
-	UDPHeader *layers.UDP
+	//IPHeader  *layers.IPv4
+	//UDPHeader *layers.UDP
 	LogData   UDPEventLog
-	Event
-	//BaseEvent
+	BaseEvent
+	UDPLayer
+	IPLayer
 }
 
 func NewUDPEvent(packet gopacket.Packet) (*UDPEvent, error) {
@@ -27,13 +28,16 @@ func NewUDPEvent(packet gopacket.Packet) (*UDPEvent, error) {
 
 	ev.Session = sessions.Map.GetUID(packet.TransportLayer().TransportFlow().String())
 
+	//IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
+	//ev.IPHeader = IPHeader
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPHeader = IPHeader
+	ev.IPLayer = IPLayer{Header: IPHeader}
 	ev.SourceIP = IPHeader.SrcIP.String()
 
 	UDPHeader, _ := packet.Layer(layers.LayerTypeUDP).(*layers.UDP)
-	ev.UDPHeader = UDPHeader
+	ev.UDPLayer = UDPLayer{Header: UDPHeader}
 	ev.DestPort = uint(UDPHeader.DstPort)
+
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
 	ev.Statements = []string{}
@@ -41,7 +45,7 @@ func NewUDPEvent(packet gopacket.Packet) (*UDPEvent, error) {
 	return ev, nil
 }
 
-func (ev UDPEvent) ToLog() UDPEventLog {
+func (ev UDPEvent) ToLog() EventLog {
 	var ipFlagsStr []string
 
 	ev.LogData = UDPEventLog{}
@@ -69,32 +73,32 @@ func (ev UDPEvent) ToLog() UDPEventLog {
 	}
 
 	ev.LogData.IP = IPLogData{
-		Version:    ev.IPHeader.Version,
-		IHL:        ev.IPHeader.IHL,
-		TOS:        ev.IPHeader.TOS,
-		Length:     ev.IPHeader.Length,
-		Id:         ev.IPHeader.Id,
-		FragOffset: ev.IPHeader.FragOffset,
-		TTL:        ev.IPHeader.TTL,
-		Protocol:   ev.IPHeader.Protocol,
+		Version:    ev.IPLayer.Header.Version,
+		IHL:        ev.IPLayer.Header.IHL,
+		TOS:        ev.IPLayer.Header.TOS,
+		Length:     ev.IPLayer.Header.Length,
+		Id:         ev.IPLayer.Header.Id,
+		FragOffset: ev.IPLayer.Header.FragOffset,
+		TTL:        ev.IPLayer.Header.TTL,
+		Protocol:   ev.IPLayer.Header.Protocol,
 	}
 
-	if ev.IPHeader.Flags&layers.IPv4EvilBit != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4EvilBit != 0 {
 		ipFlagsStr = append(ipFlagsStr, "EV")
 	}
-	if ev.IPHeader.Flags&layers.IPv4DontFragment != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4DontFragment != 0 {
 		ipFlagsStr = append(ipFlagsStr, "DF")
 	}
-	if ev.IPHeader.Flags&layers.IPv4MoreFragments != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4MoreFragments != 0 {
 		ipFlagsStr = append(ipFlagsStr, "MF")
 	}
 
 	ev.LogData.IP.Fragbits = strings.Join(ipFlagsStr, "")
 
 	ev.LogData.UDP = UDPLogData{
-		Payload:  NewPayload(ev.UDPHeader.Payload, config.Cfg.MaxUDPDataSize),
-		Length:   ev.UDPHeader.Length,
-		Checksum: ev.UDPHeader.Checksum,
+		Payload:  NewPayload(ev.UDPLayer.Header.Payload, config.Cfg.MaxUDPDataSize),
+		Length:   ev.UDPLayer.Header.Length,
+		Checksum: ev.UDPLayer.Header.Checksum,
 	}
 
 	ev.LogData.Metadata = ev.Metadata

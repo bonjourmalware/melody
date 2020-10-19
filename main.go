@@ -38,8 +38,8 @@ func init() {
 }
 
 func main() {
-	//eventChan := make(chan *events.Event)
-	//loggerChan := make(chan *events.Event)
+	//eventChan := make(chan *events.BaseEvent)
+	//loggerChan := make(chan *events.BaseEvent)
 
 	logger.Start(quitErrChan, shutdownChan, loggerStoppedChan)
 	engine.Start(quitErrChan, shutdownChan, engineStoppedChan)

@@ -14,11 +14,12 @@ import (
 )
 
 type TCPEvent struct {
-	IPHeader  *layers.IPv4
-	TCPHeader *layers.TCP
+	//IPHeader  *layers.IPv4
+	//TCPHeader *layers.TCP
 	LogData   TCPEventLog
-	Event
-	//BaseEvent
+	BaseEvent
+	TCPLayer
+	IPLayer
 }
 
 func NewTCPEvent(packet gopacket.Packet) (*TCPEvent, error) {
@@ -28,12 +29,14 @@ func NewTCPEvent(packet gopacket.Packet) (*TCPEvent, error) {
 	ev.Session = sessions.Map.GetUID(packet.TransportLayer().TransportFlow().String())
 
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPHeader = IPHeader
+	ev.IPLayer = IPLayer{Header: IPHeader}
 	ev.SourceIP = IPHeader.SrcIP.String()
 
 	TCPHeader, _ := packet.Layer(layers.LayerTypeTCP).(*layers.TCP)
-	ev.TCPHeader = TCPHeader
+
+	ev.TCPLayer = TCPLayer{Header: TCPHeader}
 	ev.DestPort = uint(TCPHeader.DstPort)
+
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
 	ev.Statements = []string{}
@@ -41,7 +44,7 @@ func NewTCPEvent(packet gopacket.Packet) (*TCPEvent, error) {
 	return ev, nil
 }
 
-func (ev TCPEvent) ToLog() TCPEventLog {
+func (ev TCPEvent) ToLog() EventLog {
 	var tcpFlagsStr []string
 	var ipFlagsStr []string
 
@@ -70,62 +73,62 @@ func (ev TCPEvent) ToLog() TCPEventLog {
 	}
 
 	ev.LogData.IP = IPLogData{
-		Version:    ev.IPHeader.Version,
-		IHL:        ev.IPHeader.IHL,
-		TOS:        ev.IPHeader.TOS,
-		Length:     ev.IPHeader.Length,
-		Id:         ev.IPHeader.Id,
-		FragOffset: ev.IPHeader.FragOffset,
-		TTL:        ev.IPHeader.TTL,
-		Protocol:   ev.IPHeader.Protocol,
+		Version:    ev.IPLayer.Header.Version,
+		IHL:        ev.IPLayer.Header.IHL,
+		TOS:        ev.IPLayer.Header.TOS,
+		Length:     ev.IPLayer.Header.Length,
+		Id:         ev.IPLayer.Header.Id,
+		FragOffset: ev.IPLayer.Header.FragOffset,
+		TTL:        ev.IPLayer.Header.TTL,
+		Protocol:   ev.IPLayer.Header.Protocol,
 	}
 
-	if ev.IPHeader.Flags&layers.IPv4EvilBit != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4EvilBit != 0 {
 		ipFlagsStr = append(ipFlagsStr, "EV")
 	}
-	if ev.IPHeader.Flags&layers.IPv4DontFragment != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4DontFragment != 0 {
 		ipFlagsStr = append(ipFlagsStr, "DF")
 	}
-	if ev.IPHeader.Flags&layers.IPv4MoreFragments != 0 {
+	if ev.IPLayer.Header.Flags&layers.IPv4MoreFragments != 0 {
 		ipFlagsStr = append(ipFlagsStr, "MF")
 	}
 
 	ev.LogData.IP.Fragbits = strings.Join(ipFlagsStr, "")
 
 	ev.LogData.TCP = TCPLogData{
-		Window:     ev.TCPHeader.Window,
-		Seq:        ev.TCPHeader.Seq,
-		Ack:        ev.TCPHeader.Ack,
-		DataOffset: ev.TCPHeader.DataOffset,
-		Urgent:     ev.TCPHeader.Urgent,
-		Payload:    NewPayload(ev.TCPHeader.Payload, config.Cfg.MaxTCPDataSize),
+		Window:     ev.TCPLayer.Header.Window,
+		Seq:        ev.TCPLayer.Header.Seq,
+		Ack:        ev.TCPLayer.Header.Ack,
+		DataOffset: ev.TCPLayer.Header.DataOffset,
+		Urgent:     ev.TCPLayer.Header.Urgent,
+		Payload:    NewPayload(ev.TCPLayer.Header.Payload, config.Cfg.MaxTCPDataSize),
 	}
 
-	if ev.TCPHeader.FIN {
+	if ev.TCPLayer.Header.FIN {
 		tcpFlagsStr = append(tcpFlagsStr, "F")
 	}
-	if ev.TCPHeader.SYN {
+	if ev.TCPLayer.Header.SYN {
 		tcpFlagsStr = append(tcpFlagsStr, "S")
 	}
-	if ev.TCPHeader.RST {
+	if ev.TCPLayer.Header.RST {
 		tcpFlagsStr = append(tcpFlagsStr, "R")
 	}
-	if ev.TCPHeader.PSH {
+	if ev.TCPLayer.Header.PSH {
 		tcpFlagsStr = append(tcpFlagsStr, "P")
 	}
-	if ev.TCPHeader.ACK {
+	if ev.TCPLayer.Header.ACK {
 		tcpFlagsStr = append(tcpFlagsStr, "A")
 	}
-	if ev.TCPHeader.URG {
+	if ev.TCPLayer.Header.URG {
 		tcpFlagsStr = append(tcpFlagsStr, "U")
 	}
-	if ev.TCPHeader.ECE {
+	if ev.TCPLayer.Header.ECE {
 		tcpFlagsStr = append(tcpFlagsStr, "E")
 	}
-	if ev.TCPHeader.CWR {
+	if ev.TCPLayer.Header.CWR {
 		tcpFlagsStr = append(tcpFlagsStr, "C")
 	}
-	if ev.TCPHeader.NS {
+	if ev.TCPLayer.Header.NS {
 		tcpFlagsStr = append(tcpFlagsStr, "N")
 	}
 

@@ -7,9 +7,9 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
-type LogDataIface interface {
-	String() (string, error)
-}
+//type LogDataIface interface {
+//	String() (string, error)
+//}
 
 type Payload struct {
 	Content   string `json:"content"`
@@ -17,7 +17,7 @@ type Payload struct {
 	Truncated bool   `json:"truncated"`
 }
 
-type LogData struct {
+type BaseLogData struct {
 	NsTimestamp string              `json:"ns_timestamp"`
 	Timestamp   string              `json:"timestamp"`
 	Session     string              `json:"session"`
@@ -33,27 +33,24 @@ type LogData struct {
 type ICMPv4EventLog struct {
 	ICMPv4 ICMPv4LogData `json:"icmpv4"`
 	IP     IPLogData     `json:"ip"`
-	LogData
+	BaseLogData
 }
 
 type TCPEventLog struct {
 	TCP TCPLogData `json:"tcp"`
 	IP  IPLogData  `json:"ip"`
-	LogData
-	//LogDataIface
+	BaseLogData
 }
 
 type UDPEventLog struct {
 	UDP UDPLogData `json:"udp"`
 	IP  IPLogData  `json:"ip"`
-	LogData
-	//LogDataIface
+	BaseLogData
 }
 
 type HTTPEventLog struct {
-	HTTPLogData `json:"http"`
-	LogData
-	//LogDataIface
+	HTTP HTTPLogData `json:"http"`
+	BaseLogData
 }
 
 type ICMPv4LogData struct {
@@ -73,10 +70,10 @@ type TCPLogData struct {
 	Payload    Payload `json:"payload"`
 }
 
-type UDPLogData struct{
-	Payload    Payload `json:"payload"`
-	Length uint16 `json:"length"`
-	Checksum uint16 `json:"checksum"`
+type UDPLogData struct {
+	Payload  Payload `json:"payload"`
+	Length   uint16  `json:"length"`
+	Checksum uint16  `json:"checksum"`
 }
 
 type IPLogData struct {
@@ -147,4 +144,3 @@ func NewPayload(data []byte, maxLength uint64) Payload {
 	pl.Base64 = base64.StdEncoding.EncodeToString(data)
 	return pl
 }
-

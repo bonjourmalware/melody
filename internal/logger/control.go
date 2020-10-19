@@ -1,21 +1,21 @@
 package logger
 
 import (
+	"github.com/bonjourmalware/pinknoise/internal/events"
 	"log"
 	"os"
 
 	"github.com/natefinch/lumberjack"
 
 	"github.com/bonjourmalware/pinknoise/internal/config"
-
-	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
 var (
-	TCPIPLoggerChan  = make(chan *events.TCPEvent)
-	HTTPLoggerChan   = make(chan *events.HTTPEvent)
-	ICMPv4LoggerChan = make(chan *events.ICMPv4Event)
-	UDPLoggerChan    = make(chan *events.UDPEvent)
+	//TCPIPLoggerChan  = make(chan *events.TCPEvent)
+	//HTTPLoggerChan   = make(chan *events.HTTPEvent)
+	//ICMPv4LoggerChan = make(chan *events.ICMPv4Event)
+	//UDPLoggerChan    = make(chan *events.UDPEvent)
+	LogChan = make(chan events.Event)
 )
 
 func Start(quitErrChan chan error, shutdownChan chan bool, loggerStoppedChan chan bool) {
@@ -41,7 +41,8 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 
 	for {
 		select {
-		case ev := <-TCPIPLoggerChan:
+
+		case ev := <-LogChan:
 			logdata, err := ev.ToLog().String()
 			if err != nil {
 				log.Println("failed to stringify JSON payload while writing to log file")
@@ -50,32 +51,41 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 
 			log.Println(logdata)
 
-		case ev := <-HTTPLoggerChan:
-			logdata, err := ev.ToLog().String()
-			if err != nil {
-				log.Println("failed to stringify JSON payload while writing to log file")
-				continue
-			}
-
-			log.Println(logdata)
-
-		case ev := <-ICMPv4LoggerChan:
-			logdata, err := ev.ToLog().String()
-			if err != nil {
-				log.Println("failed to stringify JSON payload while writing to log file")
-				continue
-			}
-
-			log.Println(logdata)
-
-		case ev := <-UDPLoggerChan:
-			logdata, err := ev.ToLog().String()
-			if err != nil {
-				log.Println("failed to stringify JSON payload while writing to log file")
-				continue
-			}
-
-			log.Println(logdata)
+		//case ev := <-TCPIPLoggerChan:
+		//	logdata, err := ev.ToLog().String()
+		//	if err != nil {
+		//		log.Println("failed to stringify JSON payload while writing to log file")
+		//		continue
+		//	}
+		//
+		//	log.Println(logdata)
+		//
+		//case ev := <-HTTPLoggerChan:
+		//	logdata, err := ev.ToLog().String()
+		//	if err != nil {
+		//		log.Println("failed to stringify JSON payload while writing to log file")
+		//		continue
+		//	}
+		//
+		//	log.Println(logdata)
+		//
+		//case ev := <-ICMPv4LoggerChan:
+		//	logdata, err := ev.ToLog().String()
+		//	if err != nil {
+		//		log.Println("failed to stringify JSON payload while writing to log file")
+		//		continue
+		//	}
+		//
+		//	log.Println(logdata)
+		//
+		//case ev := <-UDPLoggerChan:
+		//	logdata, err := ev.ToLog().String()
+		//	if err != nil {
+		//		log.Println("failed to stringify JSON payload while writing to log file")
+		//		continue
+		//	}
+		//
+		//	log.Println(logdata)
 
 		case <-shutdownChan:
 			return

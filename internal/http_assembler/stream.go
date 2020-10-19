@@ -41,8 +41,8 @@ func (h *HttpStream) run() {
 			return
 		} else if err != nil {
 		} else {
-			ev := events.NewHTTPEvent(req, h.net, h.transport)
-			engine.HTTPEventChan <- ev
+			ev, _ := events.NewHTTPEvent(req, h.net, h.transport)
+			engine.EventChan <- ev
 		}
 	}
 }

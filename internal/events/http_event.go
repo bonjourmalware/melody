@@ -1,6 +1,7 @@
 package events
 
 import (
+	"github.com/google/gopacket/layers"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,8 +10,8 @@ import (
 
 	"github.com/bonjourmalware/pinknoise/internal/config"
 
-	"github.com/google/gopacket"
 	"github.com/bonjourmalware/pinknoise/internal/parsing"
+	"github.com/google/gopacket"
 )
 
 type HTTPEvent struct {
@@ -27,10 +28,19 @@ type HTTPEvent struct {
 	IsTLS         bool     `json:"is_tls"`
 	Req           *http.Request
 	LogData       HTTPEventLog
-	Event
+	BaseEvent
 }
 
-func (ev HTTPEvent) ToLog() HTTPEventLog {
+
+func (ev HTTPEvent) GetIPHeader() *layers.IPv4 {
+	return nil
+}
+
+func (ev HTTPEvent) GetHTTPData() HTTPEvent {
+	return ev
+}
+
+func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData = HTTPEventLog{}
 	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
 	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
@@ -56,17 +66,17 @@ func (ev HTTPEvent) ToLog() HTTPEventLog {
 	}
 
 	ev.LogData.Session = ev.Session
-	ev.LogData.Verb = ev.Verb
-	ev.LogData.Proto = ev.Proto
-	ev.LogData.RequestURI = ev.RequestURI
-	//ev.LogData.RemoteAddr = ev.RemoteAddr
-	ev.LogData.SourcePort = ev.SourcePort
-	ev.LogData.DestHost = ev.DestHost
+	ev.LogData.HTTP.Verb = ev.Verb
+	ev.LogData.HTTP.Proto = ev.Proto
+	ev.LogData.HTTP.RequestURI = ev.RequestURI
+	//ev.BaseLogData.RemoteAddr = ev.RemoteAddr
+	ev.LogData.HTTP.SourcePort = ev.SourcePort
+	ev.LogData.HTTP.DestHost = ev.DestHost
 	ev.LogData.DestPort = ev.DestPort
 	ev.LogData.SourceIP = ev.SourceIP
-	ev.LogData.Headers = ev.Headers
-	ev.LogData.Body = ev.Body
-	ev.LogData.IsTLS = ev.IsTLS
+	ev.LogData.HTTP.Headers = ev.Headers
+	ev.LogData.HTTP.Body = ev.Body
+	ev.LogData.HTTP.IsTLS = ev.IsTLS
 	ev.LogData.Metadata = ev.Metadata
 	ev.LogData.References = ev.References
 	ev.LogData.Statements = ev.Statements
@@ -74,7 +84,7 @@ func (ev HTTPEvent) ToLog() HTTPEventLog {
 	return ev.LogData
 }
 
-func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flow) *HTTPEvent {
+func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flow) (*HTTPEvent, error) {
 	headers := make(map[string]string)
 	var inlineHeaders []string
 	var errs []string
@@ -125,5 +135,5 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	ev.References = make(map[string][]string)
 	ev.Statements = []string{}
 
-	return ev
+	return ev, nil
 }

@@ -63,6 +63,9 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		close(sensorStoppedChan)
 	}()
 
+	var event events.Event
+	//var err error
+
 loop:
 	for {
 		var packet gopacket.Packet
@@ -80,36 +83,31 @@ loop:
 							continue loop
 						}
 					}
+
 					switch packet.NetworkLayer().(*layers.IPv4).Protocol {
 					case layers.IPProtocolICMPv4:
-						event, err := events.NewICMPv4Event(packet)
+						event, err = events.NewICMPv4Event(packet)
 						if err != nil {
 							//TODO: write to error log
 							log.Println("ERROR", err)
 							continue
 						}
-
-						engine.ICMPv4EventChan <- event
 
 					case layers.IPProtocolUDP:
-						event, err := events.NewUDPEvent(packet)
+						event, err = events.NewUDPEvent(packet)
 						if err != nil {
 							//TODO: write to error log
 							log.Println("ERROR", err)
 							continue
 						}
-
-						engine.UDPEventChan <- event
 
 					case layers.IPProtocolTCP:
-						event, err := events.NewTCPEvent(packet)
+						event, err = events.NewTCPEvent(packet)
 						if err != nil {
 							//TODO: write to error log
 							log.Println("ERROR", err)
 							continue
 						}
-
-						engine.TCPEventChan <- event
 
 						tcpPacket := packet.TransportLayer().(*layers.TCP)
 						assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
@@ -117,6 +115,8 @@ loop:
 					default:
 						continue loop
 					}
+
+					engine.EventChan <- event
 				}
 			}
 

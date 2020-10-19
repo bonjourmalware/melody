@@ -1,44 +1,25 @@
 package events
 
-const (
-	UDPKind     = "udp"
-	TCPKind     = "tcp"
-	ICMPv4Kind  = "icmpv4"
-	HTTPKind    = "http"
-	DefaultKind = "default"
-)
+import "github.com/google/gopacket/layers"
 
+type Event interface{
+	//Match(rule rules.Rule) bool
+	ToLog() EventLog
+	GetKind() string
+	GetSourceIP() string
+	GetDestPort() uint
+	GetIPHeader() *layers.IPv4
+	GetICMPv4Header() *layers.ICMPv4
+	GetUDPHeader() *layers.UDP
+	GetTCPHeader() *layers.TCP
+	GetHTTPData() HTTPEvent
 
-//TODO Add common properties such as dst_host, src_port to base event
-type Event struct {
-	Tags       []string
-	Kind       string
-	SourceIP   string
-	DestPort   uint
-	Session    string
-	Metadata   map[string]string
-	Statements []string
-	References map[string][]string
+	AddTags(tags []string)
+	AddStatements(statements []string)
+	AddMeta(metadata map[string]string)
+	AddRefs(refs map[string][]string)
 }
 
-func (ev *Event) AddTags(tags []string) {
-	ev.Tags = append(ev.Tags, tags...)
-}
-
-func (ev *Event) AddStatements(statements []string) {
-	ev.Statements = append(ev.Statements, statements...)
-}
-
-func (ev *Event) AddMeta(metadata map[string]string) {
-	for key, value := range metadata {
-		ev.Metadata[key] = value
-	}
-}
-
-func (ev *Event) AddRefs(refs map[string][]string) {
-	for key, values := range refs {
-		for _, value := range values {
-			ev.References[key] = append(ev.References[key], value)
-		}
-	}
+type EventLog interface{
+	String() (string, error)
 }

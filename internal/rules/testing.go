@@ -69,7 +69,7 @@ func init() {
 
 func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 	var packets []gopacket.Packet
-	rawPackets, err := ReadPacketsFromPcap(pcapfile, layers.IPProtocolTCP, true)
+	_, rawPackets, err := ReadPacketsFromPcap(pcapfile, layers.IPProtocolTCP, true)
 	if err != nil {
 		return nil, err
 	}
@@ -80,23 +80,24 @@ func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 	return packets, nil
 }
 
-func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([]interface{}, error) {
+func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([]events.Event, []gopacket.Packet, error) {
 	//streamFactory := &http_assembler.HttpStreamFactory{}
 	//streamPool := tcpassembly.NewStreamPool(streamFactory)
 	//assembler := tcpassembly.NewAssembler(streamPool)
 	var ICMPEvents []*events.ICMPv4Event
 	var TCPEvents []*events.TCPEvent
 	var rawPackets []gopacket.Packet
-	var ret []interface{}
+	var ret []events.Event
+	var rawRet []gopacket.Packet
 	pcapfilePath := MakeAssetFullPath(pcapfile)
 
 	f, err := os.Open(pcapfilePath)
 	if err != nil {
-		return []interface{}{}, err
+		return []events.Event{}, []gopacket.Packet{}, err
 	}
 	handle, err := pcap.OpenOfflineFile(f)
 	if err != nil {
-		return []interface{}{}, err
+		return []events.Event{}, []gopacket.Packet{}, err
 	}
 
 	src := gopacket.NewPacketSource(handle, handle.LinkType())
@@ -123,7 +124,7 @@ loop:
 				case layers.IPProtocolICMPv4:
 					ev, err := events.NewICMPv4Event(packet)
 					if err != nil {
-						return []interface{}{}, err
+						return []events.Event{}, []gopacket.Packet{}, err
 					}
 
 					ICMPEvents = append(ICMPEvents, ev)
@@ -131,7 +132,7 @@ loop:
 				case layers.IPProtocolTCP:
 					ev, err := events.NewTCPEvent(packet)
 					if err != nil {
-						return []interface{}{}, err
+						return []events.Event{}, []gopacket.Packet{}, err
 					}
 
 					TCPEvents = append(TCPEvents, ev)
@@ -147,28 +148,44 @@ loop:
 		}
 	}
 
+	// I'm so lazy
 	if raw {
-		ret = make([]interface{}, len(rawPackets))
+		rawRet = make([]gopacket.Packet, len(rawPackets))
 		for key, val := range rawPackets {
-			ret[key] = val
+			rawRet[key] = val
 		}
-	} else {
-		switch filter {
+	}
+//} else {
+	//	switch filter {
+	//	case layers.IPProtocolICMPv4:
+	//		ret = make([]events.Event, len(ICMPEvents))
+	//		for key, val := range ICMPEvents {
+	//			ret[key] = val
+	//		}
+	//
+	//	case layers.IPProtocolTCP:
+	//		ret = make([]events.Event, len(TCPEvents))
+	//		for key, val := range TCPEvents {
+	//			ret[key] = val
+	//		}
+	//	}
+	//}
+
+	switch filter {
 		case layers.IPProtocolICMPv4:
-			ret = make([]interface{}, len(ICMPEvents))
+			ret = make([]events.Event, len(ICMPEvents))
 			for key, val := range ICMPEvents {
 				ret[key] = val
 			}
 
 		case layers.IPProtocolTCP:
-			ret = make([]interface{}, len(TCPEvents))
+			ret = make([]events.Event, len(TCPEvents))
 			for key, val := range TCPEvents {
 				ret[key] = val
 			}
 		}
-	}
 
-	return ret, nil
+	return ret, rawRet, nil
 }
 
 func LoadRuleFile(rulefile string) (map[string]Rule, error) {

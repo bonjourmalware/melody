@@ -3,13 +3,14 @@ package rules
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"net/http"
 	"testing"
 
 	"github.com/bonjourmalware/pinknoise/internal/config"
 
-	"github.com/google/gopacket/layers"
 	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/google/gopacket/layers"
 )
 
 func TestMatchingLogicFlow(t *testing.T) {
@@ -24,7 +25,7 @@ func TestMatchingLogicFlow(t *testing.T) {
 		return
 	}
 
-	filteredEvents, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
 	if err != nil {
 		t.Error(err)
 		return
@@ -38,7 +39,7 @@ func TestMatchingLogicFlow(t *testing.T) {
 	tests := []struct {
 		Ok     []string
 		Nok    []string
-		Packet events.TCPEvent
+		Packet events.Event
 	}{
 		{
 			Ok: []string{
@@ -62,21 +63,21 @@ func TestMatchingLogicFlow(t *testing.T) {
 				"nok_all_all_full_mixed",
 				"nok_any_any_full_mixed",
 			},
-			Packet: *(filteredEvents[2].(*events.TCPEvent)),
+			Packet: filteredEvents[2],
 		},
 	}
 
 	for _, suite := range tests {
 		for _, rulename := range suite.Ok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchTCPEvent(suite.Packet); !ok {
+			if ok := rule.Match(suite.Packet); !ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
 		}
 		for _, rulename := range suite.Nok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchTCPEvent(suite.Packet); ok {
+			if ok := rule.Match(suite.Packet); ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
@@ -96,7 +97,7 @@ func TestMatchICMPv4Event(t *testing.T) {
 		return
 	}
 
-	filteredEvents, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolICMPv4, rawPackets)
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolICMPv4, rawPackets)
 	if err != nil {
 		t.Error(err)
 		return
@@ -110,32 +111,32 @@ func TestMatchICMPv4Event(t *testing.T) {
 	tests := []struct {
 		Ok     []string
 		Nok    []string
-		Packet events.ICMPv4Event
+		Packet events.Event
 	}{
 		{
 			Ok: []string{
-				"ok_ttl",
-				"ok_tos",
+				//"ok_ttl",
+				//"ok_tos",
 			},
 			Nok: []string{
-				"nok_ttl",
-				"nok_tos",
+				//"nok_ttl",
+				//"nok_tos",
 			},
-			Packet: *(filteredEvents[0].(*events.ICMPv4Event)),
+			Packet: filteredEvents[0],
 		},
 	}
 
 	for _, suite := range tests {
 		for _, rulename := range suite.Ok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchICMPv4Event(suite.Packet); !ok {
+			if ok := rule.Match(suite.Packet); !ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
 		}
 		for _, rulename := range suite.Nok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchICMPv4Event(suite.Packet); ok {
+			if ok := rule.Match(suite.Packet); ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
@@ -155,7 +156,7 @@ func TestMatchTCPEvent(t *testing.T) {
 		return
 	}
 
-	filteredEvents, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
 	if err != nil {
 		t.Error(err)
 		return
@@ -169,24 +170,24 @@ func TestMatchTCPEvent(t *testing.T) {
 	tests := []struct {
 		Ok     []string
 		Nok    []string
-		Packet events.TCPEvent
+		Packet events.Event
 	}{
 		{
 			Ok: []string{
-				"ok_ttl",
-				"ok_tos",
+				//"ok_ttl",
+				//"ok_tos",
 				"ok_ack",
 				"ok_seq",
 				"ok_window",
 			},
 			Nok: []string{
-				"nok_ttl",
-				"nok_tos",
+				//"nok_ttl",
+				//"nok_tos",
 				"nok_ack",
 				"nok_seq",
 				"nok_window",
 			},
-			Packet: *(filteredEvents[1].(*events.TCPEvent)),
+			Packet: filteredEvents[1],
 		},
 		{
 			Ok: []string{
@@ -197,32 +198,32 @@ func TestMatchTCPEvent(t *testing.T) {
 				"nok_dsize",
 				"nok_payload",
 			},
-			Packet: *(filteredEvents[2].(*events.TCPEvent)),
+			Packet: filteredEvents[2],
 		},
 		{
 			Ok: []string{
 				"ok_flags",
-				"ok_fragbits",
+				//"ok_fragbits",
 			},
 			Nok: []string{
 				"nok_flags",
-				"nok_fragbits",
+				//"nok_fragbits",
 			},
-			Packet: *(filteredEvents[4].(*events.TCPEvent)),
+			Packet: filteredEvents[4],
 		},
 	}
 
 	for _, suite := range tests {
 		for _, rulename := range suite.Ok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchTCPEvent(suite.Packet); !ok {
+			if ok := rule.Match(suite.Packet); !ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
 		}
 		for _, rulename := range suite.Nok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchTCPEvent(suite.Packet); ok {
+			if ok := rule.Match(suite.Packet); ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
@@ -254,6 +255,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 	// Will fail on packets needing reassembly
 	// Good enough for testing
 	for _, packet := range packets {
+		fmt.Println(packet)
 		if len(packet.TransportLayer().LayerPayload()) > 0 {
 			req, err := http.ReadRequest(bufio.NewReader(bytes.NewBuffer(packet.TransportLayer().LayerPayload())))
 			if err != nil {
@@ -261,7 +263,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 				return
 			}
 
-			ev := events.NewHTTPEvent(req, packet.NetworkLayer().NetworkFlow(), packet.TransportLayer().TransportFlow())
+			ev, _ := events.NewHTTPEvent(req, packet.NetworkLayer().NetworkFlow(), packet.TransportLayer().TransportFlow())
 			if len(ev.Errors) > 0 {
 				for _, err := range ev.Errors {
 					t.Error(err)
@@ -280,7 +282,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 	tests := []struct {
 		Ok     []string
 		Nok    []string
-		Packet events.HTTPEvent
+		Packet events.Event
 	}{
 		{
 			Ok: []string{
@@ -297,21 +299,21 @@ func TestMatchHTTPEvent(t *testing.T) {
 				"nok_proto",
 				"nok_method",
 			},
-			Packet: *httpEvents[0],
+			Packet: httpEvents[0],
 		},
 	}
 
 	for _, suite := range tests {
 		for _, rulename := range suite.Ok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchHTTPEvent(suite.Packet); !ok {
+			if ok := rule.Match(suite.Packet); !ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
 		}
 		for _, rulename := range suite.Nok {
 			rule = ruleset[rulename]
-			if ok := rule.MatchHTTPEvent(suite.Packet); ok {
+			if ok := rule.Match(suite.Packet); ok {
 				t.Error(rulename, "FAILED")
 				t.Fail()
 			}
