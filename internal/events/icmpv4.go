@@ -74,6 +74,8 @@ func (ev ICMPv4Event) ToLog() EventLog {
 
 	ev.LogData.ICMPv4 = ICMPv4LogData{
 		TypeCode: ev.ICMPv4Layer.Header.TypeCode,
+		Type: ev.ICMPv4Layer.Header.TypeCode.Type(),
+		Code: ev.ICMPv4Layer.Header.TypeCode.Code(),
 		TypeCodeName: ev.ICMPv4Layer.Header.TypeCode.String(),
 		Checksum: ev.ICMPv4Layer.Header.Checksum,
 		Id:       ev.ICMPv4Layer.Header.Id,

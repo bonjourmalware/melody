@@ -39,11 +39,15 @@ type Rule struct {
 
 	// ICMPv6
 	TypeCode6 *layers.ICMPv6TypeCode
+	ICMPCode6 *uint8
+	ICMPType6 *uint8
 
 	// ICMPv4
-	TypeCode *layers.ICMPv4TypeCode
+	TypeCode4 *layers.ICMPv4TypeCode
+	ICMPCode4 *uint8
+	ICMPType4 *uint8
 	//Seq      *uint32
-	ICMPSeq      *uint16
+	ICMPSeq *uint16
 
 	//	HTTP
 	URI     *ConditionsList

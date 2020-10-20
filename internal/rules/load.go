@@ -91,7 +91,6 @@ func LoadRulesDir(rulesDir string) {
 		}
 	}
 
-	fmt.Println(GlobalRules)
 	log.Println(fmt.Sprintf("Loaded %d rules", total))
 }
 

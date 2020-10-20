@@ -29,10 +29,14 @@ type RawRule struct {
 	Seq      *uint32         `yaml:"seq"`
 	Ack      *uint32         `yaml:"ack"`
 
-	TypeCode6 *layers.ICMPv6TypeCode `yaml:"type_code_6"`
+	TypeCode6 *layers.ICMPv6TypeCode `yaml:"icmpv6_type_code"`
+	ICMPType6 *uint8                 `yaml:"icmpv6_type"`
+	ICMPCode6 *uint8                 `yaml:"icmpv6_code"`
 
-	TypeCode *layers.ICMPv4TypeCode `yaml:"type_code"`
-	ICMPSeq  *uint16                `yaml:"icmpv4_seq"`
+	TypeCode4 *layers.ICMPv4TypeCode `yaml:"icmpv4_type_code"`
+	ICMPType4 *uint8                 `yaml:"icmpv4_type"`
+	ICMPCode4 *uint8                 `yaml:"icmpv4_code"`
+	ICMPSeq   *uint16                `yaml:"icmpv4_seq"`
 
 	UDPLength  *uint16             `yaml:"udplength"`
 	Checksum   *uint16             `yaml:"checksum"`
@@ -108,8 +112,12 @@ func (rawRule RawRule) Parse() Rule {
 		Flags:      rawRule.Flags.ParseList(),
 		Window:     rawRule.Window,
 		ICMPSeq:    rawRule.ICMPSeq,
-		TypeCode:   rawRule.TypeCode,
+		TypeCode4:   rawRule.TypeCode4,
+		ICMPCode4:   rawRule.ICMPCode4,
+		ICMPType4:   rawRule.ICMPType4,
 		TypeCode6:  rawRule.TypeCode6,
+		ICMPCode6:   rawRule.ICMPCode6,
+		ICMPType6:   rawRule.ICMPType6,
 		UDPLength:  rawRule.UDPLength,
 		Checksum:   rawRule.Checksum,
 		Id:         rawRule.Id,

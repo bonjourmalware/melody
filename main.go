@@ -27,9 +27,10 @@ var (
 func init() {
 	signal.Notify(quitSigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'f', "", "Replay a pcap file into the honeypot")
+	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'r', "", "Replay a pcap file into the honeypot")
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.HomeNet = getopt.ListLong("homenet", 'n', "Overrides the HomeNet values")
+	config.Cli.HomeNet6 = getopt.ListLong("homenet6", 'N', "Overrides the HomeNet6 values")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "", "Output logged data to stdout instead")
 	getopt.Parse()
 

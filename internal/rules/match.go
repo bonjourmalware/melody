@@ -125,6 +125,18 @@ func (rule *Rule) MatchICMPv6Event(ev events.Event) bool {
 			}
 		}
 
+		if rule.ICMPCode6 != nil {
+			if icmpv6Header.TypeCode.Code() != *rule.ICMPCode6 {
+				return false
+			}
+		}
+
+		if rule.ICMPType6 != nil {
+			if icmpv6Header.TypeCode.Type() != *rule.ICMPType6 {
+				return false
+			}
+		}
+
 		return true
 	}
 
@@ -136,6 +148,18 @@ func (rule *Rule) MatchICMPv6Event(ev events.Event) bool {
 
 	if rule.TypeCode6 != nil {
 		if icmpv6Header.TypeCode == *rule.TypeCode6 {
+			return true
+		}
+	}
+
+	if rule.ICMPCode6 != nil {
+		if icmpv6Header.TypeCode.Code() == *rule.ICMPCode6 {
+			return true
+		}
+	}
+
+	if rule.ICMPType6 != nil {
+		if icmpv6Header.TypeCode.Type() == *rule.ICMPType6 {
 			return true
 		}
 	}
@@ -159,8 +183,20 @@ func (rule *Rule) MatchICMPv4Event(ev events.Event) bool {
 			}
 		}
 
-		if rule.TypeCode != nil {
-			if icmpv4Header.TypeCode != *rule.TypeCode {
+		if rule.TypeCode4 != nil {
+			if icmpv4Header.TypeCode != *rule.TypeCode4 {
+				return false
+			}
+		}
+
+		if rule.ICMPCode4 != nil {
+			if icmpv4Header.TypeCode.Code() != *rule.ICMPCode4 {
+				return false
+			}
+		}
+
+		if rule.ICMPType4 != nil {
+			if icmpv4Header.TypeCode.Type() != *rule.ICMPType4 {
 				return false
 			}
 		}
@@ -174,8 +210,20 @@ func (rule *Rule) MatchICMPv4Event(ev events.Event) bool {
 		}
 	}
 
-	if rule.TypeCode != nil {
-		if icmpv4Header.TypeCode == *rule.TypeCode {
+	if rule.TypeCode4 != nil {
+		if icmpv4Header.TypeCode == *rule.TypeCode4 {
+			return true
+		}
+	}
+
+	if rule.ICMPCode4 != nil {
+		if icmpv4Header.TypeCode.Code() == *rule.ICMPCode4 {
+			return true
+		}
+	}
+
+	if rule.ICMPType4 != nil {
+		if icmpv4Header.TypeCode.Type() == *rule.ICMPType4 {
 			return true
 		}
 	}

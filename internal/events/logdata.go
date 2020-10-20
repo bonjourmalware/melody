@@ -61,12 +61,16 @@ type HTTPEventLog struct {
 
 type ICMPv6LogData struct {
 	TypeCode     layers.ICMPv6TypeCode `json:"type_code"`
+	Type         uint8                 `json:"type"`
+	Code         uint8                 `json:"code"`
 	TypeCodeName string                `json:"type_code_name"`
 	Checksum     uint16                `json:"checksum"`
 }
 
 type ICMPv4LogData struct {
 	TypeCode     layers.ICMPv4TypeCode `json:"type_code"`
+	Type         uint8                 `json:"type"`
+	Code         uint8                 `json:"code"`
 	TypeCodeName string                `json:"type_code_name"`
 	Checksum     uint16                `json:"checksum"`
 	Id           uint16                `json:"id"`

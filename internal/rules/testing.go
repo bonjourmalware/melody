@@ -5,10 +5,10 @@ import (
 	"os"
 	"path"
 
+	"github.com/bonjourmalware/pinknoise/internal/events"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
-	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
 var (
@@ -84,7 +84,9 @@ func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([
 	//streamFactory := &http_assembler.HttpStreamFactory{}
 	//streamPool := tcpassembly.NewStreamPool(streamFactory)
 	//assembler := tcpassembly.NewAssembler(streamPool)
-	var ICMPEvents []*events.ICMPv4Event
+	var ICMPv4Events []*events.ICMPv4Event
+	var ICMPv6Events []*events.ICMPv6Event
+
 	var TCPEvents []*events.TCPEvent
 	var rawPackets []gopacket.Packet
 	var ret []events.Event
@@ -116,35 +118,52 @@ loop:
 				break loop
 			}
 		}
-		if packet.NetworkLayer().(*layers.IPv4).Protocol == filter {
-			if raw {
-				rawPackets = append(rawPackets, packet)
-			} else {
+
+		if _, ok := packet.NetworkLayer().(*layers.IPv4); ok {
+			if packet.NetworkLayer().(*layers.IPv4).Protocol == filter {
+				if raw {
+					rawPackets = append(rawPackets, packet)
+				} else {
+					switch filter {
+					case layers.IPProtocolICMPv4:
+						ev, err := events.NewICMPv4Event(packet)
+						if err != nil {
+							return []events.Event{}, []gopacket.Packet{}, err
+						}
+
+						ICMPv4Events = append(ICMPv4Events, ev)
+
+					case layers.IPProtocolTCP:
+						ev, err := events.NewTCPEvent(packet)
+						if err != nil {
+							return []events.Event{}, []gopacket.Packet{}, err
+						}
+
+						TCPEvents = append(TCPEvents, ev)
+
+						//tcpPacket := packet.TransportLayer().(*layers.TCP)
+						//assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+
+					default:
+						continue loop
+					}
+				}
+			}
+		} else if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
+			if packet.NetworkLayer().(*layers.IPv6).NextHeader == filter {
 				switch filter {
-				case layers.IPProtocolICMPv4:
-					ev, err := events.NewICMPv4Event(packet)
+				case layers.IPProtocolICMPv6:
+					ev, err := events.NewICMPv6Event(packet)
 					if err != nil {
 						return []events.Event{}, []gopacket.Packet{}, err
 					}
 
-					ICMPEvents = append(ICMPEvents, ev)
-
-				case layers.IPProtocolTCP:
-					ev, err := events.NewTCPEvent(packet)
-					if err != nil {
-						return []events.Event{}, []gopacket.Packet{}, err
-					}
-
-					TCPEvents = append(TCPEvents, ev)
-
-					//tcpPacket := packet.TransportLayer().(*layers.TCP)
-					//assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+					ICMPv6Events = append(ICMPv6Events, ev)
 
 				default:
 					continue loop
 				}
 			}
-
 		}
 	}
 
@@ -155,11 +174,11 @@ loop:
 			rawRet[key] = val
 		}
 	}
-//} else {
+	//} else {
 	//	switch filter {
 	//	case layers.IPProtocolICMPv4:
-	//		ret = make([]events.Event, len(ICMPEvents))
-	//		for key, val := range ICMPEvents {
+	//		ret = make([]events.Event, len(ICMPv4Events))
+	//		for key, val := range ICMPv4Events {
 	//			ret[key] = val
 	//		}
 	//
@@ -172,18 +191,24 @@ loop:
 	//}
 
 	switch filter {
-		case layers.IPProtocolICMPv4:
-			ret = make([]events.Event, len(ICMPEvents))
-			for key, val := range ICMPEvents {
-				ret[key] = val
-			}
-
-		case layers.IPProtocolTCP:
-			ret = make([]events.Event, len(TCPEvents))
-			for key, val := range TCPEvents {
-				ret[key] = val
-			}
+	case layers.IPProtocolICMPv4:
+		ret = make([]events.Event, len(ICMPv4Events))
+		for key, val := range ICMPv4Events {
+			ret[key] = val
 		}
+
+	case layers.IPProtocolICMPv6:
+		ret = make([]events.Event, len(ICMPv6Events))
+		for key, val := range ICMPv6Events {
+			ret[key] = val
+		}
+
+	case layers.IPProtocolTCP:
+		ret = make([]events.Event, len(TCPEvents))
+		for key, val := range TCPEvents {
+			ret[key] = val
+		}
+	}
 
 	return ret, rawRet, nil
 }

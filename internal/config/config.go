@@ -38,7 +38,7 @@ type CLI struct {
 	Stdout       *bool
 	Interface    *string
 	HomeNet      *[]string
-	//HomeNet6      *[]string
+	HomeNet6     *[]string
 }
 
 // Config structure which mirrors the yaml file
@@ -60,7 +60,7 @@ type Config struct {
 	MatchProtocols     []string       `yaml:"MatchProtocols"`
 
 	HomeNet         []string `yaml:"HomeNet"`
-	//HomeNet6         []string `yaml:"HomeNet6"`
+	HomeNet6        []string `yaml:"HomeNet6"`
 	MaxPOSTDataSize uint64
 	MaxTCPDataSize  uint64
 	MaxUDPDataSize  uint64
@@ -125,7 +125,7 @@ func (cfg *Config) Load() {
 
 	if len(Cfg.MatchProtocols) == 0 {
 		Cfg.MatchProtocols = SupportedProtocols
-	}else{
+	} else {
 		for _, proto := range Cfg.MatchProtocols {
 			if proto == "all" {
 				Cfg.MatchProtocols = SupportedProtocols
@@ -157,7 +157,7 @@ func (cfg *Config) Load() {
 		cfg.HomeNet = *Cli.HomeNet
 	}
 
-	//if len(*Cli.HomeNet6) > 0 {
-	//	cfg.HomeNet6 = *Cli.HomeNet6
-	//}
+	if len(*Cli.HomeNet6) > 0 {
+		cfg.HomeNet6 = *Cli.HomeNet6
+	}
 }
