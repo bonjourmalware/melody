@@ -75,6 +75,7 @@ func (ev ICMPv6Event) ToLog() EventLog {
 	}
 
 	ev.LogData.IP = IPv6LogData{
+		Version:        ev.IPv6Layer.Header.Version,
 		Length:         ev.IPv6Layer.Header.Length,
 		NextHeader:     ev.IPv6Layer.Header.NextHeader,
 		NextHeaderName: ev.IPv6Layer.Header.NextHeader.String(),

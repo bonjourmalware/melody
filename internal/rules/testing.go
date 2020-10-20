@@ -81,13 +81,7 @@ func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 }
 
 func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([]events.Event, []gopacket.Packet, error) {
-	//streamFactory := &http_assembler.HttpStreamFactory{}
-	//streamPool := tcpassembly.NewStreamPool(streamFactory)
-	//assembler := tcpassembly.NewAssembler(streamPool)
-	var ICMPv4Events []*events.ICMPv4Event
-	var ICMPv6Events []*events.ICMPv6Event
-
-	var TCPEvents []*events.TCPEvent
+	var Events []events.Event
 	var rawPackets []gopacket.Packet
 	var ret []events.Event
 	var rawRet []gopacket.Packet
@@ -104,10 +98,6 @@ func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([
 
 	src := gopacket.NewPacketSource(handle, handle.LinkType())
 	in := src.Packets()
-	//defer func() {
-	//	assembler.FlushAll()
-	//	sessions.Map.FlushAll()
-	//}()
 
 loop:
 	for {
@@ -131,7 +121,15 @@ loop:
 							return []events.Event{}, []gopacket.Packet{}, err
 						}
 
-						ICMPv4Events = append(ICMPv4Events, ev)
+						Events = append(Events, ev)
+
+					case layers.IPProtocolUDP:
+						ev, err := events.NewUDPEvent(packet)
+						if err != nil {
+							return []events.Event{}, []gopacket.Packet{}, err
+						}
+
+						Events = append(Events, ev)
 
 					case layers.IPProtocolTCP:
 						ev, err := events.NewTCPEvent(packet)
@@ -139,10 +137,7 @@ loop:
 							return []events.Event{}, []gopacket.Packet{}, err
 						}
 
-						TCPEvents = append(TCPEvents, ev)
-
-						//tcpPacket := packet.TransportLayer().(*layers.TCP)
-						//assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+						Events = append(Events, ev)
 
 					default:
 						continue loop
@@ -158,7 +153,7 @@ loop:
 						return []events.Event{}, []gopacket.Packet{}, err
 					}
 
-					ICMPv6Events = append(ICMPv6Events, ev)
+					Events = append(Events, ev)
 
 				default:
 					continue loop
@@ -174,40 +169,10 @@ loop:
 			rawRet[key] = val
 		}
 	}
-	//} else {
-	//	switch filter {
-	//	case layers.IPProtocolICMPv4:
-	//		ret = make([]events.Event, len(ICMPv4Events))
-	//		for key, val := range ICMPv4Events {
-	//			ret[key] = val
-	//		}
-	//
-	//	case layers.IPProtocolTCP:
-	//		ret = make([]events.Event, len(TCPEvents))
-	//		for key, val := range TCPEvents {
-	//			ret[key] = val
-	//		}
-	//	}
-	//}
 
-	switch filter {
-	case layers.IPProtocolICMPv4:
-		ret = make([]events.Event, len(ICMPv4Events))
-		for key, val := range ICMPv4Events {
-			ret[key] = val
-		}
-
-	case layers.IPProtocolICMPv6:
-		ret = make([]events.Event, len(ICMPv6Events))
-		for key, val := range ICMPv6Events {
-			ret[key] = val
-		}
-
-	case layers.IPProtocolTCP:
-		ret = make([]events.Event, len(TCPEvents))
-		for key, val := range TCPEvents {
-			ret[key] = val
-		}
+	ret = make([]events.Event, len(Events))
+	for key, val := range Events {
+		ret[key] = val
 	}
 
 	return ret, rawRet, nil

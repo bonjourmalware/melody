@@ -31,8 +31,8 @@ func init() {
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.HomeNet = getopt.ListLong("homenet", 'n', "Overrides the HomeNet values")
 	config.Cli.HomeNet6 = getopt.ListLong("homenet6", 'N', "Overrides the HomeNet6 values")
-	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "", "Output logged data to stdout instead")
-	config.Cli.Dump = getopt.BoolLong("dump", 'd', "", "Display packet details")
+	config.Cli.Stdout = getopt.BoolLong("stdout", 's',  "Output logged data to stdout instead")
+	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
 	getopt.Parse()
 
 	config.Cfg.Load()

@@ -16,7 +16,7 @@ import (
 type TCPEvent struct {
 	//IPHeader  *layers.IPv4
 	//TCPHeader *layers.TCP
-	LogData   TCPEventLog
+	LogData TCPEventLog
 	BaseEvent
 	TCPLayer
 	IPv4Layer
@@ -73,6 +73,7 @@ func (ev TCPEvent) ToLog() EventLog {
 	}
 
 	ev.LogData.IP = IPv4LogData{
+		Version:    ev.IPv4Layer.Header.Version,
 		IHL:        ev.IPv4Layer.Header.IHL,
 		TOS:        ev.IPv4Layer.Header.TOS,
 		Length:     ev.IPv4Layer.Header.Length,

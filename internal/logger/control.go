@@ -12,10 +12,6 @@ import (
 )
 
 var (
-	//TCPIPLoggerChan  = make(chan *events.TCPEvent)
-	//HTTPLoggerChan   = make(chan *events.HTTPEvent)
-	//ICMPv4LoggerChan = make(chan *events.ICMPv4Event)
-	//UDPLoggerChan    = make(chan *events.UDPEvent)
 	LogChan = make(chan events.Event)
 )
 

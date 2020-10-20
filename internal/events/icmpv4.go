@@ -83,6 +83,7 @@ func (ev ICMPv4Event) ToLog() EventLog {
 	}
 
 	ev.LogData.IP = IPv4LogData{
+		Version: ev.IPv4Layer.Header.Version,
 		IHL:        ev.IPv4Layer.Header.IHL,
 		TOS:        ev.IPv4Layer.Header.TOS,
 		Length:     ev.IPv4Layer.Header.Length,

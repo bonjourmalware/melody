@@ -94,6 +94,7 @@ type UDPLogData struct {
 }
 
 type IPv4LogData struct {
+	Version    uint8             `json:"version"`
 	IHL        uint8             `json:"ihl"`
 	TOS        uint8             `json:"tos"`
 	Length     uint16            `json:"length"`
@@ -105,6 +106,7 @@ type IPv4LogData struct {
 }
 
 type IPv6LogData struct {
+	Version        uint8             `json:"version"`
 	Length         uint16            `json:"length"`
 	NextHeader     layers.IPProtocol `json:"next_header"`
 	NextHeaderName string            `json:"next_header_name"`

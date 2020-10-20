@@ -269,6 +269,13 @@ func (rule *Rule) MatchUDPEvent(ev events.Event) bool {
 			}
 		}
 
+		//TODO : Add <, > and <> operators
+		if rule.Dsize != nil {
+			if len(udpHeader.Payload) != *rule.Dsize {
+				return false
+			}
+		}
+
 		return true
 	}
 
@@ -287,6 +294,13 @@ func (rule *Rule) MatchUDPEvent(ev events.Event) bool {
 
 	if rule.Payload != nil {
 		if rule.Payload.Match(udpHeader.Payload, rule.Options) {
+			return true
+		}
+	}
+
+	//TODO : Add <, > and <> operators
+	if rule.Dsize != nil {
+		if len(udpHeader.Payload) == *rule.Dsize {
 			return true
 		}
 	}

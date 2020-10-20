@@ -85,7 +85,62 @@ func TestMatchingLogicFlow(t *testing.T) {
 	}
 }
 
-func TestMatchICMPv4Event(t *testing.T) {
+func TestMatchUDPEvent(t *testing.T) {
+	ruleFilename := "udp_rules.yml"
+	pcapFilename := "udp_values.pcap"
+	rawPackets := false
+	var rule Rule
+
+	ruleset, err := LoadRuleFile(ruleFilename)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolUDP, rawPackets)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if len(filteredEvents) == 0 {
+		t.Error("No UDP packets has been read from pcap")
+		return
+	}
+
+	tests := []struct {
+		Ok     []string
+		Nok    []string
+		Packet events.Event
+	}{
+		{
+			Ok: []string{
+			},
+			Nok: []string{
+			},
+			Packet: filteredEvents[0],
+		},
+	}
+
+	for _, suite := range tests {
+		for _, rulename := range suite.Ok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); !ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+		for _, rulename := range suite.Nok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+	}
+}
+
+func TestMatchICMP4Event(t *testing.T) {
 	ruleFilename := "icmpv4_rules.yml"
 	pcapFilename := "icmpv4_values.pcap"
 	rawPackets := false
@@ -241,15 +296,11 @@ func TestMatchTCPEvent(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				//"ok_ttl",
-				//"ok_tos",
 				"ok_ack",
 				"ok_seq",
 				"ok_window",
 			},
 			Nok: []string{
-				//"nok_ttl",
-				//"nok_tos",
 				"nok_ack",
 				"nok_seq",
 				"nok_window",
