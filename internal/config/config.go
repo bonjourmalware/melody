@@ -39,6 +39,7 @@ type CLI struct {
 	Interface    *string
 	HomeNet      *[]string
 	HomeNet6     *[]string
+	Dump         *bool
 }
 
 // Config structure which mirrors the yaml file

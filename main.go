@@ -32,6 +32,7 @@ func init() {
 	config.Cli.HomeNet = getopt.ListLong("homenet", 'n', "Overrides the HomeNet values")
 	config.Cli.HomeNet6 = getopt.ListLong("homenet6", 'N', "Overrides the HomeNet6 values")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "", "Output logged data to stdout instead")
+	config.Cli.Dump = getopt.BoolLong("dump", 'd', "", "Display packet details")
 	getopt.Parse()
 
 	config.Cfg.Load()

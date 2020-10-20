@@ -23,17 +23,20 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 		select {
 		case <-shutdownChan:
 			return
+
+		case <-quitErrChan:
+			return
+
 		case ev := <-EventChan:
-			//ev.Qualify()
 			var matches []rules.Rule
 
-				for _, ruleset := range rules.GlobalRules[ev.GetKind()] {
-					for _, rule := range ruleset {
-						if rule.Match(ev) {
-							matches = append(matches, rule)
-						}
+			for _, ruleset := range rules.GlobalRules[ev.GetKind()] {
+				for _, rule := range ruleset {
+					if rule.Match(ev) {
+						matches = append(matches, rule)
 					}
 				}
+			}
 
 			if len(matches) > 0 {
 				for _, match := range matches {

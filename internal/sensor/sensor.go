@@ -1,6 +1,7 @@
 package sensor
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -116,9 +117,12 @@ loop:
 						continue loop
 					}
 
-					engine.EventChan <- event
-				}
-				if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
+					if *config.Cli.Dump {
+						fmt.Println(packet.String())
+					} else {
+						engine.EventChan <- event
+					}
+				} else if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
 					// Ignore outgoing packets
 					for _, ip := range config.Cfg.HomeNet6 {
 						if packet.NetworkLayer().(*layers.IPv6).SrcIP.String() == ip {
@@ -138,7 +142,11 @@ loop:
 						continue loop
 					}
 
-					engine.EventChan <- event
+					if *config.Cli.Dump {
+						fmt.Println(packet.String())
+					} else {
+						engine.EventChan <- event
+					}
 				}
 			}
 

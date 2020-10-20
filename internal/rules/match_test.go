@@ -115,12 +115,16 @@ func TestMatchICMPv4Event(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				//"ok_ttl",
-				//"ok_tos",
+				"ok_icmpv4_type_code",
+				"ok_icmpv4_code",
+				"ok_icmpv4_type",
+				"ok_checksum",
 			},
 			Nok: []string{
-				//"nok_ttl",
-				//"nok_tos",
+				"nok_icmpv4_type_code",
+				"nok_icmpv4_code",
+				"nok_icmpv4_type",
+				"nok_checksum",
 			},
 			Packet: filteredEvents[0],
 		},
@@ -174,16 +178,12 @@ func TestMatchICMPv6Event(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				//"ok_ttl",
-				//"ok_tos",
 				"ok_icmpv6_type_code",
 				"ok_icmpv6_code",
 				"ok_icmpv6_type",
 				"ok_checksum",
 			},
 			Nok: []string{
-				//"nok_ttl",
-				//"nok_tos",
 				"nok_icmpv6_type_code",
 				"nok_icmpv6_code",
 				"nok_icmpv6_type",
