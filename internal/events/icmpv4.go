@@ -1,6 +1,7 @@
 package events
 
 import (
+	"github.com/bonjourmalware/pinknoise/internal/config"
 	"strconv"
 	"strings"
 	"time"
@@ -13,13 +14,13 @@ type ICMPv4Event struct {
 	//ICMPv4Header *layers.ICMPv4
 	LogData      ICMPv4EventLog
 	BaseEvent
-	IPLayer
+	IPv4Layer
 	ICMPv4Layer
 }
 
 func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	var ev = &ICMPv4Event{}
-	ev.Kind = ICMPv4Kind
+	ev.Kind = config.ICMPv4Kind
 
 	ev.Session = "n/a"
 
@@ -27,8 +28,8 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	ev.ICMPv4Layer = ICMPv4Layer{Header: ICMPv4Header}
 
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPLayer = IPLayer{Header: IPHeader}
-	ev.SourceIP = ev.IPLayer.Header.SrcIP.String()
+	ev.IPv4Layer = IPv4Layer{Header: IPHeader}
+	ev.SourceIP = ev.IPv4Layer.Header.SrcIP.String()
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
 	ev.Statements = []string{}
@@ -73,29 +74,29 @@ func (ev ICMPv4Event) ToLog() EventLog {
 
 	ev.LogData.ICMPv4 = ICMPv4LogData{
 		TypeCode: ev.ICMPv4Layer.Header.TypeCode,
+		TypeCodeName: ev.ICMPv4Layer.Header.TypeCode.String(),
 		Checksum: ev.ICMPv4Layer.Header.Checksum,
 		Id:       ev.ICMPv4Layer.Header.Id,
 		Seq:      ev.ICMPv4Layer.Header.Seq,
 	}
 
-	ev.LogData.IP = IPLogData{
-		Version:    ev.IPLayer.Header.Version,
-		IHL:        ev.IPLayer.Header.IHL,
-		TOS:        ev.IPLayer.Header.TOS,
-		Length:     ev.IPLayer.Header.Length,
-		Id:         ev.IPLayer.Header.Id,
-		FragOffset: ev.IPLayer.Header.FragOffset,
-		TTL:        ev.IPLayer.Header.TTL,
-		Protocol:   ev.IPLayer.Header.Protocol,
+	ev.LogData.IP = IPv4LogData{
+		IHL:        ev.IPv4Layer.Header.IHL,
+		TOS:        ev.IPv4Layer.Header.TOS,
+		Length:     ev.IPv4Layer.Header.Length,
+		Id:         ev.IPv4Layer.Header.Id,
+		FragOffset: ev.IPv4Layer.Header.FragOffset,
+		TTL:        ev.IPv4Layer.Header.TTL,
+		Protocol:   ev.IPv4Layer.Header.Protocol,
 	}
 
-	if ev.IPLayer.Header.Flags&layers.IPv4EvilBit != 0 {
+	if ev.IPv4Layer.Header.Flags&layers.IPv4EvilBit != 0 {
 		ipFlagsStr = append(ipFlagsStr, "EV")
 	}
-	if ev.IPLayer.Header.Flags&layers.IPv4DontFragment != 0 {
+	if ev.IPv4Layer.Header.Flags&layers.IPv4DontFragment != 0 {
 		ipFlagsStr = append(ipFlagsStr, "DF")
 	}
-	if ev.IPLayer.Header.Flags&layers.IPv4MoreFragments != 0 {
+	if ev.IPv4Layer.Header.Flags&layers.IPv4MoreFragments != 0 {
 		ipFlagsStr = append(ipFlagsStr, "MF")
 	}
 

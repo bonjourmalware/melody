@@ -2,6 +2,7 @@ package rules
 
 import (
 	"github.com/bonjourmalware/pinknoise/internal/iprules"
+	"github.com/google/gopacket/layers"
 )
 
 type Rules []Rule
@@ -33,8 +34,16 @@ type Rule struct {
 	IPProtocol *ConditionsList
 
 	// UDP
-	UDPLength   *uint16
-	Checksum *uint16
+	UDPLength *uint16
+	Checksum  *uint16
+
+	// ICMPv6
+	TypeCode6 *layers.ICMPv6TypeCode
+
+	// ICMPv4
+	TypeCode *layers.ICMPv4TypeCode
+	//Seq      *uint32
+	ICMPSeq      *uint16
 
 	//	HTTP
 	URI     *ConditionsList
@@ -57,6 +66,18 @@ type RuleOptions struct {
 	Offset   int
 	MatchAll bool
 	MatchAny bool
+}
+
+func (rules Rules) Filter(fn func(rule Rule) bool) Rules {
+	res := Rules{}
+
+	for _, rule := range rules {
+		if fn(rule) {
+			res = append(res, rule)
+		}
+	}
+
+	return res
 }
 
 func (rawRules RawRules) Parse() Rules {

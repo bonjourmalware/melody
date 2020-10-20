@@ -9,6 +9,7 @@ type Event interface{
 	GetSourceIP() string
 	GetDestPort() uint
 	GetIPHeader() *layers.IPv4
+	GetICMPv6Header() *layers.ICMPv6
 	GetICMPv4Header() *layers.ICMPv4
 	GetUDPHeader() *layers.UDP
 	GetTCPHeader() *layers.TCP

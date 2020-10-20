@@ -1,13 +1,5 @@
 package events
 
-const (
-	UDPKind     = "udp"
-	TCPKind     = "tcp"
-	ICMPv4Kind  = "icmpv4"
-	HTTPKind    = "http"
-	DefaultKind = "default"
-)
-
 //TODO Add common properties such as dst_host, src_port to base event
 type BaseEvent struct {
 	Tags       []string

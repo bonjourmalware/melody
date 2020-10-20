@@ -2,17 +2,35 @@ package config
 
 import (
 	"fmt"
-	"github.com/c2h5oh/datasize"
 	"io/ioutil"
 	"log"
 	"os"
 
+	"github.com/c2h5oh/datasize"
+
 	"github.com/go-yaml/yaml"
+)
+
+const (
+	UDPKind     = "udp"
+	TCPKind     = "tcp"
+	ICMPv4Kind  = "icmpv4"
+	ICMPv6Kind  = "icmpv6"
+	HTTPKind    = "http"
+	DefaultKind = "default"
 )
 
 var (
 	Cfg = new(Config)
 	Cli = new(CLI)
+
+	SupportedProtocols = []string{
+		TCPKind,
+		UDPKind,
+		ICMPv4Kind,
+		ICMPv6Kind,
+		HTTPKind,
+	}
 )
 
 type CLI struct {
@@ -20,30 +38,33 @@ type CLI struct {
 	Stdout       *bool
 	Interface    *string
 	HomeNet      *[]string
+	//HomeNet6      *[]string
 }
 
 // Config structure which mirrors the yaml file
 type Config struct {
-	LogFile string `yaml:"LogFile"`
-	LogMaxSize int `yaml:"LogMaxSize"`
+	LogFile       string `yaml:"LogFile"`
+	LogMaxSize    int    `yaml:"LogMaxSize"`
 	RulesDir      string `yaml:"RulesDir"`
 	BPFFilterFile string `yaml:"BPFFilterFile"`
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
-	Interface    string `yaml:"Interface"`
-	EnabledPorts EnabledPorts
+	Interface          string `yaml:"Interface"`
+	EnabledPorts       EnabledPorts
 	RulesVariables     RulesVariables `yaml:"RulesVariables"`
 	EnableBlacklist    bool           `yaml:"EnableBlacklist"`
 	EnableWhitelist    bool           `yaml:"EnableWhitelist"`
 	MaxPOSTDataSizeRaw string         `yaml:"MaxPOSTDataSize"`
 	MaxTCPDataSizeRaw  string         `yaml:"MaxTCPDataSize"`
 	MaxUDPDataSizeRaw  string         `yaml:"MaxUDPDataSize"`
+	MatchProtocols     []string       `yaml:"MatchProtocols"`
 
-	HomeNet            []string       `yaml:"HomeNet"`
-	MaxPOSTDataSize    uint64
-	MaxTCPDataSize     uint64
-	MaxUDPDataSize     uint64
-	PcapFile           *os.File
+	HomeNet         []string `yaml:"HomeNet"`
+	//HomeNet6         []string `yaml:"HomeNet6"`
+	MaxPOSTDataSize uint64
+	MaxTCPDataSize  uint64
+	MaxUDPDataSize  uint64
+	PcapFile        *os.File
 }
 
 func (cfg *Config) Load() {
@@ -102,6 +123,17 @@ func (cfg *Config) Load() {
 		Cfg.BPFFilter = string(bpfData)
 	}
 
+	if len(Cfg.MatchProtocols) == 0 {
+		Cfg.MatchProtocols = SupportedProtocols
+	}else{
+		for _, proto := range Cfg.MatchProtocols {
+			if proto == "all" {
+				Cfg.MatchProtocols = SupportedProtocols
+				break
+			}
+		}
+	}
+
 	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
 	cfg.MaxTCPDataSize = tcpByteSize.Bytes()
 	cfg.MaxUDPDataSize = udpByteSize.Bytes()
@@ -124,4 +156,8 @@ func (cfg *Config) Load() {
 	if len(*Cli.HomeNet) > 0 {
 		cfg.HomeNet = *Cli.HomeNet
 	}
+
+	//if len(*Cli.HomeNet6) > 0 {
+	//	cfg.HomeNet6 = *Cli.HomeNet6
+	//}
 }

@@ -45,11 +45,11 @@ type ConditionValue struct {
 	ByteValue     []byte
 }
 
-func (condList ConditionsList) Match(received []byte, ruleOptions RuleOptions) bool {
-	if condList.Conditions != nil {
-		if condList.MatchAny {
+func (condsList ConditionsList) Match(received []byte, ruleOptions RuleOptions) bool {
+	if condsList.Conditions != nil {
+		if condsList.MatchAny {
 			var condOK = false
-			for _, condGroup := range condList.Conditions {
+			for _, condGroup := range condsList.Conditions {
 				// If any condition group is valid, continue
 				if condGroup.Match(received, ruleOptions) == true {
 					condOK = true
@@ -61,7 +61,7 @@ func (condList ConditionsList) Match(received []byte, ruleOptions RuleOptions) b
 				return false
 			}
 		} else { // condList.MatchAll
-			for _, condGroup := range condList.Conditions {
+			for _, condGroup := range condsList.Conditions {
 				// If any condition group is invalid, rule is false
 				// Continue if the test for all the values are successful
 				if condGroup.Match(received, ruleOptions) == false {

@@ -4,6 +4,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/google/gopacket/layers"
+
 	"github.com/bonjourmalware/pinknoise/internal/iprules"
 )
 
@@ -12,20 +14,26 @@ type RawRules map[string]RawRule
 
 // Each named rule contains multiple conditions for multiple fields
 type RawRule struct {
-	Ports      *[]string           `yaml:"ports"`
-	Id         string              `yaml:"id"`
-	Logto      *string             `yaml:"logto"`
-	Tags       []string            `yaml:"tags"`
-	Layer      string              `yaml:"layer"`
-	TTL        *uint8              `yaml:"ttl"`
-	IPOption   RawConditions       `yaml:"ipoption"`
-	Window     *uint16             `yaml:"window"`
-	TOS        *uint8              `yaml:"tos"`
-	Fragbits   RawFragbitsList     `yaml:"fragbits"`
-	Dsize      *int                `yaml:"dsize"`
-	Flags      RawTCPFlagsList     `yaml:"flags"`
-	Seq        *uint32             `yaml:"seq"`
-	Ack        *uint32             `yaml:"ack"`
+	Ports    *[]string       `yaml:"ports"`
+	Id       string          `yaml:"id"`
+	Logto    *string         `yaml:"logto"`
+	Tags     []string        `yaml:"tags"`
+	Layer    string          `yaml:"layer"`
+	TTL      *uint8          `yaml:"ttl"`
+	IPOption RawConditions   `yaml:"ipoption"`
+	Window   *uint16         `yaml:"window"`
+	TOS      *uint8          `yaml:"tos"`
+	Fragbits RawFragbitsList `yaml:"fragbits"`
+	Dsize    *int            `yaml:"dsize"`
+	Flags    RawTCPFlagsList `yaml:"flags"`
+	Seq      *uint32         `yaml:"seq"`
+	Ack      *uint32         `yaml:"ack"`
+
+	TypeCode6 *layers.ICMPv6TypeCode `yaml:"type_code_6"`
+
+	TypeCode *layers.ICMPv4TypeCode `yaml:"type_code"`
+	ICMPSeq  *uint16                `yaml:"icmpv4_seq"`
+
 	UDPLength  *uint16             `yaml:"udplength"`
 	Checksum   *uint16             `yaml:"checksum"`
 	Payload    RawConditions       `yaml:"payload"`
@@ -44,6 +52,19 @@ type RawRule struct {
 	Depth      int                 `yaml:"depth"`
 	MatchType  string              `yaml:"match"`
 }
+
+//func (rawRules RawRules) Filter(fn func(rule RawRule) bool) RawRules {
+//	res := RawRules{}
+//
+//    for name, rawRule := range rawRules {
+//        if fn(rawRule, ) {
+//        	 res[name] = rawRule
+//        }
+//    }
+//
+//    return res
+//
+//}
 
 func (rawRule RawRule) Parse() Rule {
 	var iport uint64
@@ -86,6 +107,9 @@ func (rawRule RawRule) Parse() Rule {
 		Fragbits:   rawRule.Fragbits.ParseList(),
 		Flags:      rawRule.Flags.ParseList(),
 		Window:     rawRule.Window,
+		ICMPSeq:    rawRule.ICMPSeq,
+		TypeCode:   rawRule.TypeCode,
+		TypeCode6:  rawRule.TypeCode6,
 		UDPLength:  rawRule.UDPLength,
 		Checksum:   rawRule.Checksum,
 		Id:         rawRule.Id,

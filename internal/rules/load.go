@@ -8,11 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/bonjourmalware/pinknoise/internal/config"
+
 	"gopkg.in/yaml.v2"
 )
 
 var (
-	GlobalRules []Rules
+	GlobalRules = make(map[string][]Rules)
 )
 
 type GlobalRawRules []RawRules
@@ -48,6 +50,10 @@ func LoadRulesDir(rulesDir string) {
 					log.Println(err)
 					os.Exit(1)
 				}
+
+				//for _, proto := range config.Cfg.MatchProtocols {
+				//	globalRawRules[proto] = parsed.Filter(func(rule RawRule) bool { return rule.Layer == proto })
+				//}
 				globalRawRules = append(globalRawRules, parsed)
 			} else {
 				log.Println("invalid rule file (wanted : .yml) :", path)
@@ -63,7 +69,7 @@ func LoadRulesDir(rulesDir string) {
 	}
 
 	for _, rawRules := range globalRawRules {
-		var rules Rules
+		rules := Rules{}
 		for ruleName, rawRule := range rawRules {
 			var rule Rule
 			rule = rawRule.Parse()
@@ -72,13 +78,20 @@ func LoadRulesDir(rulesDir string) {
 			rules = append(rules, rule)
 		}
 
-		GlobalRules = append(GlobalRules, rules)
+		for _, proto := range config.Cfg.MatchProtocols {
+			GlobalRules[proto] = append(GlobalRules[proto], rules.Filter(func(rule Rule) bool { return rule.Layer == proto }))
+		}
+
+		//GlobalRules = append(GlobalRules, rules)
 	}
 
-	for _, ruleset := range GlobalRules {
-		total += uint(len(ruleset))
+	for _, protocolRules := range GlobalRules {
+		for _, ruleset := range protocolRules {
+			total += uint(len(ruleset))
+		}
 	}
 
+	fmt.Println(GlobalRules)
 	log.Println(fmt.Sprintf("Loaded %d rules", total))
 }
 

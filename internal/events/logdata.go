@@ -32,19 +32,25 @@ type BaseLogData struct {
 
 type ICMPv4EventLog struct {
 	ICMPv4 ICMPv4LogData `json:"icmpv4"`
-	IP     IPLogData     `json:"ip"`
+	IP     IPv4LogData   `json:"ip"`
+	BaseLogData
+}
+
+type ICMPv6EventLog struct {
+	ICMPv6 ICMPv6LogData `json:"icmpv6"`
+	IP     IPv6LogData   `json:"ip"`
 	BaseLogData
 }
 
 type TCPEventLog struct {
-	TCP TCPLogData `json:"tcp"`
-	IP  IPLogData  `json:"ip"`
+	TCP TCPLogData  `json:"tcp"`
+	IP  IPv4LogData `json:"ip"`
 	BaseLogData
 }
 
 type UDPEventLog struct {
-	UDP UDPLogData `json:"udp"`
-	IP  IPLogData  `json:"ip"`
+	UDP UDPLogData  `json:"udp"`
+	IP  IPv4LogData `json:"ip"`
 	BaseLogData
 }
 
@@ -53,11 +59,18 @@ type HTTPEventLog struct {
 	BaseLogData
 }
 
+type ICMPv6LogData struct {
+	TypeCode     layers.ICMPv6TypeCode `json:"type_code"`
+	TypeCodeName string                `json:"type_code_name"`
+	Checksum     uint16                `json:"checksum"`
+}
+
 type ICMPv4LogData struct {
-	TypeCode layers.ICMPv4TypeCode `json:"type_code"`
-	Checksum uint16                `json:"checksum"`
-	Id       uint16                `json:"id"`
-	Seq      uint16                `json:"seq"`
+	TypeCode     layers.ICMPv4TypeCode `json:"type_code"`
+	TypeCodeName string                `json:"type_code_name"`
+	Checksum     uint16                `json:"checksum"`
+	Id           uint16                `json:"id"`
+	Seq          uint16                `json:"seq"`
 }
 
 type TCPLogData struct {
@@ -76,8 +89,7 @@ type UDPLogData struct {
 	Checksum uint16  `json:"checksum"`
 }
 
-type IPLogData struct {
-	Version    uint8             `json:"version"`
+type IPv4LogData struct {
 	IHL        uint8             `json:"ihl"`
 	TOS        uint8             `json:"tos"`
 	Length     uint16            `json:"length"`
@@ -86,6 +98,15 @@ type IPLogData struct {
 	FragOffset uint16            `json:"frag_offset"`
 	TTL        uint8             `json:"ttl"`
 	Protocol   layers.IPProtocol `json:"protocol"`
+}
+
+type IPv6LogData struct {
+	Length         uint16            `json:"length"`
+	NextHeader     layers.IPProtocol `json:"next_header"`
+	NextHeaderName string            `json:"next_header_name"`
+	TrafficClass   uint8             `json:"traffic_class"`
+	FlowLabel      uint32            `json:"flow_label"`
+	HopLimit       uint8             `json:"hop_limit"`
 }
 
 type HTTPLogData struct {
@@ -132,6 +153,22 @@ func (eventLog UDPEventLog) String() (string, error) {
 	}
 	return string(data), nil
 }
+
+func (eventLog ICMPv6EventLog) String() (string, error) {
+	data, err := json.Marshal(eventLog)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+
+//func (eventLog BaseLogData) String() (string, error) {
+//	data, err := json.Marshal(eventLog)
+//	if err != nil {
+//		return "", err
+//	}
+//	return string(data), nil
+//}
 
 func NewPayload(data []byte, maxLength uint64) Payload {
 	var pl = Payload{}

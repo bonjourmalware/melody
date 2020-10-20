@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"github.com/bonjourmalware/pinknoise/internal/config"
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
 
@@ -93,159 +94,102 @@ func (rule *Rule) Match(ev events.Event) bool {
 	//}
 
 	switch ev.GetKind() {
-	case events.UDPKind:
+	case config.UDPKind:
 		return rule.MatchUDPEvent(ev)
-	case events.TCPKind:
+	case config.TCPKind:
 		return rule.MatchTCPEvent(ev)
-	case events.ICMPv4Kind:
+	case config.ICMPv4Kind:
 		return rule.MatchICMPv4Event(ev)
-	case events.HTTPKind:
+	case config.ICMPv6Kind:
+		return rule.MatchICMPv6Event(ev)
+	case config.HTTPKind:
 		return rule.MatchHTTPEvent(ev)
 	}
 
 	return false
 }
 
-func (rule *Rule) MatchICMPv4Event(ev events.Event) bool {
-	//var condOK bool
+func (rule *Rule) MatchICMPv6Event(ev events.Event) bool {
+	icmpv6Header := ev.GetICMPv6Header()
 
-	//if rule.ID != nil {
-	//	if ev.IPHeader.Id != *rule.ID {
-	//		return false
-	//	}
-	//}
-	// The rule fails if the source IP is blacklisted
-	//if len(rule.IPs.BlacklistedIPs) > 0 {
-	//	for _, iprange := range rule.IPs.BlacklistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			return false
-	//		}
-	//	}
-	//}
-	//
-	//// The rule fails if the source IP is not in the whitelisted addresses
-	//if len(rule.IPs.WhitelistedIPs) > 0 {
-	//	condOK = false
-	//
-	//	for _, iprange := range rule.IPs.WhitelistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			condOK = true
-	//			break
-	//		}
-	//	}
-	//
-	//	if !condOK {
-	//		return false
-	//	}
-	//}
-	//
-	//if rule.Options.MatchAll {
-	//	if rule.TTL != nil {
-	//		if ev.IPHeader.TTL != *rule.TTL {
-	//			return false
-	//		}
-	//	}
-	//
-	//	if rule.TOS != nil {
-	//		if ev.IPHeader.TOS != *rule.TOS {
-	//			return false
-	//		}
-	//	}
-	//
-	//	return true
-	//}
-	//
-	//if rule.TTL != nil {
-	//	if ev.IPHeader.TTL == *rule.TTL {
-	//		return true
-	//	}
-	//}
-	//
-	//if rule.TOS != nil {
-	//	if ev.IPHeader.TOS == *rule.TOS {
-	//		return true
-	//	}
-	//}
+	if rule.Options.MatchAll {
+		if rule.Checksum != nil {
+			if icmpv6Header.Checksum != *rule.Checksum {
+				return false
+			}
+		}
+
+		if rule.TypeCode6 != nil {
+			if icmpv6Header.TypeCode != *rule.TypeCode6 {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	if rule.Checksum != nil {
+		if icmpv6Header.Checksum == *rule.Checksum {
+			return true
+		}
+	}
+
+	if rule.TypeCode6 != nil {
+		if icmpv6Header.TypeCode == *rule.TypeCode6 {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (rule *Rule) MatchICMPv4Event(ev events.Event) bool {
+	icmpv4Header := ev.GetICMPv4Header()
+
+	if rule.Options.MatchAll {
+		if rule.Checksum != nil {
+			if icmpv4Header.Checksum != *rule.Checksum {
+				return false
+			}
+		}
+
+		if rule.ICMPSeq != nil {
+			if icmpv4Header.Seq != *rule.ICMPSeq {
+				return false
+			}
+		}
+
+		if rule.TypeCode != nil {
+			if icmpv4Header.TypeCode != *rule.TypeCode {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	if rule.Checksum != nil {
+		if icmpv4Header.Checksum == *rule.Checksum {
+			return true
+		}
+	}
+
+	if rule.TypeCode != nil {
+		if icmpv4Header.TypeCode == *rule.TypeCode {
+			return true
+		}
+	}
+
+	if rule.ICMPSeq != nil {
+		if icmpv4Header.Seq == *rule.ICMPSeq {
+			return true
+		}
+	}
 
 	return false
 }
 
 func (rule *Rule) MatchUDPEvent(ev events.Event) bool {
-	//var condOK bool
-
-	//
-	//// The rule fails if the source IP is blacklisted
-	//if len(rule.IPs.BlacklistedIPs) > 0 {
-	//	for _, iprange := range rule.IPs.BlacklistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			return false
-	//		}
-	//	}
-	//}
-	//
-	//// The rule fails if the source IP is not in the whitelisted addresses
-	//if len(rule.IPs.WhitelistedIPs) > 0 {
-	//	condOK = false
-	//
-	//	for _, iprange := range rule.IPs.WhitelistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			condOK = true
-	//			break
-	//		}
-	//	}
-	//
-	//	if !condOK {
-	//		return false
-	//	}
-	//}
-	//
-	//if rule.Options.MatchAll {
-	//	if rule.TTL != nil {
-	//		if ev.IPHeader.TTL != *rule.TTL {
-	//			return false
-	//		}
-	//	}
-	//
-	//	if rule.TOS != nil {
-	//		if ev.IPHeader.TOS != *rule.TOS {
-	//			return false
-	//		}
-	//	}
-	//
-	//	//TODO : Add <, > and <> operators
-	//	if rule.UDPLength != nil {
-	//		if ev.UDPHeader.Length != *rule.UDPLength {
-	//			return false
-	//		}
-	//	}
-	//
-	//	if rule.Checksum != nil {
-	//		if ev.UDPHeader.Checksum != *rule.Checksum {
-	//			return false
-	//		}
-	//	}
-	//
-	//	if rule.Payload != nil {
-	//		if !rule.Payload.Match(ev.UDPHeader.Payload, rule.Options) {
-	//			return false
-	//		}
-	//	}
-	//
-	//	return true
-	//}
-
-	//if rule.TTL != nil {
-	//	if ev.IPHeader.TTL == *rule.TTL {
-	//		return true
-	//	}
-	//}
-	//
-	//if rule.TOS != nil {
-	//	if ev.IPHeader.TOS == *rule.TOS {
-	//		return true
-	//	}
-	//}
-
 	udpHeader := ev.GetUDPHeader()
 
 	if len(rule.Ports) > 0 {
@@ -315,31 +259,6 @@ func (rule *Rule) MatchTCPEvent(ev events.Event) bool {
 			}
 		}
 	}
-
-	//// The rule fails if the source IP is blacklisted
-	//if len(rule.IPs.BlacklistedIPs) > 0 {
-	//	for _, iprange := range rule.IPs.BlacklistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			return false
-	//		}
-	//	}
-	//}
-	//
-	//// The rule fails if the source IP is not in the whitelisted addresses
-	//if len(rule.IPs.WhitelistedIPs) > 0 {
-	//	condOK = false
-	//
-	//	for _, iprange := range rule.IPs.WhitelistedIPs {
-	//		if iprange.ContainsIPString(ev.SourceIP) {
-	//			condOK = true
-	//			break
-	//		}
-	//	}
-	//
-	//	if !condOK {
-	//		return false
-	//	}
-	//}
 
 	if rule.Options.MatchAll {
 		if len(rule.Flags) > 0 {
@@ -494,8 +413,6 @@ func (rule *Rule) MatchHTTPEvent(ev events.Event) bool {
 			}
 		}
 	}
-
-	// else
 
 	if rule.URI != nil {
 		if rule.URI.Match([]byte(httpData.RequestURI), rule.Options) == true {

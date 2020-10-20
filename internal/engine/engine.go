@@ -7,12 +7,7 @@ import (
 )
 
 var (
-	//TCPEventChan  = make(chan *events.TCPEvent)
-	//HTTPEventChan   = make(chan *events.HTTPEvent)
-	//ICMPv4EventChan = make(chan *events.ICMPv4Event)
-	//UDPEventChan = make(chan *events.UDPEvent)
 	EventChan = make(chan events.Event)
-
 )
 
 func Start(quitErrChan chan error, shutdownChan chan bool, engineStoppedChan chan bool) {
@@ -32,16 +27,13 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 			//ev.Qualify()
 			var matches []rules.Rule
 
-			for _, ruleset := range rules.GlobalRules {
-				for _, rule := range ruleset {
-					if rule.Layer != ev.GetKind() {
-						continue
-					}
-					if rule.Match(ev) {
-						matches = append(matches, rule)
+				for _, ruleset := range rules.GlobalRules[ev.GetKind()] {
+					for _, rule := range ruleset {
+						if rule.Match(ev) {
+							matches = append(matches, rule)
+						}
 					}
 				}
-			}
 
 			if len(matches) > 0 {
 				for _, match := range matches {
@@ -53,22 +45,6 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 			}
 
 			logger.LogChan <- ev
-
-		//case ev := <-TCPEventChan:
-		//	qualifyTCPEvent(ev)
-		//	logger.TCPIPLoggerChan <- ev
-		//
-		//case ev := <-HTTPEventChan:
-		//	qualifyHTTPEvent(ev)
-		//	logger.HTTPLoggerChan <- ev
-		//
-		//case ev := <-ICMPv4EventChan:
-		//	qualifyICMPv4Event(ev)
-		//	logger.ICMPv4LoggerChan <- ev
-		//
-		//case ev := <-UDPEventChan:
-		//	qualifyUDPEvent(ev)
-		//	logger.UDPLoggerChan <- ev
 
 		default:
 		}

@@ -2,11 +2,15 @@ package events
 
 import "github.com/google/gopacket/layers"
 
-type IPLayer struct{
+type IPv4Layer struct{
 	Header     *layers.IPv4
 }
 
-func (lay IPLayer) GetIPHeader() *layers.IPv4 {
+type IPv6Layer struct{
+	Header     *layers.IPv6
+}
+
+func (lay IPv4Layer) GetIPHeader() *layers.IPv4 {
 	return lay.Header
 }
 
@@ -31,6 +35,14 @@ type ICMPv4Layer struct{
 }
 
 func (lay ICMPv4Layer) GetICMPv4Header() *layers.ICMPv4 {
+	return lay.Header
+}
+
+type ICMPv6Layer struct{
+	Header     *layers.ICMPv6
+}
+
+func (lay ICMPv6Layer) GetICMPv6Header() *layers.ICMPv6 {
 	return lay.Header
 }
 

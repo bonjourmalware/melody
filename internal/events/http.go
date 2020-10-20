@@ -127,7 +127,7 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 
 	// Cannot use promoted (inherited) fields in struct literal
 	ev.Session = sessions.Map.GetUID(transport.String())
-	ev.Kind = HTTPKind
+	ev.Kind = config.HTTPKind
 	ev.SourceIP = network.Src().String()
 	ev.DestPort = uint(dstPort)
 	ev.Tags = []string{}

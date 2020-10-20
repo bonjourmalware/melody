@@ -118,6 +118,29 @@ loop:
 
 					engine.EventChan <- event
 				}
+				if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
+					// Ignore outgoing packets
+					//for _, ip := range config.Cfg.HomeNet6 {
+					//	if packet.NetworkLayer().(*layers.IPv6).SrcIP.String() == ip {
+					//		continue loop
+					//	}
+					//}
+					switch packet.NetworkLayer().(*layers.IPv6).NextHeader {
+					case layers.IPProtocolICMPv6:
+						event, err = events.NewICMPv6Event(packet)
+						if err != nil {
+							//TODO: write to error log
+							log.Println("ERROR", err)
+							continue
+						}
+						//fmt.Println(packet.String())
+
+					default:
+						continue loop
+					}
+
+					engine.EventChan <- event
+				}
 			}
 
 		case <-assemblerFlushTicker:
