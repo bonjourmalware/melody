@@ -48,8 +48,6 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 			}
 
 			logger.LogChan <- ev
-
-		default:
 		}
 	}
 }
