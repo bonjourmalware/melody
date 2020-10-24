@@ -64,7 +64,6 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		close(sensorStoppedChan)
 	}()
 
-	var event events.Event
 	//var err error
 
 loop:
@@ -75,81 +74,7 @@ loop:
 			if packet == nil {
 				break loop
 			}
-
-			if packet.NetworkLayer() != nil {
-				if _, ok := packet.NetworkLayer().(*layers.IPv4); ok {
-					// Ignore outgoing packets
-					for _, ip := range config.Cfg.HomeNet {
-						if packet.NetworkLayer().(*layers.IPv4).SrcIP.String() == ip {
-							continue loop
-						}
-					}
-
-					switch packet.NetworkLayer().(*layers.IPv4).Protocol {
-					case layers.IPProtocolICMPv4:
-						event, err = events.NewICMPv4Event(packet)
-						if err != nil {
-							//TODO: write to error log
-							log.Println("ERROR", err)
-							continue
-						}
-
-					case layers.IPProtocolUDP:
-						event, err = events.NewUDPEvent(packet)
-						if err != nil {
-							//TODO: write to error log
-							log.Println("ERROR", err)
-							continue
-						}
-
-					case layers.IPProtocolTCP:
-						event, err = events.NewTCPEvent(packet)
-						if err != nil {
-							//TODO: write to error log
-							log.Println("ERROR", err)
-							continue
-						}
-
-						tcpPacket := packet.TransportLayer().(*layers.TCP)
-						assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
-
-					default:
-						continue loop
-					}
-
-					if *config.Cli.Dump {
-						fmt.Println(packet.String())
-					} else {
-						engine.EventChan <- event
-					}
-				} else if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
-					// Ignore outgoing packets
-					for _, ip := range config.Cfg.HomeNet6 {
-						if packet.NetworkLayer().(*layers.IPv6).SrcIP.String() == ip {
-							continue loop
-						}
-					}
-					switch packet.NetworkLayer().(*layers.IPv6).NextHeader {
-					case layers.IPProtocolICMPv6:
-						event, err = events.NewICMPv6Event(packet)
-						if err != nil {
-							//TODO: write to error log
-							log.Println("ERROR", err)
-							continue
-						}
-
-					default:
-						continue loop
-					}
-
-					if *config.Cli.Dump {
-						fmt.Println(packet.String())
-					} else {
-						engine.EventChan <- event
-					}
-				}
-			}
-
+			handlePacket(packet, assembler)
 		case <-assemblerFlushTicker:
 			// Every minute, flush connections that haven't seen activity in the past 2 minutes
 			assembler.FlushOlderThan(time.Now().Add(time.Minute * -2))
@@ -162,4 +87,83 @@ loop:
 	}
 
 	close(shutdownChan)
+}
+
+func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
+	var event events.Event
+	var err error
+
+	if packet.NetworkLayer() != nil {
+		if _, ok := packet.NetworkLayer().(*layers.IPv4); ok {
+			// Ignore outgoing packets
+			for _, ip := range config.Cfg.HomeNet {
+				if packet.NetworkLayer().(*layers.IPv4).SrcIP.String() == ip {
+					return
+				}
+			}
+
+			switch packet.NetworkLayer().(*layers.IPv4).Protocol {
+			case layers.IPProtocolICMPv4:
+				event, err = events.NewICMPv4Event(packet)
+				if err != nil {
+					//TODO: write to error log
+					log.Println("ERROR", err)
+					return
+				}
+
+			case layers.IPProtocolUDP:
+				event, err = events.NewUDPEvent(packet)
+				if err != nil {
+					//TODO: write to error log
+					log.Println("ERROR", err)
+					return
+				}
+
+			case layers.IPProtocolTCP:
+				event, err = events.NewTCPEvent(packet)
+				if err != nil {
+					//TODO: write to error log
+					log.Println("ERROR", err)
+					return
+				}
+
+				tcpPacket := packet.TransportLayer().(*layers.TCP)
+				assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+
+			default:
+				return
+			}
+
+			if *config.Cli.Dump {
+				fmt.Println(packet.String())
+			} else {
+				engine.EventChan <- event
+			}
+		} else if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
+			// Ignore outgoing packets
+			for _, ip := range config.Cfg.HomeNet6 {
+				if packet.NetworkLayer().(*layers.IPv6).SrcIP.String() == ip {
+					return
+				}
+			}
+			switch packet.NetworkLayer().(*layers.IPv6).NextHeader {
+			case layers.IPProtocolICMPv6:
+				event, err = events.NewICMPv6Event(packet)
+				if err != nil {
+					//TODO: write to error log
+					log.Println("ERROR", err)
+					return
+				}
+
+			default:
+				return
+			}
+
+			if *config.Cli.Dump {
+				fmt.Println(packet.String())
+			} else {
+				engine.EventChan <- event
+			}
+		}
+	}
 }

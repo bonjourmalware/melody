@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/engine"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/bonjourmalware/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/sensor"
+
 	"github.com/bonjourmalware/pinknoise/internal/rules"
 
 	"github.com/bonjourmalware/pinknoise/internal/logger"
-	"github.com/bonjourmalware/pinknoise/internal/sensor"
 
-	"github.com/pborman/getopt"
 	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/pborman/getopt"
 )
 
 var (
@@ -31,7 +32,7 @@ func init() {
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.HomeNet = getopt.ListLong("homenet", 'n', "Overrides the HomeNet values")
 	config.Cli.HomeNet6 = getopt.ListLong("homenet6", 'N', "Overrides the HomeNet6 values")
-	config.Cli.Stdout = getopt.BoolLong("stdout", 's',  "Output logged data to stdout instead")
+	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "Output logged data to stdout instead")
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
 	getopt.Parse()
 
@@ -40,9 +41,6 @@ func init() {
 }
 
 func main() {
-	//eventChan := make(chan *events.BaseEvent)
-	//loggerChan := make(chan *events.BaseEvent)
-
 	logger.Start(quitErrChan, shutdownChan, loggerStoppedChan)
 	engine.Start(quitErrChan, shutdownChan, engineStoppedChan)
 	sensor.Start(quitErrChan, shutdownChan, sensorStoppedChan)

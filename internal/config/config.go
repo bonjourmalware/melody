@@ -51,10 +51,10 @@ type Config struct {
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
 	Interface          string `yaml:"Interface"`
-	EnabledPorts       EnabledPorts
-	RulesVariables     RulesVariables `yaml:"RulesVariables"`
-	EnableBlacklist    bool           `yaml:"EnableBlacklist"`
-	EnableWhitelist    bool           `yaml:"EnableWhitelist"`
+	//EnabledPorts       EnabledPorts
+	//RulesVariables     RulesVariables `yaml:"RulesVariables"`
+	//EnableBlacklist    bool           `yaml:"EnableBlacklist"`
+	//EnableWhitelist    bool           `yaml:"EnableWhitelist"`
 	MaxPOSTDataSizeRaw string         `yaml:"MaxPOSTDataSize"`
 	MaxTCPDataSizeRaw  string         `yaml:"MaxTCPDataSize"`
 	MaxUDPDataSizeRaw  string         `yaml:"MaxUDPDataSize"`
