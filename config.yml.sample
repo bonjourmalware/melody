@@ -1,10 +1,12 @@
 ---
-LogFile: pinknoise.ndjson
+LogFile: "pinknoise.ndjson"
 LogMaxSize: 100
-RulesDir: rules/rules-enabled
-Interface: lo
-BPFFilterFile: filter.bpf
+RulesDir: "rules/rules-enabled"
+Interface: "lo"
+BPFFilterFile: "filter.bpf"
 MaxPOSTDataSize: "1kb"
 MaxTCPDataSize: "1kb"
 HomeNet:
-  - 127.0.0.1
+  - "127.0.0.1"
+HomeNet6:
+  - "::1"
