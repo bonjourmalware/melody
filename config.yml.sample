@@ -1,12 +1,33 @@
 ---
-LogFile: "pinknoise.ndjson"
-LogMaxSize: 100
-RulesDir: "rules/rules-enabled"
-Interface: "lo"
-BPFFilterFile: "filter.bpf"
-MaxPOSTDataSize: "1kb"
-MaxTCPDataSize: "1kb"
-HomeNet:
-  - "127.0.0.1"
-HomeNet6:
-  - "::1"
+logs.file: pinknoise.ndjson
+logs.max_size: 100 # MB
+logs.http.post.max_size: "1kb"
+logs.tcp.payload.max_size: "1kb"
+logs.udp.payload.max_size: "1kb"
+
+rules.dir: "rules/rules-enabled"
+rules.match.protocols: []
+
+listen.interface: "lo"
+listen.bpf.file: "filter.bpf"
+
+filter.homenet.ipv4:
+      - "127.0.0.1"
+filter.homenet.ipv6:
+      - "::1"
+
+server.https.enable: true
+server.https.port: 8080
+server.https.dir: "var/https/static"
+server.https.crt: "var/https/certs/cert.prm"
+server.https.key: "var/https/certs/key.pem"
+server.https.response.status_code: 200
+server.https.response.headers:
+      - Server: "Apache"
+
+server.http.enable: true
+server.http.port: 4443
+server.http.dir: "var/http/static"
+server.http.response.status_code: 200
+server.http.response.headers:
+      - Server: "Apache"

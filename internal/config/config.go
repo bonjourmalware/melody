@@ -44,24 +44,38 @@ type CLI struct {
 
 // Config structure which mirrors the yaml file
 type Config struct {
-	LogFile       string `yaml:"LogFile"`
-	LogMaxSize    int    `yaml:"LogMaxSize"`
-	RulesDir      string `yaml:"RulesDir"`
-	BPFFilterFile string `yaml:"BPFFilterFile"`
+	LogFile       string `yaml:"logs.file"`
+	LogMaxSize    int    `yaml:"logs.max_size"`
+	RulesDir      string `yaml:"rules.dir"`
+	BPFFilterFile string `yaml:"listen.bpf.file"`
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
-	Interface          string `yaml:"Interface"`
+	Interface string `yaml:"listen.interface"`
 	//EnabledPorts       EnabledPorts
 	//RulesVariables     RulesVariables `yaml:"RulesVariables"`
 	//EnableBlacklist    bool           `yaml:"EnableBlacklist"`
 	//EnableWhitelist    bool           `yaml:"EnableWhitelist"`
-	MaxPOSTDataSizeRaw string         `yaml:"MaxPOSTDataSize"`
-	MaxTCPDataSizeRaw  string         `yaml:"MaxTCPDataSize"`
-	MaxUDPDataSizeRaw  string         `yaml:"MaxUDPDataSize"`
-	MatchProtocols     []string       `yaml:"MatchProtocols"`
+	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
+	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
+	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
+	MatchProtocols     []string `yaml:"rules.match.protocols"`
 
-	HomeNet         []string `yaml:"HomeNet"`
-	HomeNet6        []string `yaml:"HomeNet6"`
+	ServerHTTPEnable         bool              `yaml:"server.http.enable"`
+	ServerHTTPPort           int               `yaml:"server.http.port"`
+	ServerHTTPDir            string            `yaml:"server.http.dir"`
+	ServerHTTPResponseStatus int               `yaml:"server.http.response_status"`
+	ServerHTTPHeaders        map[string]string `yaml:"server.http.headers"`
+
+	ServerHTTPSEnable         bool              `yaml:"server.https.enable"`
+	ServerHTTPSPort           int               `yaml:"server.https.port"`
+	ServerHTTPSDir            string            `yaml:"server.https.dir"`
+	ServerHTTPSResponseStatus int               `yaml:"server.https.response_status"`
+	ServerHTTPSCert           string            `yaml:"server.https.crt"`
+	ServerHTTPSKey            string            `yaml:"server.https.key"`
+	ServerHTTPSHeaders        map[string]string `yaml:"server.https.headers"`
+
+	HomeNet         []string `yaml:"filter.homenet.ipv4"`
+	HomeNet6        []string `yaml:"filter.homenet.ipv6"`
 	MaxPOSTDataSize uint64
 	MaxTCPDataSize  uint64
 	MaxUDPDataSize  uint64

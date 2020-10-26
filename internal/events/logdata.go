@@ -23,7 +23,7 @@ type BaseLogData struct {
 	Session     string              `json:"session"`
 	Type        string              `json:"type"`
 	SourceIP    string              `json:"src_ip"`
-	DestPort    uint                `json:"dst_port"`
+	DestPort    uint16                `json:"dst_port"`
 	Tags        []string            `json:"pk_tags"`
 	Metadata    map[string]string   `json:"metadata"`
 	References  map[string][]string `json:"references"`
@@ -118,9 +118,9 @@ type IPv6LogData struct {
 type HTTPLogData struct {
 	Verb       string            `json:"verb"`
 	Proto      string            `json:"proto"`
-	RequestURI string            `json:"URI"`
-	RemoteAddr string            `json:"remote_address"`
-	SourcePort uint64            `json:"src_port"`
+	RequestURI string            `json:"uri"`
+	//RemoteAddr string            `json:"remote_address"`
+	SourcePort uint16            `json:"src_port"`
 	DestHost   string            `json:"dst_host"`
 	Headers    map[string]string `json:"headers"`
 	Errors     []string          `json:"errors"`

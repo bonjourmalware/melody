@@ -14,6 +14,28 @@ nok_uri:
       - "/nonexistent"
     match: any
 
+ok_ports:
+  layer: http
+  id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
+  ports:
+    - 8080
+
+nok_ports:
+  layer: http
+  id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
+  ports:
+    - 0
+
+ok_is_tls:
+  layer: http
+  id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
+  tls: false
+
+nok_is_tls:
+  layer: http
+  id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
+  tls: true
+
 ok_headers:
   layer: http
   id: 5a819c44-bc45-4db1-9504-198a79da689d

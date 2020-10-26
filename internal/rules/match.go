@@ -1,6 +1,8 @@
 package rules
 
 import (
+	"fmt"
+
 	"github.com/bonjourmalware/pinknoise/internal/config"
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
@@ -243,13 +245,30 @@ func (rule *Rule) MatchUDPEvent(ev events.Event) bool {
 	if len(rule.Ports) > 0 {
 		for _, port := range rule.Ports {
 			// If at least one port is valid
-			if port == uint(udpHeader.DstPort) {
+			if port == uint16(udpHeader.DstPort) {
 				break
 			}
 		}
 	}
 
 	if rule.Options.MatchAll {
+		if len(rule.Ports) > 0 {
+			var condOK = false
+
+			for _, port := range rule.Ports {
+				fmt.Println(port, uint16(udpHeader.DstPort))
+				// If at least one port is valid
+				if port == uint16(udpHeader.DstPort) {
+					condOK = true
+					break
+				}
+			}
+
+			if !condOK {
+				return false
+			}
+		}
+
 		//TODO : Add <, > and <> operators
 		if rule.UDPLength != nil {
 			if udpHeader.Length != *rule.UDPLength {
@@ -277,6 +296,15 @@ func (rule *Rule) MatchUDPEvent(ev events.Event) bool {
 		}
 
 		return true
+	}
+
+	if len(rule.Ports) > 0 {
+		for _, port := range rule.Ports {
+			// If at least one port is valid
+			if port == uint16(udpHeader.DstPort) {
+				return true
+			}
+		}
 	}
 
 	//TODO : Add <, > and <> operators
@@ -313,16 +341,23 @@ func (rule *Rule) MatchTCPEvent(ev events.Event) bool {
 
 	var condOK bool
 
-	if len(rule.Ports) > 0 {
-		for _, port := range rule.Ports {
-			// If at least one port is valid
-			if port == uint(tcpHeader.DstPort) {
-				break
+	if rule.Options.MatchAll {
+		if len(rule.Ports) > 0 {
+			var condOK = false
+
+			for _, port := range rule.Ports {
+				// If at least one port is valid
+				if port == uint16(tcpHeader.DstPort) {
+					condOK = true
+					break
+				}
+			}
+
+			if !condOK {
+				return false
 			}
 		}
-	}
 
-	if rule.Options.MatchAll {
 		if len(rule.Flags) > 0 {
 			condOK = false
 			for _, flags := range rule.Flags {
@@ -372,6 +407,15 @@ func (rule *Rule) MatchTCPEvent(ev events.Event) bool {
 	}
 
 	// else
+	if len(rule.Ports) > 0 {
+		for _, port := range rule.Ports {
+			// If at least one port is valid
+			if port == uint16(tcpHeader.DstPort) {
+				return true
+			}
+		}
+	}
+
 	if len(rule.Flags) > 0 {
 		for _, flags := range rule.Flags {
 			// If at least one of the flag string match exactly, then continue
@@ -420,22 +464,38 @@ func (rule *Rule) MatchHTTPEvent(ev events.Event) bool {
 
 	var condOK bool
 
-	if len(rule.Ports) > 0 {
-		var portMatch bool
-		for _, port := range rule.Ports {
-			// If at least one port is valid
-			if port == httpData.DestPort {
-				portMatch = true
-				break
+	//if len(rule.Ports) > 0 {
+	//	var portMatch bool
+	//	for _, port := range rule.Ports {
+	//		// If at least one port is valid
+	//		if port == httpData.DestPort {
+	//			portMatch = true
+	//			break
+	//		}
+	//	}
+	//
+	//	if portMatch == false {
+	//		return false
+	//	}
+	//}
+
+	if rule.Options.MatchAll {
+		if len(rule.Ports) > 0 {
+			var condOK = false
+
+			for _, port := range rule.Ports {
+				// If at least one port is valid
+				if port == httpData.DestPort {
+					condOK = true
+					break
+				}
+			}
+
+			if !condOK {
+				return false
 			}
 		}
 
-		if portMatch == false {
-			return false
-		}
-	}
-
-	if rule.Options.MatchAll {
 		if rule.URI != nil {
 			if rule.URI.Match([]byte(httpData.RequestURI), rule.Options) == false {
 				return false
@@ -472,6 +532,21 @@ func (rule *Rule) MatchHTTPEvent(ev events.Event) bool {
 		if rule.Proto != nil {
 			if rule.Proto.Match([]byte(httpData.Proto), rule.Options) == false {
 				return false
+			}
+		}
+
+		if rule.TLS != nil {
+			if *rule.TLS != httpData.IsTLS {
+				return false
+			}
+		}
+	}
+
+	if len(rule.Ports) > 0 {
+		for _, port := range rule.Ports {
+			// If at least one port is valid
+			if port == httpData.DestPort {
+				return true
 			}
 		}
 	}
@@ -511,6 +586,12 @@ func (rule *Rule) MatchHTTPEvent(ev events.Event) bool {
 
 	if rule.Proto != nil {
 		if rule.Proto.Match([]byte(httpData.Proto), rule.Options) == true {
+			return true
+		}
+	}
+
+	if rule.TLS != nil {
+		if *rule.TLS == httpData.IsTLS {
 			return true
 		}
 	}

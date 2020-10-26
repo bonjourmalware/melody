@@ -1,10 +1,15 @@
 package events
 
 import (
-	"github.com/google/gopacket/layers"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
+
+	"github.com/rs/xid"
+
+	"github.com/google/gopacket/layers"
 
 	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
@@ -15,12 +20,12 @@ import (
 )
 
 type HTTPEvent struct {
-	Verb       string `json:"verb"`
-	Proto      string `json:"proto"`
-	RequestURI string `json:"URI"`
-	SourcePort uint64 `json:"src_port"`
-	DestHost   string `json:"dst_host"`
-	DestPort   uint   `json:"dst_port"`
+	Verb          string            `json:"verb"`
+	Proto         string            `json:"proto"`
+	RequestURI    string            `json:"URI"`
+	SourcePort    uint16            `json:"src_port"`
+	DestHost      string            `json:"dst_host"`
+	DestPort      uint16            `json:"dst_port"`
 	Headers       map[string]string `json:"headers"`
 	InlineHeaders []string
 	Errors        []string `json:"errors"`
@@ -30,7 +35,6 @@ type HTTPEvent struct {
 	LogData       HTTPEventLog
 	BaseEvent
 }
-
 
 func (ev HTTPEvent) GetIPHeader() *layers.IPv4 {
 	return nil
@@ -89,7 +93,6 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	var inlineHeaders []string
 	var errs []string
 	var params []byte
-	var isTLS bool
 	var err error
 
 	for header := range r.Header {
@@ -105,21 +108,16 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 		errs = append(errs, err.Error())
 	}
 
-	if r.TLS != nil {
-		isTLS = true
-	} else {
-		isTLS = false
-	}
-
 	ev := &HTTPEvent{
 		Verb:       r.Method,
 		Proto:      r.Proto,
 		RequestURI: r.URL.RequestURI(),
-		SourcePort: srcPort,
-		DestPort:   uint(dstPort),
+		SourcePort: uint16(srcPort),
+		DestPort:   uint16(dstPort),
 		DestHost:   network.Dst().String(),
 		Body:       NewPayload(params, config.Cfg.MaxPOSTDataSize),
-		IsTLS:      isTLS,
+		//IsTLS:         r.TLS != nil,
+		IsTLS:         false,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,
 		Errors:        errs,
@@ -129,7 +127,63 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	ev.Session = sessions.Map.GetUID(transport.String())
 	ev.Kind = config.HTTPKind
 	ev.SourceIP = network.Src().String()
-	ev.DestPort = uint(dstPort)
+	ev.Tags = []string{}
+	ev.Metadata = make(map[string]string)
+	ev.References = make(map[string][]string)
+	ev.Statements = []string{}
+
+	return ev, nil
+}
+
+func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
+	headers := make(map[string]string)
+	var inlineHeaders []string
+	var errs []string
+	var params []byte
+	var srcIP string
+	var rawDstPort string
+	var rawSrcPort string
+	var err error
+
+	for header := range r.Header {
+		headers[header] = r.Header.Get(header)
+		inlineHeaders = append(inlineHeaders, header+": "+r.Header.Get(header))
+	}
+
+	hostChunks := strings.Split(r.Host, ":")
+	dstHost := hostChunks[0]
+	rawDstPort = hostChunks[1]
+	remoteAddrChunks := strings.Split(r.RemoteAddr, ":")
+	fmt.Println(remoteAddrChunks)
+	srcIP, rawSrcPort = remoteAddrChunks[0], remoteAddrChunks[1]
+
+	params, err = parsing.GetBodyPayload(r)
+	if err != nil {
+		errs = append(errs, err.Error())
+	}
+
+	srcPort, _ := strconv.ParseUint(rawSrcPort, 10, 16)
+	dstPort, _ := strconv.ParseUint(rawDstPort, 10, 16)
+
+	ev := &HTTPEvent{
+		Verb:       r.Method,
+		Proto:      r.Proto,
+		RequestURI: r.URL.RequestURI(),
+		SourcePort: uint16(srcPort),
+		DestPort:   uint16(dstPort),
+		DestHost:   dstHost,
+		Body:       NewPayload(params, config.Cfg.MaxPOSTDataSize),
+		//IsTLS:         r.TLS != nil,
+		IsTLS:         true,
+		Headers:       headers,
+		InlineHeaders: inlineHeaders,
+		Errors:        errs,
+	}
+
+	// Cannot use promoted (inherited) fields in struct literal
+	ev.Session = xid.New().String()
+	ev.Kind = config.HTTPKind
+	ev.SourceIP = srcIP
 	ev.Tags = []string{}
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)

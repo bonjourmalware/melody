@@ -1,6 +1,10 @@
 default:
 	echo "No default make"
 
+certs:
+	mkdir -p var/https/certs
+	openssl req -x509 -subj "/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost" -newkey rsa:4096 -keyout var/https/certs/key.pem -out var/https/certs/cert.pem -days 3650 -nodes
+
 install:
 	go build -ldflags="-s -w" -o pinknoise
 	mkdir /opt/pinknoise

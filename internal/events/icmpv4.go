@@ -1,10 +1,11 @@
 package events
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
@@ -12,7 +13,7 @@ import (
 
 type ICMPv4Event struct {
 	//ICMPv4Header *layers.ICMPv4
-	LogData      ICMPv4EventLog
+	LogData ICMPv4EventLog
 	BaseEvent
 	IPv4Layer
 	ICMPv4Layer
@@ -73,17 +74,17 @@ func (ev ICMPv4Event) ToLog() EventLog {
 	}
 
 	ev.LogData.ICMPv4 = ICMPv4LogData{
-		TypeCode: ev.ICMPv4Layer.Header.TypeCode,
-		Type: ev.ICMPv4Layer.Header.TypeCode.Type(),
-		Code: ev.ICMPv4Layer.Header.TypeCode.Code(),
+		TypeCode:     ev.ICMPv4Layer.Header.TypeCode,
+		Type:         ev.ICMPv4Layer.Header.TypeCode.Type(),
+		Code:         ev.ICMPv4Layer.Header.TypeCode.Code(),
 		TypeCodeName: ev.ICMPv4Layer.Header.TypeCode.String(),
-		Checksum: ev.ICMPv4Layer.Header.Checksum,
-		Id:       ev.ICMPv4Layer.Header.Id,
-		Seq:      ev.ICMPv4Layer.Header.Seq,
+		Checksum:     ev.ICMPv4Layer.Header.Checksum,
+		Id:           ev.ICMPv4Layer.Header.Id,
+		Seq:          ev.ICMPv4Layer.Header.Seq,
 	}
 
 	ev.LogData.IP = IPv4LogData{
-		Version: ev.IPv4Layer.Header.Version,
+		Version:    ev.IPv4Layer.Header.Version,
 		IHL:        ev.IPv4Layer.Header.IHL,
 		TOS:        ev.IPv4Layer.Header.TOS,
 		Length:     ev.IPv4Layer.Header.Length,

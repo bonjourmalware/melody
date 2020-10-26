@@ -7,7 +7,7 @@ type Event interface{
 	ToLog() EventLog
 	GetKind() string
 	GetSourceIP() string
-	GetDestPort() uint
+	GetDestPort() uint16
 	GetIPHeader() *layers.IPv4
 	GetICMPv6Header() *layers.ICMPv6
 	GetICMPv4Header() *layers.ICMPv4

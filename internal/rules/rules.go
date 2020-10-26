@@ -10,7 +10,7 @@ type Rules []Rule
 type Rule struct {
 	// Global
 	Name  string
-	Ports []uint
+	Ports []uint16
 	Logto string
 	Id    string
 	Tags  []string

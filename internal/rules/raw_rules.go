@@ -51,28 +51,15 @@ type RawRule struct {
 	Metadata   map[string]string   `yaml:"metadata"`
 	Statements []string            `yaml:"statements"`
 	References map[string][]string `yaml:"references"`
-	IPs        []string            `yaml:"ip"`
+	IPs        []string            `yaml:"src_ip"`
 	Offset     int                 `yaml:"offset"`
 	Depth      int                 `yaml:"depth"`
 	MatchType  string              `yaml:"match"`
 }
 
-//func (rawRules RawRules) Filter(fn func(rule RawRule) bool) RawRules {
-//	res := RawRules{}
-//
-//    for name, rawRule := range rawRules {
-//        if fn(rawRule, ) {
-//        	 res[name] = rawRule
-//        }
-//    }
-//
-//    return res
-//
-//}
-
 func (rawRule RawRule) Parse() Rule {
 	var iport uint64
-	var ports []uint
+	var ports []uint16
 	var err error
 	var ipsList = iprules.IPRules{
 		WhitelistedIPs: iprules.IPRanges{},
@@ -83,12 +70,12 @@ func (rawRule RawRule) Parse() Rule {
 
 	if rawRule.Ports != nil {
 		for _, port := range *rawRule.Ports {
-			iport, err = strconv.ParseUint(port, 10, 32)
+			iport, err = strconv.ParseUint(port, 10, 16)
 			if err != nil {
 				log.Printf("Invalid port \"%s\" for rule %s\n", port, rawRule.Id)
 				continue
 			}
-			ports = append(ports, uint(iport))
+			ports = append(ports, uint16(iport))
 		}
 	}
 
@@ -111,13 +98,14 @@ func (rawRule RawRule) Parse() Rule {
 		Fragbits:   rawRule.Fragbits.ParseList(),
 		Flags:      rawRule.Flags.ParseList(),
 		Window:     rawRule.Window,
+		TLS:        rawRule.TLS,
 		ICMPSeq:    rawRule.ICMPSeq,
-		TypeCode4:   rawRule.TypeCode4,
-		ICMPCode4:   rawRule.ICMPCode4,
-		ICMPType4:   rawRule.ICMPType4,
+		TypeCode4:  rawRule.TypeCode4,
+		ICMPCode4:  rawRule.ICMPCode4,
+		ICMPType4:  rawRule.ICMPType4,
 		TypeCode6:  rawRule.TypeCode6,
-		ICMPCode6:   rawRule.ICMPCode6,
-		ICMPType6:   rawRule.ICMPType6,
+		ICMPCode6:  rawRule.ICMPCode6,
+		ICMPType6:  rawRule.ICMPType6,
 		UDPLength:  rawRule.UDPLength,
 		Checksum:   rawRule.Checksum,
 		Id:         rawRule.Id,
@@ -134,6 +122,7 @@ func (rawRule RawRule) Parse() Rule {
 		},
 	}
 
+	// Default to MatchAll
 	if rule.Options.MatchAll == false && rule.Options.MatchAny == false {
 		rule.Options.MatchAll = true
 	}

@@ -36,7 +36,7 @@ func NewUDPEvent(packet gopacket.Packet) (*UDPEvent, error) {
 
 	UDPHeader, _ := packet.Layer(layers.LayerTypeUDP).(*layers.UDP)
 	ev.UDPLayer = UDPLayer{Header: UDPHeader}
-	ev.DestPort = uint(UDPHeader.DstPort)
+	ev.DestPort = uint16(UDPHeader.DstPort)
 
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)

@@ -5,7 +5,7 @@ type BaseEvent struct {
 	Tags       []string
 	Kind       string
 	SourceIP   string
-	DestPort   uint
+	DestPort   uint16
 	Session    string
 	Metadata   map[string]string
 	Statements []string
@@ -21,7 +21,7 @@ func (ev BaseEvent) GetSourceIP() string {
 	return ev.SourceIP
 }
 
-func (ev BaseEvent) GetDestPort() uint {
+func (ev BaseEvent) GetDestPort() uint16 {
 	return ev.DestPort
 }
 

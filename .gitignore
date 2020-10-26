@@ -1,6 +1,7 @@
 .idea
 pinknoise
-pinknoise.exe
-pinknoise.log
+pinknoise.*
 config.yml
 filter.bpf
+var/*
+!*/.gitkeep

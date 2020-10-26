@@ -35,7 +35,7 @@ func NewTCPEvent(packet gopacket.Packet) (*TCPEvent, error) {
 	TCPHeader, _ := packet.Layer(layers.LayerTypeTCP).(*layers.TCP)
 
 	ev.TCPLayer = TCPLayer{Header: TCPHeader}
-	ev.DestPort = uint(TCPHeader.DstPort)
+	ev.DestPort = uint16(TCPHeader.DstPort)
 
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)

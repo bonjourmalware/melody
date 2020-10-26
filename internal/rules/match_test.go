@@ -266,6 +266,64 @@ func TestMatchICMPv6Event(t *testing.T) {
 	}
 }
 
+func TestMatchIPEvent(t *testing.T) {
+	ruleFilename := "ip_rules.yml"
+	pcapFilename := "ip_values.pcap"
+	rawPackets := false
+	var rule Rule
+
+	ruleset, err := LoadRuleFile(ruleFilename)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// use tcp packets in the capture to test IP filtering
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if len(filteredEvents) == 0 {
+		t.Error("No TCP packets has been read from pcap")
+		return
+	}
+
+	tests := []struct {
+		Ok     []string
+		Nok    []string
+		Packet events.Event
+	}{
+		{
+			Ok: []string{
+				"ok_src_ip",
+			},
+			Nok: []string{
+				"nok_src_ip",
+			},
+			Packet: filteredEvents[0],
+		},
+	}
+
+	for _, suite := range tests {
+		for _, rulename := range suite.Ok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); !ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+		for _, rulename := range suite.Nok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+	}
+}
+
 func TestMatchTCPEvent(t *testing.T) {
 	ruleFilename := "tcp_rules.yml"
 	pcapFilename := "tcp_values.pcap"
@@ -297,11 +355,13 @@ func TestMatchTCPEvent(t *testing.T) {
 		{
 			Ok: []string{
 				"ok_ack",
+				"ok_ports",
 				"ok_seq",
 				"ok_window",
 			},
 			Nok: []string{
 				"nok_ack",
+				"nok_ports",
 				"nok_seq",
 				"nok_window",
 			},
@@ -339,6 +399,7 @@ func TestMatchTCPEvent(t *testing.T) {
 				t.Fail()
 			}
 		}
+
 		for _, rulename := range suite.Nok {
 			rule = ruleset[rulename]
 			if ok := rule.Match(suite.Packet); ok {
@@ -406,6 +467,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 			Ok: []string{
 				"ok_uri",
 				"ok_body",
+				"ok_is_tls",
 				"ok_headers",
 				"ok_proto",
 				"ok_method",
@@ -413,6 +475,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 			Nok: []string{
 				"nok_uri",
 				"nok_body",
+				"nok_is_tls",
 				"nok_headers",
 				"nok_proto",
 				"nok_method",
