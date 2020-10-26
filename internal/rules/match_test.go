@@ -297,10 +297,10 @@ func TestMatchIPEvent(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				"ok_src_ip",
+				"ok_src_ips",
 			},
 			Nok: []string{
-				"nok_src_ip",
+				"nok_src_ips",
 			},
 			Packet: filteredEvents[0],
 		},
