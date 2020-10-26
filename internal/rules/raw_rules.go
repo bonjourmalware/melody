@@ -51,7 +51,7 @@ type RawRule struct {
 	Metadata   map[string]string   `yaml:"metadata"`
 	Statements []string            `yaml:"statements"`
 	References map[string][]string `yaml:"references"`
-	IPs        []string            `yaml:"src_ip"`
+	IPs        []string            `yaml:"src_ips"`
 	Offset     int                 `yaml:"offset"`
 	Depth      int                 `yaml:"depth"`
 	MatchType  string              `yaml:"match"`
