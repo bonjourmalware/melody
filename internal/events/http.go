@@ -27,6 +27,8 @@ type HTTPEvent struct {
 	DestHost      string            `json:"dst_host"`
 	DestPort      uint16            `json:"dst_port"`
 	Headers       map[string]string `json:"headers"`
+	HeadersKeys   []string          `json:"headers_keys"`
+	HeadersValues []string          `json:"headers_values"`
 	InlineHeaders []string
 	Errors        []string `json:"errors"`
 	Body          Payload  `json:"body"`
@@ -85,6 +87,17 @@ func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData.References = ev.References
 	ev.LogData.Statements = ev.Statements
 
+	var headersKeys []string
+	var headersValues []string
+
+	for key, val := range ev.Headers {
+		headersKeys = append(headersKeys, key)
+		headersValues = append(headersValues, val)
+	}
+
+	ev.LogData.HTTP.HeadersKeys = headersKeys
+	ev.LogData.HTTP.HeadersValues = headersValues
+
 	return ev.LogData
 }
 
@@ -116,7 +129,6 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 		DestPort:   uint16(dstPort),
 		DestHost:   network.Dst().String(),
 		Body:       NewPayload(params, config.Cfg.MaxPOSTDataSize),
-		//IsTLS:         r.TLS != nil,
 		IsTLS:         false,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,

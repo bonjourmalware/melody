@@ -1,8 +1,9 @@
 Dropper:
     layer: tcp
-    payload:
-        contains:
-            - "wget"
-        match: any
+    match:
+        payload:
+            contains:
+                - "wget"
+            match: any
     tags:
         - "dropper"

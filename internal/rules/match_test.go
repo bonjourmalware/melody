@@ -3,7 +3,6 @@ package rules
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -115,8 +114,18 @@ func TestMatchUDPEvent(t *testing.T) {
 	}{
 		{
 			Ok: []string{
+				"ok_checksum",
+				"ok_dst_ports",
+				"ok_dsize",
+				"ok_length",
+				"ok_payload",
 			},
 			Nok: []string{
+				"nok_checksum",
+				"nok_dst_ports",
+				"nok_dsize",
+				"nok_length",
+				"nok_payload",
 			},
 			Packet: filteredEvents[0],
 		},
@@ -140,7 +149,7 @@ func TestMatchUDPEvent(t *testing.T) {
 	}
 }
 
-func TestMatchICMP4Event(t *testing.T) {
+func TestMatchICMPv4Event(t *testing.T) {
 	ruleFilename := "icmpv4_rules.yml"
 	pcapFilename := "icmpv4_values.pcap"
 	rawPackets := false
@@ -170,13 +179,13 @@ func TestMatchICMP4Event(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				"ok_icmpv4_type_code",
+				"ok_icmpv4_typecode",
 				"ok_icmpv4_code",
 				"ok_icmpv4_type",
 				"ok_checksum",
 			},
 			Nok: []string{
-				"nok_icmpv4_type_code",
+				"nok_icmpv4_typecode",
 				"nok_icmpv4_code",
 				"nok_icmpv4_type",
 				"nok_checksum",
@@ -233,13 +242,13 @@ func TestMatchICMPv6Event(t *testing.T) {
 	}{
 		{
 			Ok: []string{
-				"ok_icmpv6_type_code",
+				"ok_icmpv6_typecode",
 				"ok_icmpv6_code",
 				"ok_icmpv6_type",
 				"ok_checksum",
 			},
 			Nok: []string{
-				"nok_icmpv6_type_code",
+				"nok_icmpv6_typecode",
 				"nok_icmpv6_code",
 				"nok_icmpv6_type",
 				"nok_checksum",
@@ -298,9 +307,11 @@ func TestMatchIPEvent(t *testing.T) {
 		{
 			Ok: []string{
 				"ok_src_ips",
+				"ok_src_ips_range",
 			},
 			Nok: []string{
 				"nok_src_ips",
+				"nok_src_ips_range",
 			},
 			Packet: filteredEvents[0],
 		},
@@ -355,13 +366,13 @@ func TestMatchTCPEvent(t *testing.T) {
 		{
 			Ok: []string{
 				"ok_ack",
-				"ok_ports",
+				"ok_dst_ports",
 				"ok_seq",
 				"ok_window",
 			},
 			Nok: []string{
 				"nok_ack",
-				"nok_ports",
+				"nok_dst_ports",
 				"nok_seq",
 				"nok_window",
 			},
@@ -434,7 +445,6 @@ func TestMatchHTTPEvent(t *testing.T) {
 	// Will fail on packets needing reassembly
 	// Good enough for testing
 	for _, packet := range packets {
-		fmt.Println(packet)
 		if len(packet.TransportLayer().LayerPayload()) > 0 {
 			req, err := http.ReadRequest(bufio.NewReader(bytes.NewBuffer(packet.TransportLayer().LayerPayload())))
 			if err != nil {

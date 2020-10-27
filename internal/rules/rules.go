@@ -2,7 +2,6 @@ package rules
 
 import (
 	"github.com/bonjourmalware/pinknoise/internal/iprules"
-	"github.com/google/gopacket/layers"
 )
 
 type Rules []Rule
@@ -15,61 +14,22 @@ type Rule struct {
 	Id    string
 	Tags  []string
 
-	// TCP/IP
-	TTL *uint8
-	TOS *uint8
-	//ID       *uint16
-	IPOption *ConditionsList
-	Fragbits []*uint8
-	Dsize    *int
-	Flags    []*uint8
-	Seq      *uint32
-	Ack      *uint32
-	Payload  *ConditionsList
-	Offset   int
-	Depth    int
-	Window   *uint16
 	Layer    string
 
 	IPProtocol *ConditionsList
 
-	// UDP
-	UDPLength *uint16
-	Checksum  *uint16
+	HTTP ParsedHTTPRule
+	TCP  ParsedTCPRule
+	UDP  ParsedUDPRule
+	ICMPv4  ParsedICMPv4Rule
+	ICMPv6  ParsedICMPv6Rule
 
-	// ICMPv6
-	TypeCode6 *layers.ICMPv6TypeCode
-	ICMPCode6 *uint8
-	ICMPType6 *uint8
-
-	// ICMPv4
-	TypeCode4 *layers.ICMPv4TypeCode
-	ICMPCode4 *uint8
-	ICMPType4 *uint8
-	//Seq      *uint32
-	ICMPSeq *uint16
-
-	//	HTTP
-	URI     *ConditionsList
-	Body    *ConditionsList
-	Headers *ConditionsList
-	IPs     iprules.IPRules
-	Verb    *ConditionsList
-	Proto   *ConditionsList
-	TLS     *bool
-
+	IPs        iprules.IPRules
 	Metadata   map[string]string
 	Statements []string
 	References map[string][]string
 
-	Options RuleOptions
-}
-
-type RuleOptions struct {
-	Depth    int
-	Offset   int
 	MatchAll bool
-	MatchAny bool
 }
 
 func (rules Rules) Filter(fn func(rule Rule) bool) Rules {

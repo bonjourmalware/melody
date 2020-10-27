@@ -1,102 +1,105 @@
 ok_uri:
   layer: http
   id: 9fac5a6d-a3c5-487a-950d-4c56a6d025ad
-  uri:
-    is:
-      - "/cgi-bin/mainfunction.cgi"
-    match: any
+  match:
+    http.uri:
+      is:
+        - "/cgi-bin/mainfunction.cgi"
+      any: true
 
 nok_uri:
   layer: http
   id: 300ebc19-8f48-4fbe-a39a-9b3457b0bd96
-  uri:
-    is:
-      - "/nonexistent"
-    match: any
+  match:
+    http.uri:
+      is:
+        - "/nonexistent"
+      any: true
 
 ok_ports:
   layer: http
   id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
-  ports:
+  filter.ports:
     - 8080
 
 nok_ports:
   layer: http
   id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
-  ports:
+  filter.ports:
     - 0
 
 ok_is_tls:
   layer: http
   id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
-  tls: false
+  match:
+    http.tls: false
 
 nok_is_tls:
   layer: http
   id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
-  tls: true
+  match:
+    http.tls: true
 
 ok_headers:
   layer: http
   id: 5a819c44-bc45-4db1-9504-198a79da689d
-  headers:
-    is:
-      - "X-Testing: I am a test header"
-    match: any
+  match:
+    http.headers:
+      is:
+        - "X-Testing: I am a test header"
 
 nok_headers:
   layer: http
   id: 795e097a-662d-4839-9301-97e73bd5a4bc
-  headers:
-    is:
-      - "X-Nonexistent: I do not exist"
-    match: any
+  match:
+    http.headers:
+      is:
+        - "X-Nonexistent: I do not exist"
 
 ok_body:
   layer: http
   id: 740055f3-1b77-4677-89ec-bcea34097593
-  body:
-    is:
-      - '{"testkey": "testvalue"}'
-    match: any
+  match:
+    http.body:
+      is:
+        - '{"testkey": "testvalue"}'
 
 nok_body:
   layer: http
   id: 4adf1dc4-912c-459a-82f8-5b3aa0f20bba
-  body:
-    is:
-      - "nonexistent body"
-    match: any
+  match:
+    http.body:
+      is:
+        - "nonexistent body"
 
 ok_proto:
   layer: http
   id: f0b82f01-cbf7-4af7-bf26-44dc9403f0f9
-  proto:
-    is:
-      - "HTTP/1.1"
-    match: any
+  match:
+    http.proto:
+      is:
+        - "HTTP/1.1"
 
 nok_proto:
   layer: http
   id: c0917358-a738-4afe-83e9-9ababa745b62
-  proto:
-    is:
-      - "nonexistent proto"
-    match: any
+  match:
+    http.proto:
+      is:
+        - "nonexistent proto"
 
 ok_method:
   layer: http
   id: b2656489-6118-4e9e-aebd-1413737666ad
-  method:
-    is:
-      - "POST"
-    match: any
+  match:
+    http.method:
+      is:
+        - "POST"
 
 nok_method:
   layer: http
   id: c1e40473-e250-48eb-b5ff-cf25cd4469a0
-  method:
-    is:
-      - "nonexistent verb"
-    match: any
-
+  match:
+    http.method:
+      is:
+        - "nonexistent verb"

@@ -44,8 +44,11 @@ type CLI struct {
 
 // Config structure which mirrors the yaml file
 type Config struct {
-	LogFile       string `yaml:"logs.file"`
-	LogMaxSize    int    `yaml:"logs.max_size"`
+	LogFile      string `yaml:"logs.file"`
+	LogMaxSize   int    `yaml:"logs.max_size"`
+	LogMaxAge       int    `yaml:"logs.max_age"`
+	LogCompressRotatedLogs bool   `yaml:"logs.compress_rotated"`
+
 	RulesDir      string `yaml:"rules.dir"`
 	BPFFilterFile string `yaml:"listen.bpf.file"`
 	BPFFilter     string
@@ -95,6 +98,8 @@ func (cfg *Config) Load() {
 	cfg.MaxUDPDataSizeRaw = "1kb"
 
 	cfg.LogMaxSize = 200
+	cfg.LogCompressRotatedLogs = true
+	cfg.LogMaxAge = 15
 
 	cfgData, err := ioutil.ReadFile(filepath)
 	if err != nil {

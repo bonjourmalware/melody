@@ -1,39 +1,47 @@
-ok_icmpv6_type_code:
+ok_icmpv6_typecode:
   layer: icmpv6
   id: 5ab6a5de-0eff-4065-a50d-e3d44159013b
-  icmpv6_type_code: 32768
+  match:
+    icmpv6.typecode: 32768
 
-nok_icmpv6_type_code:
+nok_icmpv6_typecode:
   layer: icmpv6
   id: 817407fc-5dec-42ca-8e62-1198cd51afdc
-  icmpv6_type_code: 0
+  match:
+    icmpv6.typecode: 0
 
 ok_checksum:
   layer: icmpv6
   id: b845d07e-c447-4b4c-aad7-1be33bc6fa6a
-  checksum: 0x275b
+  match:
+    icmpv6.checksum: 0x275b
 
 nok_checksum:
   layer: icmpv6
   id: ca68fc15-c273-43f8-8687-04507f4f4813
-  checksum: 0
+  match:
+    icmpv6.checksum: 0
 
 ok_icmpv6_code:
   layer: icmpv6
   id: b845d07e-c447-4b4c-aad7-1be33bc6fa6a
-  icmpv6_code: 0
+  match:
+    icmpv6.code: 0
 
 nok_icmpv6_code:
   layer: icmpv6
   id: ca68fc15-c273-43f8-8687-04507f4f4813
-  icmpv6_code: 1
+  match:
+    icmpv6.code: 1
 
 ok_icmpv6_type:
   layer: icmpv6
   id: b845d07e-c447-4b4c-aad7-1be33bc6fa6a
-  icmpv6_type: 0x80
+  match:
+    icmpv6.type: 0x80
 
 nok_icmpv6_type:
   layer: icmpv6
   id: ca68fc15-c273-43f8-8687-04507f4f4813
-  icmpv6_type: 0
+  match:
+    icmpv6.type: 0

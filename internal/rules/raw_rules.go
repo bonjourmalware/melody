@@ -2,59 +2,124 @@ package rules
 
 import (
 	"log"
+	"os"
 	"strconv"
-
-	"github.com/google/gopacket/layers"
+	"strings"
 
 	"github.com/bonjourmalware/pinknoise/internal/iprules"
+	"github.com/go-yaml/yaml"
 )
 
 // The yml rule file contains multiple named rules
 type RawRules map[string]RawRule
 
-// Each named rule contains multiple conditions for multiple fields
+type HTTPRule struct {
+	URI     RawConditions `yaml:"http.uri"`
+	Body    RawConditions `yaml:"http.body"`
+	Headers RawConditions `yaml:"http.headers"`
+	Verb    RawConditions `yaml:"http.method"`
+	Proto   RawConditions `yaml:"http.proto"`
+	TLS     *bool         `yaml:"http.tls"`
+	Any     bool          `yaml:"any"`
+}
+
+type ParsedHTTPRule struct {
+	URI     *ConditionsList
+	Body    *ConditionsList
+	Headers *ConditionsList
+	Verb    *ConditionsList
+	Proto   *ConditionsList
+	TLS     *bool
+}
+
+type TCPRule struct {
+	IPOption RawConditions   `yaml:"tcp.ipoption"`
+	Fragbits RawFragbitsList `yaml:"tcp.fragbits"`
+	Dsize    *uint           `yaml:"tcp.dsize"`
+	Flags    RawTCPFlagsList `yaml:"tcp.flags"`
+	Seq      *uint32         `yaml:"tcp.seq"`
+	Ack      *uint32         `yaml:"tcp.ack"`
+	Payload  RawConditions   `yaml:"tcp.payload"`
+	Window   *uint16         `yaml:"tcp.window"`
+	Any      bool            `yaml:"any"`
+}
+
+type ParsedTCPRule struct {
+	IPOption *ConditionsList
+	Fragbits []*uint8
+	Dsize    *uint
+	Flags    []*uint8
+	Seq      *uint32
+	Ack      *uint32
+	Payload  *ConditionsList
+	Window   *uint16
+}
+
+type ICMPv4Rule struct {
+	TypeCode *uint16 `yaml:"icmpv4.typecode"`
+	Type     *uint8  `yaml:"icmpv4.type"`
+	Code     *uint8  `yaml:"icmpv4.code"`
+	Checksum *uint16 `yaml:"icmpv4.checksum"`
+	Seq      *uint16 `yaml:"icmpv4.seq"`
+	Any      bool    `yaml:"any"`
+}
+
+type ICMPv6Rule struct {
+	TypeCode *uint16 `yaml:"icmpv6.typecode"`
+	Type     *uint8  `yaml:"icmpv6.type"`
+	Code     *uint8  `yaml:"icmpv6.code"`
+	Checksum *uint16 `yaml:"icmpv6.checksum"`
+	Any      bool    `yaml:"any"`
+}
+
+type ParsedICMPv4Rule struct {
+	TypeCode *uint16
+	Type     *uint8
+	Code     *uint8
+	Checksum *uint16
+	Seq      *uint16
+}
+
+type ParsedICMPv6Rule struct {
+	TypeCode *uint16
+	Type     *uint8
+	Code     *uint8
+	Checksum *uint16
+}
+
+type UDPRule struct {
+	Length   *uint16       `yaml:"udp.length"`
+	Dsize    *uint         `yaml:"udp.dsize"`
+	Checksum *uint16       `yaml:"udp.checksum"`
+	Payload  RawConditions `yaml:"udp.payload"`
+	Any      bool          `yaml:"any"`
+}
+
+type ParsedUDPRule struct {
+	Length   *uint16
+	Dsize    *uint
+	Checksum *uint16
+	Payload  *ConditionsList
+}
+
 type RawRule struct {
-	Ports    *[]string       `yaml:"ports"`
-	Id       string          `yaml:"id"`
-	Logto    *string         `yaml:"logto"`
-	Tags     []string        `yaml:"tags"`
-	Layer    string          `yaml:"layer"`
-	TTL      *uint8          `yaml:"ttl"`
-	IPOption RawConditions   `yaml:"ipoption"`
-	Window   *uint16         `yaml:"window"`
-	TOS      *uint8          `yaml:"tos"`
-	Fragbits RawFragbitsList `yaml:"fragbits"`
-	Dsize    *int            `yaml:"dsize"`
-	Flags    RawTCPFlagsList `yaml:"flags"`
-	Seq      *uint32         `yaml:"seq"`
-	Ack      *uint32         `yaml:"ack"`
+	Ports *[]string `yaml:"filter.dst_ports"`
+	IPs   []string  `yaml:"filter.src_ips"`
 
-	TypeCode6 *layers.ICMPv6TypeCode `yaml:"icmpv6_type_code"`
-	ICMPType6 *uint8                 `yaml:"icmpv6_type"`
-	ICMPCode6 *uint8                 `yaml:"icmpv6_code"`
+	Match interface{} `yaml:"match"`
 
-	TypeCode4 *layers.ICMPv4TypeCode `yaml:"icmpv4_type_code"`
-	ICMPType4 *uint8                 `yaml:"icmpv4_type"`
-	ICMPCode4 *uint8                 `yaml:"icmpv4_code"`
-	ICMPSeq   *uint16                `yaml:"icmpv4_seq"`
+	Id         string        `yaml:"id"`
+	Logto      *string       `yaml:"logto"`
+	Tags       []string      `yaml:"tags"`
+	Layer      string        `yaml:"layer"`
+	IPProtocol RawConditions `yaml:"ip_protocol"`
 
-	UDPLength  *uint16             `yaml:"udplength"`
-	Checksum   *uint16             `yaml:"checksum"`
-	Payload    RawConditions       `yaml:"payload"`
-	IPProtocol RawConditions       `yaml:"ip_protocol"`
-	URI        RawConditions       `yaml:"uri"`
-	Body       RawConditions       `yaml:"body"`
-	Headers    RawConditions       `yaml:"headers"`
-	Verb       RawConditions       `yaml:"method"`
-	Proto      RawConditions       `yaml:"proto"`
-	TLS        *bool               `yaml:"tls"`
 	Metadata   map[string]string   `yaml:"metadata"`
 	Statements []string            `yaml:"statements"`
 	References map[string][]string `yaml:"references"`
-	IPs        []string            `yaml:"src_ips"`
 	Offset     int                 `yaml:"offset"`
 	Depth      int                 `yaml:"depth"`
-	MatchType  string              `yaml:"match"`
+	Any        bool                `yaml:"match.any"`
 }
 
 func (rawRule RawRule) Parse() Rule {
@@ -81,50 +146,127 @@ func (rawRule RawRule) Parse() Rule {
 
 	rule := Rule{
 		Ports:      ports,
-		Payload:    rawRule.Payload.ParseList(rawRule.Id),
-		IPOption:   rawRule.IPOption.ParseList(rawRule.Id),
 		Tags:       rawRule.Tags,
-		TTL:        rawRule.TTL,
-		TOS:        rawRule.TOS,
-		Dsize:      rawRule.Dsize,
-		Seq:        rawRule.Seq,
-		Ack:        rawRule.Ack,
 		IPProtocol: rawRule.IPProtocol.ParseList(rawRule.Id),
-		URI:        rawRule.URI.ParseList(rawRule.Id),
-		Body:       rawRule.Body.ParseList(rawRule.Id),
-		Verb:       rawRule.Verb.ParseList(rawRule.Id),
-		Headers:    rawRule.Headers.ParseList(rawRule.Id),
-		Proto:      rawRule.Proto.ParseList(rawRule.Id),
-		Fragbits:   rawRule.Fragbits.ParseList(),
-		Flags:      rawRule.Flags.ParseList(),
-		Window:     rawRule.Window,
-		TLS:        rawRule.TLS,
-		ICMPSeq:    rawRule.ICMPSeq,
-		TypeCode4:  rawRule.TypeCode4,
-		ICMPCode4:  rawRule.ICMPCode4,
-		ICMPType4:  rawRule.ICMPType4,
-		TypeCode6:  rawRule.TypeCode6,
-		ICMPCode6:  rawRule.ICMPCode6,
-		ICMPType6:  rawRule.ICMPType6,
-		UDPLength:  rawRule.UDPLength,
-		Checksum:   rawRule.Checksum,
 		Id:         rawRule.Id,
 		Layer:      rawRule.Layer,
 		IPs:        ipsList,
 		Metadata:   rawRule.Metadata,
 		Statements: rawRule.Statements,
 		References: rawRule.References,
-		Options: RuleOptions{
-			Depth:    rawRule.Depth,
-			Offset:   rawRule.Offset,
-			MatchAll: rawRule.MatchType == "all",
-			MatchAny: rawRule.MatchType == "any",
-		},
 	}
 
-	// Default to MatchAll
-	if rule.Options.MatchAll == false && rule.Options.MatchAny == false {
-		rule.Options.MatchAll = true
+	rawMatch, err := yaml.Marshal(rawRule.Match)
+	if err != nil {
+		log.Println(err)
+		// Fatal error
+		os.Exit(1)
+	}
+
+	for key, _ := range rawRule.Match.(map[interface{}]interface{}) {
+		if !strings.HasPrefix(key.(string), rawRule.Layer+".") {
+			log.Printf("Property '%s' is not supported with layer '%s'", key.(string), rawRule.Layer)
+			return Rule{}
+		}
+	}
+
+	switch rawRule.Layer {
+	case "http":
+		var buf HTTPRule
+
+		err = yaml.Unmarshal(rawMatch, &buf)
+		if err != nil {
+			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			return Rule{}
+		}
+
+		rule.HTTP = ParsedHTTPRule{
+			URI:     buf.URI.ParseList(rawRule.Id),
+			Body:    buf.Body.ParseList(rawRule.Id),
+			Verb:    buf.Verb.ParseList(rawRule.Id),
+			Headers: buf.Headers.ParseList(rawRule.Id),
+			Proto:   buf.Proto.ParseList(rawRule.Id),
+			TLS:     buf.TLS,
+		}
+
+		rule.MatchAll = buf.Any == false
+
+	case "tcp":
+		var buf TCPRule
+
+		err = yaml.Unmarshal(rawMatch, &buf)
+		if err != nil {
+			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			return Rule{}
+		}
+
+		rule.TCP = ParsedTCPRule{
+			IPOption: buf.IPOption.ParseList(rawRule.Id),
+			Fragbits: buf.Fragbits.ParseList(),
+			Flags:    buf.Flags.ParseList(),
+			Window:   buf.Window,
+			Dsize:    buf.Dsize,
+			Seq:      buf.Seq,
+			Ack:      buf.Ack,
+			Payload:  buf.Payload.ParseList(rawRule.Id),
+		}
+
+		rule.MatchAll = buf.Any == false
+
+	case "udp":
+		var buf UDPRule
+
+		err = yaml.Unmarshal(rawMatch, &buf)
+		if err != nil {
+			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			return Rule{}
+		}
+
+		rule.UDP = ParsedUDPRule{
+			Dsize:    buf.Dsize,
+			Length:   buf.Length,
+			Checksum: buf.Checksum,
+			Payload:  buf.Payload.ParseList(rawRule.Id),
+		}
+
+		rule.MatchAll = buf.Any == false
+
+	case "icmpv4":
+		var buf ICMPv4Rule
+
+		err = yaml.Unmarshal(rawMatch, &buf)
+		if err != nil {
+			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			return Rule{}
+		}
+
+		rule.ICMPv4 = ParsedICMPv4Rule{
+			TypeCode: buf.TypeCode,
+			Type:     buf.Type,
+			Code:     buf.Code,
+			Checksum: buf.Checksum,
+			Seq:      buf.Seq,
+		}
+
+		rule.MatchAll = buf.Any == false
+
+	case "icmpv6":
+		var buf ICMPv6Rule
+
+		err = yaml.Unmarshal(rawMatch, &buf)
+		if err != nil {
+			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			return Rule{}
+		}
+
+		rule.ICMPv6 = ParsedICMPv6Rule{
+			TypeCode: buf.TypeCode,
+			Type:     buf.Type,
+			Code:     buf.Code,
+			Checksum: buf.Checksum,
+		}
+
+		rule.MatchAll = buf.Any == false
 	}
 
 	return rule

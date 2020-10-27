@@ -23,7 +23,7 @@ type BaseLogData struct {
 	Session     string              `json:"session"`
 	Type        string              `json:"type"`
 	SourceIP    string              `json:"src_ip"`
-	DestPort    uint16                `json:"dst_port"`
+	DestPort    uint16              `json:"dst_port"`
 	Tags        []string            `json:"pk_tags"`
 	Metadata    map[string]string   `json:"metadata"`
 	References  map[string][]string `json:"references"`
@@ -116,16 +116,19 @@ type IPv6LogData struct {
 }
 
 type HTTPLogData struct {
-	Verb       string            `json:"verb"`
-	Proto      string            `json:"proto"`
-	RequestURI string            `json:"uri"`
+	Verb       string `json:"verb"`
+	Proto      string `json:"proto"`
+	RequestURI string `json:"uri"`
 	//RemoteAddr string            `json:"remote_address"`
-	SourcePort uint16            `json:"src_port"`
-	DestHost   string            `json:"dst_host"`
-	Headers    map[string]string `json:"headers"`
-	Errors     []string          `json:"errors"`
-	Body       Payload           `json:"body"`
-	IsTLS      bool              `json:"is_tls"`
+	SourcePort    uint16            `json:"src_port"`
+	DestHost      string            `json:"dst_host"`
+	UserAgent     string            `json:"user_agent"`
+	Headers       map[string]string `json:"headers"`
+	HeadersKeys   []string          `json:"headers_keys"`
+	HeadersValues []string          `json:"headers_values"`
+	Errors        []string          `json:"errors"`
+	Body          Payload           `json:"body"`
+	IsTLS         bool              `json:"is_tls"`
 }
 
 func (eventLog TCPEventLog) String() (string, error) {
@@ -167,14 +170,6 @@ func (eventLog ICMPv6EventLog) String() (string, error) {
 	}
 	return string(data), nil
 }
-
-//func (eventLog BaseLogData) String() (string, error) {
-//	data, err := json.Marshal(eventLog)
-//	if err != nil {
-//		return "", err
-//	}
-//	return string(data), nil
-//}
 
 func NewPayload(data []byte, maxLength uint64) Payload {
 	var pl = Payload{}

@@ -1,39 +1,47 @@
-ok_icmpv4_type_code:
+ok_icmpv4_typecode:
   layer: icmpv4
   id: 5ab4a5de-0eff-4045-a50d-e3d44159013b
-  icmpv4_type_code: 2048
+  match:
+    icmpv4.typecode: 2048
 
-nok_icmpv4_type_code:
+nok_icmpv4_typecode:
   layer: icmpv4
   id: 817407fc-5dec-42ca-8e42-1198cd51afdc
-  icmpv4_type_code: 0
+  match:
+    icmpv4.typecode: 0
 
 ok_checksum:
   layer: icmpv4
   id: b845d07e-c447-4b4c-aad7-1be33bc4fa4a
-  checksum: 0x0416
+  match:
+    icmpv4.checksum: 0x0416
 
 nok_checksum:
   layer: icmpv4
   id: ca48fc15-c273-43f8-8487-04507f4f4813
-  checksum: 0
+  match:
+    icmpv4.checksum: 0
 
 ok_icmpv4_code:
   layer: icmpv4
   id: b845d07e-c447-4b4c-aad7-1be33bc4fa4a
-  icmpv4_code: 0
+  match:
+    icmpv4.code: 0
 
 nok_icmpv4_code:
   layer: icmpv4
   id: ca48fc15-c273-43f8-8487-04507f4f4813
-  icmpv4_code: 1
+  match:
+    icmpv4.code: 1
 
 ok_icmpv4_type:
   layer: icmpv4
   id: b845d07e-c447-4b4c-aad7-1be33bc4fa4a
-  icmpv4_type: 0x8
+  match:
+    icmpv4.type: 0x8
 
 nok_icmpv4_type:
   layer: icmpv4
   id: ca48fc15-c273-43f8-8487-04507f4f4813
-  icmpv4_type: 0
+  match:
+    icmpv4.type: 0

@@ -25,8 +25,8 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 		log.SetOutput(&lumberjack.Logger{
 			Filename: config.Cfg.LogFile,
 			MaxSize:  config.Cfg.LogMaxSize, // megabytes
-			MaxAge:   15,                    //days
-			Compress: true,                  // disabled by default,
+			MaxAge:   config.Cfg.LogMaxAge,                    //days
+			Compress: config.Cfg.LogCompressRotatedLogs,                  // disabled by default,
 		})
 	} else {
 		log.SetOutput(os.Stdout)

@@ -51,9 +51,6 @@ func LoadRulesDir(rulesDir string) {
 					os.Exit(1)
 				}
 
-				//for _, proto := range config.Cfg.MatchProtocols {
-				//	globalRawRules[proto] = parsed.Filter(func(rule RawRule) bool { return rule.Layer == proto })
-				//}
 				globalRawRules = append(globalRawRules, parsed)
 			} else {
 				log.Println("invalid rule file (wanted : .yml) :", path)

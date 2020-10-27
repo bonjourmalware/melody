@@ -111,61 +111,63 @@ func TestParseOptions(t *testing.T) {
 		{
 			OkSrc: []string{
 				"contains",
-				"all|contains",
-				"contains|all",
-				"endswith|all",
-				"startswith|all",
-				"is|all",
-				"contains|all|regex|nocase",
+				"any|contains",
+				"contains|any",
+				"endswith|any",
+				"startswith|any",
+				"is|any",
+				"contains|any|regex|nocase",
 			},
 			OkDst: []Options{
 				{
-					Contains: true,
-				},
-				{
 					All:      true,
 					Contains: true,
 				},
 				{
-					All:      true,
+					All:      false,
 					Contains: true,
 				},
 				{
-					All:      true,
+					All:      false,
+					Contains: true,
+				},
+				{
+					All:      false,
 					Endswith: true,
 				},
 				{
-					All:      true,
+					All:      false,
 					Startswith: true,
 				},
 				{
-					All:      true,
+					All:      false,
 					Is: true,
 				},
 				{
-					All:      true,
+					All:      false,
 					Contains: true,
 					Regex: true,
 					Nocase: true,
 				},
 			},
 			NokSrc: []string{
-				"all|contains",
+				"any|contains",
 				"contains",
 			},
 			NokDst: []Options{
 				{
+					All: false,
+				},				{
 					All: true,
 				},
-				{},
 			},
 			ErrSrc: []string{
-				"contains|is|all",
+				"contains|is",
 				"contains|nonexistent",
 				"",
 			},
 			ErrDst: []string{
-				fmt.Sprintf("options parsing failed for condition %s : there can only be one of <is|contains|startswith|endswith>\n", "contains|is|all"),
+				fmt.Sprintf("options parsing failed for condition %s : there can only be one of <is|contains|startswith|endswith>\n", "contains|is"),
 				fmt.Sprintf("options parsing failed for condition %s : unknown option \"%s\"\n", "contains|nonexistent", "nonexistent"),
 				fmt.Sprintf("options parsing failed for condition %s : matching mode cannot be empty\n", ""),
 			},

@@ -20,53 +20,6 @@ func init() {
 	assetsBasePath = path.Join(gopath, "src/github.com/bonjourmalware/pinknoise/tests")
 }
 
-//func RulesetToNamed(ruleset Rules) map[string]Rule {
-//	named := make(map[string]Rule)
-//	for _, rule := range ruleset{
-//		named[rule.Metadata["name"]] = rule
-//	}
-//
-//	return named
-//}
-
-//func ReadICMPFromPcap(pcapfile string) ([]*events.ICMPv4Event, error) {
-//	var pkEvents []*events.ICMPv4Event
-//	pcapfilePath := MakeAssetFullPath(pcapfile)
-//
-//	f, err := os.Open(pcapfilePath)
-//	if err != nil {
-//		return []*events.ICMPv4Event{}, err
-//	}
-//	handle, err := pcap.OpenOfflineFile(f)
-//	if err != nil {
-//		return []*events.ICMPv4Event{}, err
-//	}
-//
-//	src := gopacket.NewPacketSource(handle, handle.LinkType())
-//	in := src.Packets()
-//
-//loop:
-//	for {
-//		var packet gopacket.Packet
-//		select {
-//		case packet = <-in:
-//			if packet == nil {
-//				break loop
-//			}
-//		}
-//		if packet.NetworkLayer().(*layers.IPv4).Protocol == layers.IPProtocolICMPv4 {
-//			ev, err := events.NewICMPv4Event(packet)
-//			if err != nil {
-//				return []*events.ICMPv4Event{}, err
-//			}
-//
-//			pkEvents = append(pkEvents, ev)
-//		}
-//	}
-//
-//	return pkEvents, nil
-//}
-
 func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 	var packets []gopacket.Packet
 	_, rawPackets, err := ReadPacketsFromPcap(pcapfile, layers.IPProtocolTCP, true)

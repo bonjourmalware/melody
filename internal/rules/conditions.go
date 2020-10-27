@@ -8,13 +8,14 @@ import (
 	"os"
 	"regexp"
 	"strings"
-
 	//"github.com/bonjourmalware/pinknoise/internal/logger"
 )
 
 type RawConditions struct {
-	Groups    map[string][]string `yaml:"-,inline"`
-	MatchType string              `yaml:"match"`
+	Groups map[string][]string `yaml:"-,inline"`
+	Any    bool                `yaml:"any"`
+	Depth  uint                `yaml:"depth"`
+	Offset uint                `yaml:"offset"`
 }
 
 //type RawConditions map[string][]string
@@ -22,7 +23,7 @@ type RawConditions struct {
 type ConditionsList struct {
 	Conditions []Conditions
 	MatchAll   bool
-	MatchAny   bool
+	//MatchAny   bool
 }
 
 type Conditions struct {
@@ -31,6 +32,8 @@ type Conditions struct {
 }
 
 type Options struct {
+	Depth      uint
+	Offset     uint
 	Nocase     bool
 	Is         bool
 	All        bool
@@ -45,13 +48,14 @@ type ConditionValue struct {
 	ByteValue     []byte
 }
 
-func (condsList ConditionsList) Match(received []byte, ruleOptions RuleOptions) bool {
+func (condsList ConditionsList) Match(received []byte) bool {
 	if condsList.Conditions != nil {
-		if condsList.MatchAny {
+		if !condsList.MatchAll {
 			var condOK = false
 			for _, condGroup := range condsList.Conditions {
 				// If any condition group is valid, continue
-				if condGroup.Match(received, ruleOptions) == true {
+
+				if condGroup.Match(received) == true {
 					condOK = true
 					break
 				}
@@ -64,7 +68,8 @@ func (condsList ConditionsList) Match(received []byte, ruleOptions RuleOptions) 
 			for _, condGroup := range condsList.Conditions {
 				// If any condition group is invalid, rule is false
 				// Continue if the test for all the values are successful
-				if condGroup.Match(received, ruleOptions) == false {
+
+				if condGroup.Match(received) == false {
 					return false
 				}
 			}
@@ -74,13 +79,13 @@ func (condsList ConditionsList) Match(received []byte, ruleOptions RuleOptions) 
 	return true
 }
 
-func (cond Conditions) Match(received []byte, ruleOptions RuleOptions) bool {
+func (cond Conditions) Match(received []byte) bool {
 	var contentMatch bool
 	var matchCounter int
 	var valuesLen = len(cond.Values)
 
 	for _, condVal := range cond.Values {
-		contentMatch = cond.MatchBytesWithOptions(received, condVal, ruleOptions)
+		contentMatch = cond.MatchBytesWithOptions(received, condVal)
 
 		if cond.Options.All && !contentMatch {
 			return false
@@ -99,7 +104,7 @@ func (cond Conditions) Match(received []byte, ruleOptions RuleOptions) bool {
 
 // This function only cares about the matching modifier ("contains", "startswith", etc, not "all")
 // The condition's options are being taken care of in the Conditions.Match function
-func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionValue, ruleOptions RuleOptions) bool {
+func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionValue) bool {
 	var match bool
 	var condValContent = condVal.ByteValue
 
@@ -108,12 +113,12 @@ func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionV
 		condValContent = bytes.ToLower(condValContent)
 	}
 
-	if ruleOptions.Offset > 0 && ruleOptions.Offset < len(received) {
-		received = received[ruleOptions.Offset:]
+	if cond.Options.Offset > 0 && cond.Options.Offset < uint(len(received)) {
+		received = received[cond.Options.Offset:]
 	}
 
-	if ruleOptions.Depth > 0 && ruleOptions.Depth < len(received) {
-		received = received[:ruleOptions.Depth]
+	if cond.Options.Depth > 0 && cond.Options.Depth < uint(len(received)) {
+		received = received[:cond.Options.Depth]
 	}
 
 	if cond.Options.Is {
@@ -130,26 +135,28 @@ func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionV
 	return match
 }
 
-func (condsList *ConditionsList) ParseMatchType(matchType string, ruleId string) {
-	switch matchType {
-	case "any":
-		condsList.MatchAny = true
-	case "all":
-		condsList.MatchAll = true
-	}
-
-	if !condsList.MatchAny && !condsList.MatchAll {
-		//logger.Std.Printf("No match behaviour defined for rule %s, defaulting to \"any\"\n", ruleId)
-		condsList.MatchAny = true
-	}
-}
+//func (condsList *ConditionsList) ParseMatchType(matchType string, ruleId string) {
+//	switch matchType {
+//	case "any":
+//		condsList.MatchAny = true
+//	case "all":
+//		condsList.MatchAll = true
+//	}
+//
+//	if !condsList.MatchAny && !condsList.MatchAll {
+//		//logger.Std.Printf("No match behaviour defined for rule %s, defaulting to \"any\"\n", ruleId)
+//		condsList.MatchAny = true
+//	}
+//}
 
 func (rawCondList RawConditions) ParseList(ruleId string) *ConditionsList {
 	if len(rawCondList.Groups) == 0 {
 		return nil
 	}
 
-	condsList := ConditionsList{}
+	condsList := ConditionsList{
+		MatchAll: rawCondList.Any == false,
+	}
 	var bufCond Conditions
 
 	for options, val := range rawCondList.Groups {
@@ -160,10 +167,14 @@ func (rawCondList RawConditions) ParseList(ruleId string) *ConditionsList {
 			return &ConditionsList{}
 		}
 		bufCond.ParseValues(val)
+		bufCond.Options.Offset = rawCondList.Offset
+		bufCond.Options.Depth = rawCondList.Depth
+		//bufCond.Options.All = rawCondList.Any == false
+
 		condsList.Conditions = append(condsList.Conditions, bufCond)
 	}
 
-	condsList.ParseMatchType(rawCondList.MatchType, ruleId)
+	//condsList.ParseMatchType(rawCondList.MatchType, ruleId)
 
 	return &condsList
 }
@@ -173,14 +184,17 @@ func (cond *Conditions) ParseOptions(opt string) error {
 	modeQty := 0
 	var newOption Options
 
+	// Default to all = true
+	newOption.All = true
+
 	if opt == "" {
 		return fmt.Errorf("options parsing failed for condition %s : matching mode cannot be empty\n", opt)
 	}
 
 	for _, chunk := range chunks {
 		switch chunk {
-		case "all":
-			newOption.All = true
+		case "any":
+			newOption.All = false
 		case "nocase":
 			newOption.Nocase = true
 		case "regex":
@@ -206,6 +220,7 @@ func (cond *Conditions) ParseOptions(opt string) error {
 		return fmt.Errorf("options parsing failed for condition %s : there can only be one of <is|contains|startswith|endswith>\n", opt)
 	}
 
+	//newOption.All = any == false
 	cond.Options = newOption
 
 	return nil
