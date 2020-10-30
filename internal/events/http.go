@@ -1,7 +1,6 @@
 package events
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -166,7 +165,6 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 	dstHost := hostChunks[0]
 	rawDstPort = hostChunks[1]
 	remoteAddrChunks := strings.Split(r.RemoteAddr, ":")
-	fmt.Println(remoteAddrChunks)
 	srcIP, rawSrcPort = remoteAddrChunks[0], remoteAddrChunks[1]
 
 	params, err = parsing.GetBodyPayload(r)
