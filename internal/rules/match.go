@@ -7,7 +7,7 @@ import (
 
 func (rule *Rule) Match(ev events.Event) bool {
 	var condOK bool
-	//ipHeader := ev.GetIPHeader()
+	//ipHeader := ev.GetIPv4Header()
 
 	// The rule fails if the source IP is blacklisted
 	if len(rule.IPs.BlacklistedIPs) > 0 {

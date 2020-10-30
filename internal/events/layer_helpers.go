@@ -10,7 +10,11 @@ type IPv6Layer struct{
 	Header     *layers.IPv6
 }
 
-func (lay IPv4Layer) GetIPHeader() *layers.IPv4 {
+func (lay IPv4Layer) GetIPv4Header() *layers.IPv4 {
+	return lay.Header
+}
+
+func (lay IPv6Layer) GetIPv6Header() *layers.IPv6 {
 	return lay.Header
 }
 

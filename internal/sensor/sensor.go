@@ -2,7 +2,7 @@ package sensor
 
 import (
 	"fmt"
-	"log"
+	"github.com/bonjourmalware/pinknoise/internal/logging"
 	"time"
 
 	"github.com/bonjourmalware/pinknoise/internal/engine"
@@ -64,8 +64,6 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		close(sensorStoppedChan)
 	}()
 
-	//var err error
-
 loop:
 	for {
 		var packet gopacket.Packet
@@ -106,24 +104,21 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 			case layers.IPProtocolICMPv4:
 				event, err = events.NewICMPv4Event(packet)
 				if err != nil {
-					//TODO: write to error log
-					log.Println("ERROR", err)
+					logging.Errors.Println(err)
 					return
 				}
 
 			case layers.IPProtocolUDP:
-				event, err = events.NewUDPEvent(packet)
+				event, err = events.NewUDPEvent(packet, 4)
 				if err != nil {
-					//TODO: write to error log
-					log.Println("ERROR", err)
+					logging.Errors.Println(err)
 					return
 				}
 
 			case layers.IPProtocolTCP:
-				event, err = events.NewTCPEvent(packet)
+				event, err = events.NewTCPEvent(packet, 4)
 				if err != nil {
-					//TODO: write to error log
-					log.Println("ERROR", err)
+					logging.Errors.Println(err)
 					return
 				}
 
@@ -150,13 +145,32 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 			case layers.IPProtocolICMPv6:
 				event, err = events.NewICMPv6Event(packet)
 				if err != nil {
-					//TODO: write to error log
-					log.Println("ERROR", err)
+					logging.Errors.Println(err)
 					return
 				}
 
 			default:
-				return
+				switch packet.NetworkLayer().(*layers.IPv6).NextLayerType() {
+				case layers.IPProtocolTCP.LayerType():
+					event, err = events.NewTCPEvent(packet, 6)
+					if err != nil {
+						logging.Errors.Println(err)
+						return
+					}
+
+					tcpPacket := packet.TransportLayer().(*layers.TCP)
+					assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+
+				case layers.IPProtocolUDP.LayerType():
+					event, err = events.NewUDPEvent(packet, 6)
+					if err != nil {
+						logging.Errors.Println(err)
+						return
+					}
+
+				default:
+					return
+				}
 			}
 
 			if *config.Cli.Dump {

@@ -20,19 +20,26 @@ type UDPEvent struct {
 	BaseEvent
 	UDPLayer
 	IPv4Layer
+	IPv6Layer
 }
 
-func NewUDPEvent(packet gopacket.Packet) (*UDPEvent, error) {
+func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 	var ev = &UDPEvent{}
 	ev.Kind = config.UDPKind
+	ev.IPVersion = IPVersion
 
 	ev.Session = sessions.Map.GetUID(packet.TransportLayer().TransportFlow().String())
 
-	//IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	//ev.IPHeader = IPHeader
-	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPv4Layer = IPv4Layer{Header: IPHeader}
-	ev.SourceIP = IPHeader.SrcIP.String()
+	switch IPVersion {
+	case 4:
+		IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
+		ev.IPv4Layer = IPv4Layer{Header: IPHeader}
+		ev.SourceIP = IPHeader.SrcIP.String()
+	case 6:
+		IPHeader, _ := packet.Layer(layers.LayerTypeIPv6).(*layers.IPv6)
+		ev.IPv6Layer = IPv6Layer{Header: IPHeader}
+		ev.SourceIP = IPHeader.SrcIP.String()
+	}
 
 	UDPHeader, _ := packet.Layer(layers.LayerTypeUDP).(*layers.UDP)
 	ev.UDPLayer = UDPLayer{Header: UDPHeader}
@@ -72,28 +79,41 @@ func (ev UDPEvent) ToLog() EventLog {
 		}
 	}
 
-	ev.LogData.IP = IPv4LogData{
-		Version:    ev.IPv4Layer.Header.Version,
-		IHL:        ev.IPv4Layer.Header.IHL,
-		TOS:        ev.IPv4Layer.Header.TOS,
-		Length:     ev.IPv4Layer.Header.Length,
-		Id:         ev.IPv4Layer.Header.Id,
-		FragOffset: ev.IPv4Layer.Header.FragOffset,
-		TTL:        ev.IPv4Layer.Header.TTL,
-		Protocol:   ev.IPv4Layer.Header.Protocol,
-	}
+	switch ev.IPVersion {
+	case 4:
+		if ev.IPv4Layer.Header.Flags&layers.IPv4EvilBit != 0 {
+			ipFlagsStr = append(ipFlagsStr, "EV")
+		}
+		if ev.IPv4Layer.Header.Flags&layers.IPv4DontFragment != 0 {
+			ipFlagsStr = append(ipFlagsStr, "DF")
+		}
+		if ev.IPv4Layer.Header.Flags&layers.IPv4MoreFragments != 0 {
+			ipFlagsStr = append(ipFlagsStr, "MF")
+		}
 
-	if ev.IPv4Layer.Header.Flags&layers.IPv4EvilBit != 0 {
-		ipFlagsStr = append(ipFlagsStr, "EV")
-	}
-	if ev.IPv4Layer.Header.Flags&layers.IPv4DontFragment != 0 {
-		ipFlagsStr = append(ipFlagsStr, "DF")
-	}
-	if ev.IPv4Layer.Header.Flags&layers.IPv4MoreFragments != 0 {
-		ipFlagsStr = append(ipFlagsStr, "MF")
-	}
+		ev.LogData.IP = IPv4LogData{
+			Version:    ev.IPv4Layer.Header.Version,
+			IHL:        ev.IPv4Layer.Header.IHL,
+			TOS:        ev.IPv4Layer.Header.TOS,
+			Length:     ev.IPv4Layer.Header.Length,
+			Id:         ev.IPv4Layer.Header.Id,
+			FragOffset: ev.IPv4Layer.Header.FragOffset,
+			TTL:        ev.IPv4Layer.Header.TTL,
+			Protocol:   ev.IPv4Layer.Header.Protocol,
+			Fragbits:   strings.Join(ipFlagsStr, ""),
+		}
 
-	ev.LogData.IP.Fragbits = strings.Join(ipFlagsStr, "")
+	case 6:
+		ev.LogData.IP = IPv6LogData{
+			Version:        ev.IPv6Layer.Header.Version,
+			Length:         ev.IPv6Layer.Header.Length,
+			NextHeader:     ev.IPv6Layer.Header.NextHeader,
+			NextHeaderName: ev.IPv6Layer.Header.NextHeader.String(),
+			TrafficClass:   ev.IPv6Layer.Header.TrafficClass,
+			FlowLabel:      ev.IPv6Layer.Header.FlowLabel,
+			HopLimit:       ev.IPv6Layer.Header.HopLimit,
+		}
+	}
 
 	ev.LogData.UDP = UDPLogData{
 		Payload:  NewPayload(ev.UDPLayer.Header.Payload, config.Cfg.MaxUDPDataSize),

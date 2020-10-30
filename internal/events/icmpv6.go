@@ -35,7 +35,7 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 	return ev, nil
 }
 
-//func (ev ICMPv6Event) GetIPHeader() *layers.IPv6 {
+//func (ev ICMPv6Event) GetIPv4Header() *layers.IPv6 {
 //	return ev.IPHeader
 //}
 

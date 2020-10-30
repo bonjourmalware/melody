@@ -1,6 +1,16 @@
 ---
-logs.file: pinknoise.ndjson
-logs.max_size: 100 # MB
+logs.dir: "logs/"
+
+logs.sensor.file: pinknoise.ndjson
+logs.sensor.max_size: 100 # MB
+logs.sensor.max_age: 15 # days
+logs.sensor.compress_rotated: true
+
+logs.errors.file: pinknoise.ndjson
+logs.errors.max_size: 100 # MB
+logs.errors.max_age: 15 # days
+logs.errors.compress_rotated: true
+
 logs.http.post.max_size: "1kb"
 logs.tcp.payload.max_size: "1kb"
 logs.udp.payload.max_size: "1kb"
@@ -16,18 +26,18 @@ filter.homenet.ipv4:
 filter.homenet.ipv6:
       - "::1"
 
+server.http.enable: true
+server.http.port: 10080
+server.http.dir: "var/http/serve"
+server.http.response.status_code: 200
+server.http.response.headers:
+      - Server: "Apache"
+
 server.https.enable: true
-server.https.port: 8080
-server.https.dir: "var/https/static"
-server.https.crt: "var/https/certs/cert.prm"
+server.https.port: 10443
+server.https.dir: "var/https/serve"
+server.https.crt: "var/https/certs/cert.pem"
 server.https.key: "var/https/certs/key.pem"
 server.https.response.status_code: 200
 server.https.response.headers:
-      - Server: "Apache"
-
-server.http.enable: true
-server.http.port: 4443
-server.http.dir: "var/http/static"
-server.http.response.status_code: 200
-server.http.response.headers:
       - Server: "Apache"

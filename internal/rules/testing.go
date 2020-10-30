@@ -77,7 +77,7 @@ loop:
 						Events = append(Events, ev)
 
 					case layers.IPProtocolUDP:
-						ev, err := events.NewUDPEvent(packet)
+						ev, err := events.NewUDPEvent(packet, 4)
 						if err != nil {
 							return []events.Event{}, []gopacket.Packet{}, err
 						}
@@ -85,7 +85,7 @@ loop:
 						Events = append(Events, ev)
 
 					case layers.IPProtocolTCP:
-						ev, err := events.NewTCPEvent(packet)
+						ev, err := events.NewTCPEvent(packet, 4)
 						if err != nil {
 							return []events.Event{}, []gopacket.Packet{}, err
 						}

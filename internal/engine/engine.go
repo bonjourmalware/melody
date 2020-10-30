@@ -3,7 +3,7 @@ package engine
 import (
 	"github.com/bonjourmalware/pinknoise/internal/config"
 	"github.com/bonjourmalware/pinknoise/internal/events"
-	"github.com/bonjourmalware/pinknoise/internal/logger"
+	"github.com/bonjourmalware/pinknoise/internal/logging"
 	"github.com/bonjourmalware/pinknoise/internal/router"
 	"github.com/bonjourmalware/pinknoise/internal/rules"
 )
@@ -16,12 +16,12 @@ func Start(quitErrChan chan error, shutdownChan chan bool, engineStoppedChan cha
 	go startEventQualifier(quitErrChan, shutdownChan, engineStoppedChan)
 
 	if config.Cfg.ServerHTTPEnable {
-		logger.Std.Println("Starting HTTP server...")
+		logging.Std.Println("Starting HTTP server...")
 		go router.StartHTTP(quitErrChan)
 	}
 
 	if config.Cfg.ServerHTTPSEnable {
-		logger.Std.Println("Starting HTTPS server...")
+		logging.Std.Println("Starting HTTPS server...")
 		go router.StartHTTPS(quitErrChan, EventChan)
 	}
 }
@@ -59,7 +59,7 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 				}
 			}
 
-			logger.LogChan <- ev
+			logging.LogChan <- ev
 		}
 	}
 }

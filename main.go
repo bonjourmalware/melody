@@ -10,7 +10,7 @@ import (
 
 	"github.com/bonjourmalware/pinknoise/internal/rules"
 
-	"github.com/bonjourmalware/pinknoise/internal/logger"
+	"github.com/bonjourmalware/pinknoise/internal/logging"
 
 	"github.com/bonjourmalware/pinknoise/internal/config"
 	"github.com/pborman/getopt"
@@ -37,26 +37,28 @@ func init() {
 	getopt.Parse()
 
 	config.Cfg.Load()
+	
+	logging.InitLoggers()
 	rules.LoadRulesDir(config.Cfg.RulesDir)
 }
 
 func main() {
-	logger.Start(quitErrChan, shutdownChan, loggerStoppedChan)
+	logging.Start(quitErrChan, shutdownChan, loggerStoppedChan)
 	engine.Start(quitErrChan, shutdownChan, engineStoppedChan)
 	sensor.Start(quitErrChan, shutdownChan, sensorStoppedChan)
 
-	logger.Std.Println("All systems started")
+	logging.Std.Println("All systems started")
 
 	select {
 	case err := <-quitErrChan:
-		logger.Std.Println(err)
+		logging.Std.Println(err)
 		close(shutdownChan)
 		break
 	case <-quitSigChan:
 		close(shutdownChan)
 		break
 	case <-shutdownChan:
-		logger.Std.Println("Shutting down...")
+		logging.Std.Println("Shutting down...")
 		break
 	}
 
@@ -64,5 +66,5 @@ func main() {
 	<-engineStoppedChan
 	<-loggerStoppedChan
 
-	logger.Std.Println("Exited")
+	logging.Std.Println("Exited")
 }

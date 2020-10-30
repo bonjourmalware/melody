@@ -44,10 +44,17 @@ type CLI struct {
 
 // Config structure which mirrors the yaml file
 type Config struct {
-	LogFile      string `yaml:"logs.file"`
-	LogMaxSize   int    `yaml:"logs.max_size"`
-	LogMaxAge       int    `yaml:"logs.max_age"`
-	LogCompressRotatedLogs bool   `yaml:"logs.compress_rotated"`
+	LogsDir string `yaml:"logs.dir"`
+
+	LogsSensorFile                string `yaml:"logs.sensor.file"`
+	LogsSensorMaxSize             int    `yaml:"logs.sensor.max_size"`
+	LogsSensorMaxAge              int    `yaml:"logs.sensor.max_age"`
+	LogsSensorCompressRotatedLogs bool   `yaml:"logs.sensor.compress_rotated"`
+
+	LogsErrorsFile                string `yaml:"logs.errors.file"`
+	LogsErrorsMaxSize             int    `yaml:"logs.errors.max_size"`
+	LogsErrorsMaxAge              int    `yaml:"logs.errors.max_age"`
+	LogsErrorsCompressRotatedLogs bool   `yaml:"logs.errors.compress_rotated"`
 
 	RulesDir      string `yaml:"rules.dir"`
 	BPFFilterFile string `yaml:"listen.bpf.file"`
@@ -97,9 +104,15 @@ func (cfg *Config) Load() {
 	cfg.MaxTCPDataSizeRaw = "1kb"
 	cfg.MaxUDPDataSizeRaw = "1kb"
 
-	cfg.LogMaxSize = 200
-	cfg.LogCompressRotatedLogs = true
-	cfg.LogMaxAge = 15
+	cfg.LogsSensorFile = "sensor.ndjson"
+	cfg.LogsSensorMaxSize = 200
+	cfg.LogsSensorCompressRotatedLogs = true
+	cfg.LogsSensorMaxAge = 15
+
+	cfg.LogsErrorsFile = "errors.logs"
+	cfg.LogsErrorsMaxSize = 200
+	cfg.LogsErrorsCompressRotatedLogs = true
+	cfg.LogsErrorsMaxAge = 15
 
 	cfgData, err := ioutil.ReadFile(filepath)
 	if err != nil {
@@ -109,25 +122,25 @@ func (cfg *Config) Load() {
 	}
 
 	if err := httpByteSize.UnmarshalText([]byte(cfg.MaxPOSTDataSizeRaw)); err != nil {
-		fmt.Printf("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
+		log.Println("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
-		fmt.Printf("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
+		log.Println("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := udpByteSize.UnmarshalText([]byte(cfg.MaxUDPDataSizeRaw)); err != nil {
-		fmt.Printf("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
+		log.Println("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := yaml.Unmarshal(cfgData, &cfg); err != nil {
-		fmt.Printf("Failed to load the config file [%s]\n", filepath)
+		log.Println("Failed to load the config file [%s]\n", filepath)
 		log.Println(err)
 		os.Exit(1)
 	}

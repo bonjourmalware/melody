@@ -1,14 +1,7 @@
-package logger
+package logging
 
 import (
-	"log"
-	"os"
-
 	"github.com/bonjourmalware/pinknoise/internal/events"
-
-	"github.com/natefinch/lumberjack"
-
-	"github.com/bonjourmalware/pinknoise/internal/config"
 )
 
 var (
@@ -20,18 +13,6 @@ func Start(quitErrChan chan error, shutdownChan chan bool, loggerStoppedChan cha
 }
 
 func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, loggerStoppedChan chan bool) {
-	log.SetFlags(0)
-	if *config.Cli.Stdout == false {
-		log.SetOutput(&lumberjack.Logger{
-			Filename: config.Cfg.LogFile,
-			MaxSize:  config.Cfg.LogMaxSize, // megabytes
-			MaxAge:   config.Cfg.LogMaxAge,                    //days
-			Compress: config.Cfg.LogCompressRotatedLogs,                  // disabled by default,
-		})
-	} else {
-		log.SetOutput(os.Stdout)
-	}
-
 	defer func() {
 		close(loggerStoppedChan)
 	}()
@@ -42,11 +23,12 @@ func receiveEventsForLogging(quitErrChan chan error, shutdownChan chan bool, log
 		case ev := <-LogChan:
 			logdata, err := ev.ToLog().String()
 			if err != nil {
-				log.Println("failed to serialize JSON payload while writing to log file")
+				Warnings.Println("Failed to serialize JSON payload while writing to log file")
 				continue
 			}
 
-			log.Println(logdata)
+			// Log to sensor file
+			Sensor.Println(logdata)
 
 		case <-quitErrChan:
 			return

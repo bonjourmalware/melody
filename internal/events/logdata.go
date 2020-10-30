@@ -42,15 +42,16 @@ type ICMPv6EventLog struct {
 	BaseLogData
 }
 
+
 type TCPEventLog struct {
-	TCP TCPLogData  `json:"tcp"`
-	IP  IPv4LogData `json:"ip"`
+	TCP TCPLogData `json:"tcp"`
+	IP  IPLogData  `json:"ip"`
 	BaseLogData
 }
 
 type UDPEventLog struct {
 	UDP UDPLogData  `json:"udp"`
-	IP  IPv4LogData `json:"ip"`
+	IP  IPLogData `json:"ip"`
 	BaseLogData
 }
 
@@ -93,6 +94,8 @@ type UDPLogData struct {
 	Checksum uint16  `json:"checksum"`
 }
 
+type IPLogData interface {}
+
 type IPv4LogData struct {
 	Version    uint8             `json:"version"`
 	IHL        uint8             `json:"ihl"`
@@ -103,6 +106,7 @@ type IPv4LogData struct {
 	FragOffset uint16            `json:"frag_offset"`
 	TTL        uint8             `json:"ttl"`
 	Protocol   layers.IPProtocol `json:"protocol"`
+	IPLogData  `json:"-"`
 }
 
 type IPv6LogData struct {
@@ -113,13 +117,13 @@ type IPv6LogData struct {
 	TrafficClass   uint8             `json:"traffic_class"`
 	FlowLabel      uint32            `json:"flow_label"`
 	HopLimit       uint8             `json:"hop_limit"`
+	IPLogData      `json:"-"`
 }
 
 type HTTPLogData struct {
-	Verb       string `json:"verb"`
-	Proto      string `json:"proto"`
-	RequestURI string `json:"uri"`
-	//RemoteAddr string            `json:"remote_address"`
+	Verb          string            `json:"verb"`
+	Proto         string            `json:"proto"`
+	RequestURI    string            `json:"uri"`
 	SourcePort    uint16            `json:"src_port"`
 	DestHost      string            `json:"dst_host"`
 	UserAgent     string            `json:"user_agent"`

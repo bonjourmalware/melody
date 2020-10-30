@@ -2,6 +2,7 @@ package events
 
 //TODO Add common properties such as dst_host, src_port to base event
 type BaseEvent struct {
+	IPVersion  uint
 	Tags       []string
 	Kind       string
 	SourceIP   string
