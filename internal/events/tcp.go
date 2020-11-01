@@ -1,7 +1,6 @@
 package events
 
 import (
-	"strconv"
 	"strings"
 	"time"
 
@@ -42,6 +41,7 @@ func NewTCPEvent(packet gopacket.Packet, IPVersion uint) (*TCPEvent, error) {
 
 	TCPHeader, _ := packet.Layer(layers.LayerTypeTCP).(*layers.TCP)
 
+	ev.Timestamp = packet.Metadata().Timestamp
 	ev.TCPLayer = TCPLayer{Header: TCPHeader}
 	ev.DestPort = uint16(TCPHeader.DstPort)
 
@@ -57,8 +57,9 @@ func (ev TCPEvent) ToLog() EventLog {
 	var ipFlagsStr []string
 
 	ev.LogData = TCPEventLog{}
-	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
-	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort

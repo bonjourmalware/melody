@@ -37,7 +37,7 @@ func init() {
 	getopt.Parse()
 
 	config.Cfg.Load()
-	
+
 	logging.InitLoggers()
 	rules.LoadRulesDir(config.Cfg.RulesDir)
 }

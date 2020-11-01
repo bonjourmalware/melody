@@ -17,7 +17,7 @@ const (
 	ICMPv4Kind  = "icmpv4"
 	ICMPv6Kind  = "icmpv6"
 	HTTPKind    = "http"
-	DefaultKind = "default"
+	//DefaultKind = "default"
 )
 
 var (
@@ -122,25 +122,25 @@ func (cfg *Config) Load() {
 	}
 
 	if err := httpByteSize.UnmarshalText([]byte(cfg.MaxPOSTDataSizeRaw)); err != nil {
-		log.Println("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
+		log.Printf("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
-		log.Println("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
+		log.Printf("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := udpByteSize.UnmarshalText([]byte(cfg.MaxUDPDataSizeRaw)); err != nil {
-		log.Println("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
+		log.Printf("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := yaml.Unmarshal(cfgData, &cfg); err != nil {
-		log.Println("Failed to load the config file [%s]\n", filepath)
+		log.Printf("Failed to load the config file [%s]\n", filepath)
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -148,7 +148,7 @@ func (cfg *Config) Load() {
 	if Cfg.BPFFilterFile != "" {
 		bpfData, err := ioutil.ReadFile(Cfg.BPFFilterFile)
 		if err != nil {
-			log.Println(fmt.Sprintf("Failed to read BPF file at [%s]", Cfg.BPFFilterFile))
+			log.Printf("Failed to read BPF file at [%s]\n", Cfg.BPFFilterFile)
 			log.Println(err)
 			os.Exit(1)
 		}

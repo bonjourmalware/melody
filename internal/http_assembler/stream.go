@@ -2,11 +2,11 @@ package http_assembler
 
 import (
 	"bufio"
+	"github.com/bonjourmalware/pinknoise/internal/engine"
+	"github.com/bonjourmalware/pinknoise/internal/events"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/tcpassembly"
 	"github.com/google/gopacket/tcpassembly/tcpreader"
-	"github.com/bonjourmalware/pinknoise/internal/engine"
-	"github.com/bonjourmalware/pinknoise/internal/events"
 	"io"
 	"net/http"
 )

@@ -1,12 +1,10 @@
 package events
 
 import (
-	"strconv"
-	"time"
-
 	"github.com/bonjourmalware/pinknoise/internal/config"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
+	"time"
 )
 
 type ICMPv6Event struct {
@@ -21,6 +19,7 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 	ev.Kind = config.ICMPv6Kind
 
 	ev.Session = "n/a"
+	ev.Timestamp = packet.Metadata().Timestamp
 
 	ICMPv6Header, _ := packet.Layer(layers.LayerTypeICMPv6).(*layers.ICMPv6)
 	ev.ICMPv6Layer = ICMPv6Layer{Header: ICMPv6Header}
@@ -45,8 +44,10 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 
 func (ev ICMPv6Event) ToLog() EventLog {
 	ev.LogData = ICMPv6EventLog{}
-	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
-	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
+
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort

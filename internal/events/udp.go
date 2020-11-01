@@ -1,11 +1,9 @@
 package events
 
 import (
-	"strconv"
+	"github.com/bonjourmalware/pinknoise/internal/config"
 	"strings"
 	"time"
-
-	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
@@ -28,6 +26,7 @@ func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 	ev.Kind = config.UDPKind
 	ev.IPVersion = IPVersion
 
+	ev.Timestamp = packet.Metadata().Timestamp
 	ev.Session = sessions.Map.GetUID(packet.TransportLayer().TransportFlow().String())
 
 	switch IPVersion {
@@ -56,8 +55,9 @@ func (ev UDPEvent) ToLog() EventLog {
 	var ipFlagsStr []string
 
 	ev.LogData = UDPEventLog{}
-	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
-	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
+	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort

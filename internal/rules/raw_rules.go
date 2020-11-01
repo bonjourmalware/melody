@@ -176,7 +176,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -196,7 +196,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -218,7 +218,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -236,7 +236,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -255,7 +255,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule %s : %s (layer: '%s')", rawRule.Id, err, rawRule.Layer)
+			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 

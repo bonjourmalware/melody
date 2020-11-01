@@ -18,7 +18,7 @@ type Payload struct {
 }
 
 type BaseLogData struct {
-	NsTimestamp string              `json:"ns_timestamp"`
+	//NsTimestamp string              `json:"ns_timestamp"`
 	Timestamp   string              `json:"timestamp"`
 	Session     string              `json:"session"`
 	Type        string              `json:"type"`
@@ -42,7 +42,6 @@ type ICMPv6EventLog struct {
 	BaseLogData
 }
 
-
 type TCPEventLog struct {
 	TCP TCPLogData `json:"tcp"`
 	IP  IPLogData  `json:"ip"`
@@ -50,13 +49,14 @@ type TCPEventLog struct {
 }
 
 type UDPEventLog struct {
-	UDP UDPLogData  `json:"udp"`
-	IP  IPLogData `json:"ip"`
+	UDP UDPLogData `json:"udp"`
+	IP  IPLogData  `json:"ip"`
 	BaseLogData
 }
 
 type HTTPEventLog struct {
 	HTTP HTTPLogData `json:"http"`
+	IP  IPLogData `json:"ip"`
 	BaseLogData
 }
 
@@ -94,7 +94,7 @@ type UDPLogData struct {
 	Checksum uint16  `json:"checksum"`
 }
 
-type IPLogData interface {}
+type IPLogData interface{}
 
 type IPv4LogData struct {
 	Version    uint8             `json:"version"`

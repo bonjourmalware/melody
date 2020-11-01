@@ -1,5 +1,7 @@
 package events
 
+import "time"
+
 //TODO Add common properties such as dst_host, src_port to base event
 type BaseEvent struct {
 	IPVersion  uint
@@ -8,6 +10,7 @@ type BaseEvent struct {
 	SourceIP   string
 	DestPort   uint16
 	Session    string
+	Timestamp  time.Time
 	Metadata   map[string]string
 	Statements []string
 	References map[string][]string

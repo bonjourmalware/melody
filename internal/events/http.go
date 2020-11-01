@@ -47,8 +47,8 @@ func (ev HTTPEvent) GetHTTPData() HTTPEvent {
 
 func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData = HTTPEventLog{}
-	ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
-	ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	ev.LogData.Timestamp = time.Now().Format(time.RFC3339Nano)
+	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Type = ev.Kind
 	ev.LogData.SourceIP = ev.SourceIP
 	ev.LogData.DestPort = ev.DestPort
@@ -74,7 +74,6 @@ func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData.HTTP.Verb = ev.Verb
 	ev.LogData.HTTP.Proto = ev.Proto
 	ev.LogData.HTTP.RequestURI = ev.RequestURI
-	//ev.BaseLogData.RemoteAddr = ev.RemoteAddr
 	ev.LogData.HTTP.SourcePort = ev.SourcePort
 	ev.LogData.HTTP.DestHost = ev.DestHost
 	ev.LogData.DestPort = ev.DestPort
