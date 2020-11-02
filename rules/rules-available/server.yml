@@ -1,0 +1,13 @@
+CVE-2020-14882:
+  id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+  layer: http
+  match:
+    http.method:
+      is:
+        - "POST"
+    http.uri:
+      startswith:
+        - "/console/images/%252E%252E%252Fconsole.portal"
+  tags:
+    - "weblogic"
+    - "CVE-2020-14882"
