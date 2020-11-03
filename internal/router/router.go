@@ -39,7 +39,7 @@ func StartHTTPS(quitErrChan chan error, eventChan chan events.Event) {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", config.Cfg.ServerHTTPSPort),
 		Handler:      r,
-		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler), 0),
+		TLSNextProto: make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
 	}
 
 	logging.Std.Println("Started HTTPS server on port :", config.Cfg.ServerHTTPSPort)

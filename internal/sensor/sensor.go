@@ -53,8 +53,8 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		}
 	}
 
-	assemblerFlushTicker := time.Tick(time.Minute)
-	sessionsFlushTicker := time.Tick(time.Second * 30)
+	assemblerFlushTicker := time.NewTicker(time.Minute)
+	sessionsFlushTicker := time.NewTicker(time.Second * 30)
 	src := gopacket.NewPacketSource(handle, handle.LinkType())
 	in := src.Packets()
 
@@ -73,10 +73,10 @@ loop:
 				break loop
 			}
 			handlePacket(packet, assembler)
-		case <-assemblerFlushTicker:
+		case <-assemblerFlushTicker.C:
 			// Every minute, flush connections that haven't seen activity in the past 2 minutes
 			assembler.FlushOlderThan(time.Now().Add(time.Minute * -2))
-		case <-sessionsFlushTicker:
+		case <-sessionsFlushTicker.C:
 			// Every 30 seconds, flush inactive flows
 			sessions.Map.FlushOlderThan(time.Now().Add(time.Second * -30))
 		case <-shutdownChan:

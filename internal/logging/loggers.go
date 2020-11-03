@@ -22,7 +22,7 @@ func InitLoggers() {
 	Errors = log.New(nil, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 	Warnings = log.New(nil, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 
-	if *config.Cli.Stdout == false {
+	if !*config.Cli.Stdout {
 		Sensor.SetOutput(&lumberjack.Logger{
 			Filename: filepath.Join(config.Cfg.LogsDir, config.Cfg.LogsSensorFile),
 			MaxSize:  config.Cfg.LogsSensorMaxSize,             // megabytes
@@ -33,7 +33,7 @@ func InitLoggers() {
 		Sensor.SetOutput(os.Stdout)
 	}
 
-	if *config.Cli.Stdout == false {
+	if !*config.Cli.Stdout {
 		Errors.SetOutput(&lumberjack.Logger{
 			Filename: filepath.Join(config.Cfg.LogsDir, config.Cfg.LogsErrorsFile),
 			MaxSize:  config.Cfg.LogsErrorsMaxSize,             // megabytes
@@ -44,7 +44,7 @@ func InitLoggers() {
 		Errors.SetOutput(os.Stdout)
 	}
 
-	if *config.Cli.Stdout == false {
+	if !*config.Cli.Stdout {
 		Warnings.SetOutput(&lumberjack.Logger{
 			Filename: filepath.Join(config.Cfg.LogsDir, config.Cfg.LogsErrorsFile),
 			MaxSize:  config.Cfg.LogsErrorsMaxSize,             // megabytes

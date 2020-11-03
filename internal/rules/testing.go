@@ -54,12 +54,9 @@ func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([
 
 loop:
 	for {
-		var packet gopacket.Packet
-		select {
-		case packet = <-in:
-			if packet == nil {
-				break loop
-			}
+		packet := <-in
+		if packet == nil {
+			break loop
 		}
 
 		if _, ok := packet.NetworkLayer().(*layers.IPv4); ok {
@@ -118,15 +115,11 @@ loop:
 	// I'm so lazy
 	if raw {
 		rawRet = make([]gopacket.Packet, len(rawPackets))
-		for key, val := range rawPackets {
-			rawRet[key] = val
-		}
+		copy(rawRet, rawPackets)
 	}
 
 	ret = make([]events.Event, len(Events))
-	for key, val := range Events {
-		ret[key] = val
-	}
+	copy(ret, Events)
 
 	return ret, rawRet, nil
 }

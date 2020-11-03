@@ -64,7 +64,7 @@ func (ev ICMPv6Event) ToLog() EventLog {
 			}
 		}
 
-		for tag, _ := range set {
+		for tag := range set {
 			ev.LogData.Tags = append(ev.LogData.Tags, tag)
 		}
 	}

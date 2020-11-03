@@ -68,8 +68,7 @@ func LoadRulesDir(rulesDir string) {
 	for _, rawRules := range globalRawRules {
 		rules := Rules{}
 		for ruleName, rawRule := range rawRules {
-			var rule Rule
-			rule = rawRule.Parse()
+			rule := rawRule.Parse()
 			rule.Name = ruleName
 
 			rules = append(rules, rule)

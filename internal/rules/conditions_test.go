@@ -55,7 +55,7 @@ func TestParseHybridPattern(t *testing.T) {
 				t.Fail()
 				continue
 			}
-			if bytes.Compare(parsed, suite.OkDst[idx]) != 0 {
+			if !bytes.Equal(parsed, suite.OkDst[idx]) {
 				t.Error(val, "FAILED")
 				t.Fail()
 			}
@@ -68,7 +68,7 @@ func TestParseHybridPattern(t *testing.T) {
 				t.Fail()
 				continue
 			}
-			if bytes.Compare(parsed, suite.NokDst[idx]) == 0 {
+			if bytes.Equal(parsed, suite.NokDst[idx]) {
 				t.Error(val, "FAILED")
 				t.Fail()
 			}

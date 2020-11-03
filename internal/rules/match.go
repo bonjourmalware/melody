@@ -375,13 +375,13 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 
 	if rl.MatchAll {
 		if rl.HTTP.URI != nil {
-			if rl.HTTP.URI.Match([]byte(httpData.RequestURI)) == false {
+			if !rl.HTTP.URI.Match([]byte(httpData.RequestURI)) {
 				return false
 			}
 		}
 
 		if rl.HTTP.Body != nil {
-			if rl.HTTP.Body.Match([]byte(httpData.Body.Content)) == false {
+			if !rl.HTTP.Body.Match([]byte(httpData.Body.Content)) {
 				return false
 			}
 		}
@@ -390,7 +390,7 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 			condOK = false
 
 			for _, inlineHeader := range httpData.InlineHeaders {
-				if rl.HTTP.Headers.Match([]byte(inlineHeader)) == true {
+				if rl.HTTP.Headers.Match([]byte(inlineHeader)) {
 					condOK = true
 					break
 				}
@@ -402,13 +402,13 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 		}
 
 		if rl.HTTP.Verb != nil {
-			if rl.HTTP.Verb.Match([]byte(httpData.Verb)) == false {
+			if !rl.HTTP.Verb.Match([]byte(httpData.Verb)) {
 				return false
 			}
 		}
 
 		if rl.HTTP.Proto != nil {
-			if rl.HTTP.Proto.Match([]byte(httpData.Proto)) == false {
+			if !rl.HTTP.Proto.Match([]byte(httpData.Proto)) {
 				return false
 			}
 		}
@@ -421,13 +421,13 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 	}
 
 	if rl.HTTP.URI != nil {
-		if rl.HTTP.URI.Match([]byte(httpData.RequestURI)) == true {
+		if rl.HTTP.URI.Match([]byte(httpData.RequestURI)) {
 			return true
 		}
 	}
 
 	if rl.HTTP.Body != nil {
-		if rl.HTTP.Body.Match([]byte(httpData.Body.Content)) == true {
+		if rl.HTTP.Body.Match([]byte(httpData.Body.Content)) {
 			return true
 		}
 	}
@@ -436,7 +436,7 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 		condOK = false
 
 		for _, inlineHeader := range httpData.InlineHeaders {
-			if rl.HTTP.Headers.Match([]byte(inlineHeader)) == true {
+			if rl.HTTP.Headers.Match([]byte(inlineHeader)) {
 				condOK = true
 				break
 			}
@@ -448,13 +448,13 @@ func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 	}
 
 	if rl.HTTP.Verb != nil {
-		if rl.HTTP.Verb.Match([]byte(httpData.Verb)) == true {
+		if rl.HTTP.Verb.Match([]byte(httpData.Verb)) {
 			return true
 		}
 	}
 
 	if rl.HTTP.Proto != nil {
-		if rl.HTTP.Proto.Match([]byte(httpData.Proto)) == true {
+		if rl.HTTP.Proto.Match([]byte(httpData.Proto)) {
 			return true
 		}
 	}

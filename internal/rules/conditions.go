@@ -55,7 +55,7 @@ func (condsList ConditionsList) Match(received []byte) bool {
 			for _, condGroup := range condsList.Conditions {
 				// If any condition group is valid, continue
 
-				if condGroup.Match(received) == true {
+				if condGroup.Match(received) {
 					condOK = true
 					break
 				}
@@ -69,7 +69,7 @@ func (condsList ConditionsList) Match(received []byte) bool {
 				// If any condition group is invalid, rule is false
 				// Continue if the test for all the values are successful
 
-				if condGroup.Match(received) == false {
+				if !condGroup.Match(received) {
 					return false
 				}
 			}
@@ -122,7 +122,7 @@ func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionV
 	}
 
 	if cond.Options.Is {
-		match = bytes.Compare(received, condValContent) == 0
+		match = bytes.Equal(received, condValContent)
 	} else if cond.Options.Regex {
 		match = condVal.CompiledRegex.Match(received)
 	} else if cond.Options.Contains {
@@ -155,7 +155,7 @@ func (rawCondList RawConditions) ParseList(ruleId string) *ConditionsList {
 	}
 
 	condsList := ConditionsList{
-		MatchAll: rawCondList.Any == false,
+		MatchAll: !rawCondList.Any,
 	}
 	var bufCond Conditions
 
@@ -290,7 +290,7 @@ func ParseHybridPattern(buffer []byte) ([]byte, error) {
 		}
 	}
 
-	if isHex == true {
+	if isHex {
 		return nil, fmt.Errorf("failed to parse hybrid pattern : uneven number of hex delimiter (\"|\") in %s", buffer)
 	}
 

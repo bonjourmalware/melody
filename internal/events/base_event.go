@@ -45,8 +45,9 @@ func (ev *BaseEvent) AddMeta(metadata map[string]string) {
 
 func (ev *BaseEvent) AddRefs(refs map[string][]string) {
 	for key, values := range refs {
-		for _, value := range values {
-			ev.References[key] = append(ev.References[key], value)
-		}
+		ev.References[key] = append(ev.References[key], values...)
+		//for _, value := range values {
+		//	ev.References[key] = append(ev.References[key], value)
+		//}
 	}
 }

@@ -234,13 +234,19 @@ func (prls *PortRules) Blacklist(port string) error {
 }
 
 func parsePortString(port string) (uint16, error) {
+	port = strings.Replace(port, " ", "", -1)
+
+	if strings.HasPrefix(port, "-") {
+		return 0, fmt.Errorf("Port cannot be under 0 : '%s'\n", port)
+	}
+
 	parsed, err := strconv.ParseUint(port, 10, 64)
 	if err != nil {
 		return uint16(parsed), err
 	}
 
-	if parsed < 0 || parsed > 65535 {
-		return uint16(parsed), fmt.Errorf("Port %s must be between 0 and 65535\n", port)
+	if parsed > 65535 {
+		return uint16(parsed), fmt.Errorf("Port must be between 0 and 65535 : '%s'\n", port)
 	}
 
 	return uint16(parsed), nil

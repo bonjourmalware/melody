@@ -262,7 +262,11 @@ func (iprg IPRange) ContainsIPRange(iprange IPRange) bool {
 }
 
 func (iprg IPRange) ContainsIPNotEqual(ip net.IP) bool {
-	if !bytes.Equal(ip.To4(), iprg.Lower) && !bytes.Equal(ip.To4(), iprg.Upper) {
+	//if !bytes.Equal(ip.To4(), iprg.Lower) && !bytes.Equal(ip.To4(), iprg.Upper) {
+	//	return true
+	//}
+
+	if !net.IP.Equal(ip.To4(), iprg.Lower) && !net.IP.Equal(ip.To4(), iprg.Upper) {
 		return true
 	}
 
@@ -270,12 +274,12 @@ func (iprg IPRange) ContainsIPNotEqual(ip net.IP) bool {
 }
 
 func (iprg *IPRange) Equals(iprange IPRange) bool {
-	return bytes.Equal(iprg.Upper, iprange.Upper.To4()) && bytes.Equal(iprg.Lower, iprange.Lower.To4())
+	return net.IP.Equal(iprg.Upper, iprange.Upper.To4()) && net.IP.Equal(iprg.Lower, iprange.Lower.To4())
 }
 
 // CIDR
 func (iprl *IPRules) WhitelistCIDR(rawIPCIDR string) error {
-	ipFrom, ipnet, err := net.ParseCIDR(rawIPCIDR)
+	_, ipnet, err := net.ParseCIDR(rawIPCIDR)
 	if err != nil {
 		return err
 	}
@@ -291,7 +295,7 @@ func (iprl *IPRules) WhitelistCIDR(rawIPCIDR string) error {
 }
 
 func (iprl *IPRules) BlacklistCIDR(rawIPCIDR string) error {
-	ipFrom, ipnet, err := net.ParseCIDR(rawIPCIDR)
+	_, ipnet, err := net.ParseCIDR(rawIPCIDR)
 	if err != nil {
 		return err
 	}
@@ -406,9 +410,5 @@ func isValidIPString(ipstr string) bool {
 }
 
 func isValidIPRange(lower net.IP, upper net.IP) bool {
-	if bytes.Compare(lower, upper) > 0 {
-		return false
-	}
-
-	return true
+	return bytes.Compare(lower, upper) <= 0
 }
