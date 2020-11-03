@@ -10,18 +10,6 @@ nok_checksum:
   match:
     udp.checksum: 0
 
-ok_dst_ports:
-  layer: udp
-  id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
-  filter.dst_ports:
-    - 1234
-
-nok_dst_ports:
-  layer: udp
-  id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
-  filter.dst_ports:
-    - 0
-
 ok_dsize:
   layer: udp
   id: dc65fcd2-90bc-4b00-894b-7fe936be0298

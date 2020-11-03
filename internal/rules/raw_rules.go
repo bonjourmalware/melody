@@ -1,12 +1,12 @@
 package rules
 
 import (
-	"log"
 	"os"
-	"strconv"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/iprules"
+	"github.com/bonjourmalware/pinknoise/internal/logging"
+
+	"github.com/bonjourmalware/pinknoise/internal/filters"
 	"github.com/go-yaml/yaml"
 )
 
@@ -102,9 +102,14 @@ type ParsedUDPRule struct {
 	Payload  *ConditionsList
 }
 
+type Filters struct{
+	Ports []string `yaml:"ports"`
+	IPs   []string  `yaml:"ips"`
+}
+
 type RawRule struct {
-	Ports *[]string `yaml:"filter.dst_ports"`
-	IPs   []string  `yaml:"filter.src_ips"`
+	Whitelist Filters `yaml:"whitelist"`
+	Blacklist Filters `yaml:"blacklist"`
 
 	Match interface{} `yaml:"match"`
 
@@ -123,49 +128,61 @@ type RawRule struct {
 }
 
 func (rawRule RawRule) Parse() Rule {
-	var iport uint64
-	var ports []uint16
+	//var iport uint64
+	//var ports []uint16
 	var err error
-	var ipsList = iprules.IPRules{
-		WhitelistedIPs: iprules.IPRanges{},
-		BlacklistedIPs: iprules.IPRanges{},
+	var portsList = filters.PortRules{
+		WhitelistedPorts: filters.PortRanges{},
+		BlacklistedPorts: filters.PortRanges{},
 	}
 
-	ipsList.ParseRules(rawRule.IPs)
-
-	if rawRule.Ports != nil {
-		for _, port := range *rawRule.Ports {
-			iport, err = strconv.ParseUint(port, 10, 16)
-			if err != nil {
-				log.Printf("Invalid port \"%s\" for rule %s\n", port, rawRule.Id)
-				continue
-			}
-			ports = append(ports, uint16(iport))
-		}
+	var ipsList = filters.IPRules{
+		WhitelistedIPs: filters.IPRanges{},
+		BlacklistedIPs: filters.IPRanges{},
 	}
+
+	ipsList.ParseRules(rawRule.Whitelist.IPs, rawRule.Blacklist.IPs)
+	portsList.ParseRules(rawRule.Whitelist.Ports, rawRule.Blacklist.Ports)
+
+	// TODO: support range ban for ports
+	//if rawRule.Filters.Ports != nil {
+	//	for _, port := range *rawRule.Filters.Ports {
+	//		iport, err = strconv.ParseUint(port, 10, 16)
+	//		if err != nil {
+	//			logging.Warnings.Printf("Invalid port \"%s\" for rule %s\n", port, rawRule.Id)
+	//			continue
+	//		}
+	//		ports = append(ports, uint16(iport))
+	//	}
+	//}
 
 	rule := Rule{
-		Ports:      ports,
 		Tags:       rawRule.Tags,
 		IPProtocol: rawRule.IPProtocol.ParseList(rawRule.Id),
 		Id:         rawRule.Id,
 		Layer:      rawRule.Layer,
+		Ports:      portsList,
 		IPs:        ipsList,
 		Metadata:   rawRule.Metadata,
 		Statements: rawRule.Statements,
 		References: rawRule.References,
 	}
 
+	if rawRule.Match == nil {
+		return rule
+	}
+
 	rawMatch, err := yaml.Marshal(rawRule.Match)
 	if err != nil {
-		log.Println(err)
+		logging.Errors.Println(err)
 		// Fatal error
 		os.Exit(1)
 	}
 
-	for key, _ := range rawRule.Match.(map[interface{}]interface{}) {
-		if !strings.HasPrefix(key.(string), rawRule.Layer+".") {
-			log.Printf("Property '%s' is not supported with layer '%s'", key.(string), rawRule.Layer)
+	for key := range rawRule.Match.(map[interface{}]interface{}) {
+		// "any" is the only valid non-layer specific property in the "match" block
+		if key.(string) != "any" && !strings.HasPrefix(key.(string), rawRule.Layer+".") {
+			logging.Warnings.Printf("Property '%s' is not supported with layer '%s'", key.(string), rawRule.Layer)
 			return Rule{}
 		}
 	}
@@ -176,7 +193,7 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
+			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -189,14 +206,14 @@ func (rawRule RawRule) Parse() Rule {
 			TLS:     buf.TLS,
 		}
 
-		rule.MatchAll = buf.Any == false
+		rule.MatchAll = !buf.Any
 
 	case "tcp":
 		var buf TCPRule
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
+			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -211,14 +228,14 @@ func (rawRule RawRule) Parse() Rule {
 			Payload:  buf.Payload.ParseList(rawRule.Id),
 		}
 
-		rule.MatchAll = buf.Any == false
+		rule.MatchAll = !buf.Any
 
 	case "udp":
 		var buf UDPRule
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
+			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -229,14 +246,14 @@ func (rawRule RawRule) Parse() Rule {
 			Payload:  buf.Payload.ParseList(rawRule.Id),
 		}
 
-		rule.MatchAll = buf.Any == false
+		rule.MatchAll = !buf.Any
 
 	case "icmpv4":
 		var buf ICMPv4Rule
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
+			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -248,14 +265,14 @@ func (rawRule RawRule) Parse() Rule {
 			Seq:      buf.Seq,
 		}
 
-		rule.MatchAll = buf.Any == false
+		rule.MatchAll = !buf.Any
 
 	case "icmpv6":
 		var buf ICMPv6Rule
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			log.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
+			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Id, rawRule.Layer, err)
 			return Rule{}
 		}
 
@@ -266,7 +283,7 @@ func (rawRule RawRule) Parse() Rule {
 			Checksum: buf.Checksum,
 		}
 
-		rule.MatchAll = buf.Any == false
+		rule.MatchAll = !buf.Any
 	}
 
 	return rule

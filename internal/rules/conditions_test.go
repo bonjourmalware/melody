@@ -136,18 +136,18 @@ func TestParseOptions(t *testing.T) {
 					Endswith: true,
 				},
 				{
-					All:      false,
+					All:        false,
 					Startswith: true,
 				},
 				{
-					All:      false,
-					Is: true,
+					All: false,
+					Is:  true,
 				},
 				{
 					All:      false,
 					Contains: true,
-					Regex: true,
-					Nocase: true,
+					Regex:    true,
+					Nocase:   true,
 				},
 			},
 			NokSrc: []string{
@@ -157,7 +157,7 @@ func TestParseOptions(t *testing.T) {
 			NokDst: []Options{
 				{
 					All: false,
-				},				{
+				}, {
 					All: true,
 				},
 			},

@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/iprules"
+	"github.com/bonjourmalware/pinknoise/internal/filters"
 )
 
 type Rules []Rule
@@ -9,22 +9,22 @@ type Rules []Rule
 type Rule struct {
 	// Global
 	Name  string
-	Ports []uint16
 	Logto string
 	Id    string
 	Tags  []string
 
-	Layer    string
+	Layer string
 
 	IPProtocol *ConditionsList
 
-	HTTP ParsedHTTPRule
-	TCP  ParsedTCPRule
-	UDP  ParsedUDPRule
-	ICMPv4  ParsedICMPv4Rule
-	ICMPv6  ParsedICMPv6Rule
+	HTTP   ParsedHTTPRule
+	TCP    ParsedTCPRule
+	UDP    ParsedUDPRule
+	ICMPv4 ParsedICMPv4Rule
+	ICMPv6 ParsedICMPv6Rule
 
-	IPs        iprules.IPRules
+	IPs        filters.IPRules
+	Ports      filters.PortRules
 	Metadata   map[string]string
 	Statements []string
 	References map[string][]string

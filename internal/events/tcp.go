@@ -102,7 +102,7 @@ func (ev TCPEvent) ToLog() EventLog {
 			FragOffset: ev.IPv4Layer.Header.FragOffset,
 			TTL:        ev.IPv4Layer.Header.TTL,
 			Protocol:   ev.IPv4Layer.Header.Protocol,
-			Fragbits: strings.Join(ipFlagsStr, ""),
+			Fragbits:   strings.Join(ipFlagsStr, ""),
 		}
 
 	case 6:

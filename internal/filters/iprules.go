@@ -1,8 +1,9 @@
-package iprules
+package filters
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/bonjourmalware/pinknoise/internal/logging"
 	"log"
 	"net"
 	"os"
@@ -28,63 +29,127 @@ func NewIPRange(lower net.IP, upper net.IP) IPRange {
 	}
 }
 
-func (iprl *IPRules) ParseRules(rules []string) {
-	for _, rawRule := range rules {
+//
+//func (iprl *IPRules) ParseRules(rules []string) {
+//	for _, rawRule := range rules {
+//		rule := strings.Replace(rawRule, " ", "", -1)
+//
+//		if strings.HasPrefix(rawRule, "not") {
+//			rule = strings.TrimPrefix(rule, "not")
+//
+//			if strings.Contains(rule, "-") {
+//				err := iprl.BlacklistRange(rule)
+//				if err != nil {
+//					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//					log.Println(err)
+//					os.Exit(1)
+//				}
+//				continue
+//			} else if strings.Contains(rule, "/") {
+//				err := iprl.BlacklistCIDR(rule)
+//				if err != nil {
+//					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//					log.Println(err)
+//					os.Exit(1)
+//				}
+//				continue
+//			}
+//
+//			err := iprl.Blacklist(rule)
+//			if err != nil {
+//				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//				//log.Println(err)
+//				os.Exit(1)
+//			}
+//			continue
+//		}
+//
+//		if strings.Contains(rule, "-") {
+//			err := iprl.WhitelistRange(rule)
+//			if err != nil {
+//				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//				log.Println(err)
+//				os.Exit(1)
+//			}
+//		} else if strings.Contains(rule, "/") {
+//			err := iprl.WhitelistCIDR(rule)
+//			if err != nil {
+//				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//				//log.Println(err)
+//				os.Exit(1)
+//			}
+//			continue
+//		} else {
+//			err := iprl.Whitelist(rule)
+//			if err != nil {
+//				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+//				log.Println(err)
+//				os.Exit(1)
+//			}
+//		}
+//	}
+//
+//	iprl.BlacklistedIPs.MergeOverlapping()
+//	iprl.WhitelistedIPs.MergeOverlapping()
+//}
+
+func (iprl *IPRules) ParseRules(whitelist []string, blacklist []string) {
+	for _, rawRule := range whitelist {
 		rule := strings.Replace(rawRule, " ", "", -1)
-
-		if strings.HasPrefix(rawRule, "not") {
-			rule = strings.TrimPrefix(rule, "not")
-
-			if strings.Contains(rule, "-") {
-				err := iprl.BlacklistRange(rule)
-				if err != nil {
-					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-					log.Println(err)
-					os.Exit(1)
-				}
-				continue
-			} else if strings.Contains(rule, "/") {
-				err := iprl.BlacklistCIDR(rule)
-				if err != nil {
-					log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-					log.Println(err)
-					os.Exit(1)
-				}
-				continue
-			}
-
-			err := iprl.Blacklist(rule)
-			if err != nil {
-				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				//log.Println(err)
-				os.Exit(1)
-			}
-			continue
-		}
 
 		if strings.Contains(rule, "-") {
 			err := iprl.WhitelistRange(rule)
 			if err != nil {
-				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				log.Println(err)
+				logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				logging.Errors.Println(err)
 				os.Exit(1)
 			}
 		} else if strings.Contains(rule, "/") {
 			err := iprl.WhitelistCIDR(rule)
 			if err != nil {
-				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				//log.Println(err)
+				logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				logging.Errors.Println(err)
 				os.Exit(1)
 			}
 			continue
 		} else {
 			err := iprl.Whitelist(rule)
 			if err != nil {
-				log.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
-				log.Println(err)
+				logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				logging.Errors.Println(err)
 				os.Exit(1)
 			}
 		}
+	}
+
+	for _, rawRule := range blacklist {
+		rule := strings.Replace(rawRule, " ", "", -1)
+
+		if strings.Contains(rule, "-") {
+			err := iprl.BlacklistRange(rule)
+			if err != nil {
+				logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				logging.Errors.Println(err)
+				os.Exit(1)
+			}
+			continue
+		} else if strings.Contains(rule, "/") {
+			err := iprl.BlacklistCIDR(rule)
+			if err != nil {
+				logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+				logging.Errors.Println(err)
+				os.Exit(1)
+			}
+			continue
+		}
+
+		err := iprl.Blacklist(rule)
+		if err != nil {
+			logging.Errors.Println(fmt.Sprintf("Failed to parse the IP rule [%s]:", rule))
+			logging.Errors.Println(err)
+			os.Exit(1)
+		}
+		continue
 	}
 
 	iprl.BlacklistedIPs.MergeOverlapping()
@@ -92,9 +157,9 @@ func (iprl *IPRules) ParseRules(rules []string) {
 }
 
 // IPRanges methods
-func (iprgs *IPRanges) MergeOverlapping() {
-	workSlice := make(IPRanges, len(*iprgs))
-	copy(workSlice, *iprgs)
+func (prgs *IPRanges) MergeOverlapping() {
+	workSlice := make(IPRanges, len(*prgs))
+	copy(workSlice, *prgs)
 
 	for i := 0; i < len(workSlice); i++ {
 		for idx, candidate := range workSlice {
@@ -133,23 +198,23 @@ func (iprgs *IPRanges) MergeOverlapping() {
 		}
 	}
 
-	*iprgs = workSlice
+	*prgs = workSlice
 }
 
-func (iprgs *IPRanges) RemoveAt(index int) {
-	workSlice := make(IPRanges, len(*iprgs))
-	copy(workSlice, *iprgs)
+func (prgs *IPRanges) RemoveAt(index int) {
+	workSlice := make(IPRanges, len(*prgs))
+	copy(workSlice, *prgs)
 
 	workSlice = append(workSlice[:index], workSlice[index+1:]...)
-	*iprgs = workSlice
+	*prgs = workSlice
 }
 
-func (iprgs *IPRanges) Add(ip net.IP) {
+func (prgs *IPRanges) Add(ip net.IP) {
 	ipr := NewIPRange(ip, ip)
-	*iprgs = append(*iprgs, ipr)
+	*prgs = append(*prgs, ipr)
 }
 
-func (iprgs *IPRanges) AddString(ipstr string) error {
+func (prgs *IPRanges) AddString(ipstr string) error {
 	var ip net.IP
 
 	if val := net.ParseIP(ipstr); val != nil {
@@ -158,14 +223,14 @@ func (iprgs *IPRanges) AddString(ipstr string) error {
 		return fmt.Errorf("invalid IP [%s]", ipstr)
 	}
 
-	iprgs.Add(ip.To4())
+	prgs.Add(ip.To4())
 
 	return nil
 }
 
-func (iprgs *IPRanges) AddRange(lower net.IP, upper net.IP) {
+func (prgs *IPRanges) AddRange(lower net.IP, upper net.IP) {
 	ipr := NewIPRange(lower, upper)
-	*iprgs = append(*iprgs, ipr)
+	*prgs = append(*prgs, ipr)
 }
 
 // IPRange methods

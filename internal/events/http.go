@@ -120,13 +120,13 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	}
 
 	ev := &HTTPEvent{
-		Verb:       r.Method,
-		Proto:      r.Proto,
-		RequestURI: r.URL.RequestURI(),
-		SourcePort: uint16(srcPort),
-		DestPort:   uint16(dstPort),
-		DestHost:   network.Dst().String(),
-		Body:       NewPayload(params, config.Cfg.MaxPOSTDataSize),
+		Verb:          r.Method,
+		Proto:         r.Proto,
+		RequestURI:    r.URL.RequestURI(),
+		SourcePort:    uint16(srcPort),
+		DestPort:      uint16(dstPort),
+		DestHost:      network.Dst().String(),
+		Body:          NewPayload(params, config.Cfg.MaxPOSTDataSize),
 		IsTLS:         false,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,

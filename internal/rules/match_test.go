@@ -115,14 +115,12 @@ func TestMatchUDPEvent(t *testing.T) {
 		{
 			Ok: []string{
 				"ok_checksum",
-				"ok_dst_ports",
 				"ok_dsize",
 				"ok_length",
 				"ok_payload",
 			},
 			Nok: []string{
 				"nok_checksum",
-				"nok_dst_ports",
 				"nok_dsize",
 				"nok_length",
 				"nok_payload",
@@ -275,7 +273,7 @@ func TestMatchICMPv6Event(t *testing.T) {
 	}
 }
 
-func TestMatchIPEvent(t *testing.T) {
+func TestFilterIPs(t *testing.T) {
 	ruleFilename := "ip_rules.yml"
 	pcapFilename := "ip_values.pcap"
 	rawPackets := false
@@ -313,7 +311,67 @@ func TestMatchIPEvent(t *testing.T) {
 				"nok_src_ips",
 				"nok_src_ips_range",
 			},
-			Packet: filteredEvents[0],
+			Packet: filteredEvents[1],
+		},
+	}
+
+	for _, suite := range tests {
+		for _, rulename := range suite.Ok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); !ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+		for _, rulename := range suite.Nok {
+			rule = ruleset[rulename]
+			if ok := rule.Match(suite.Packet); ok {
+				t.Error(rulename, "FAILED")
+				t.Fail()
+			}
+		}
+	}
+}
+
+func TestFilterPorts(t *testing.T) {
+	ruleFilename := "port_rules.yml"
+	pcapFilename := "port_values.pcap"
+	rawPackets := false
+	var rule Rule
+
+	ruleset, err := LoadRuleFile(ruleFilename)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	// use tcp packets in the capture to test IP filtering
+	filteredEvents, _, err := ReadPacketsFromPcap(pcapFilename, layers.IPProtocolTCP, rawPackets)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	if len(filteredEvents) == 0 {
+		t.Error("No TCP packets has been read from pcap")
+		return
+	}
+
+	tests := []struct {
+		Ok     []string
+		Nok    []string
+		Packet events.Event
+	}{
+		{
+			Ok: []string{
+				"ok_dst_ports",
+				"ok_dst_ports_range",
+			},
+			Nok: []string{
+				"nok_dst_ports",
+				"nok_dst_ports_range",
+			},
+			Packet: filteredEvents[1],
 		},
 	}
 
@@ -366,13 +424,11 @@ func TestMatchTCPEvent(t *testing.T) {
 		{
 			Ok: []string{
 				"ok_ack",
-				"ok_dst_ports",
 				"ok_seq",
 				"ok_window",
 			},
 			Nok: []string{
 				"nok_ack",
-				"nok_dst_ports",
 				"nok_seq",
 				"nok_window",
 			},

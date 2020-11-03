@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	UDPKind     = "udp"
-	TCPKind     = "tcp"
-	ICMPv4Kind  = "icmpv4"
-	ICMPv6Kind  = "icmpv6"
-	HTTPKind    = "http"
+	UDPKind    = "udp"
+	TCPKind    = "tcp"
+	ICMPv4Kind = "icmpv4"
+	ICMPv6Kind = "icmpv6"
+	HTTPKind   = "http"
 	//DefaultKind = "default"
 )
 

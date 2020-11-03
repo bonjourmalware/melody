@@ -2,7 +2,7 @@ package events
 
 import "github.com/google/gopacket/layers"
 
-type Event interface{
+type Event interface {
 	//Match(rule rules.Rule) bool
 	ToLog() EventLog
 	GetKind() string
@@ -21,6 +21,6 @@ type Event interface{
 	AddRefs(refs map[string][]string)
 }
 
-type EventLog interface{
+type EventLog interface {
 	String() (string, error)
 }

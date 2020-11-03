@@ -1,4 +1,4 @@
-package iprules
+package filters
 
 // From https://github.com/apparentlymart/go-cidr/blob/master/cidr/cidr.go
 import (
