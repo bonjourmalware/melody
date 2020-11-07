@@ -1,0 +1,14 @@
+RDP Login Attempt:
+  layer: tcp
+  id: cbe12945-d9d1-4a9d-9138-e07c4d504eb7
+  match:
+    tcp.payload:
+      startswith:
+        - "Cookie: mstshash="
+      offset: 11
+  tags:
+    - "rdp"
+    - "login"
+    - "credentials"
+  references:
+    - "https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/e78db616-689f-4b8a-8a99-525f7a433ee2"
