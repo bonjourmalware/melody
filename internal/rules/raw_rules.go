@@ -128,8 +128,6 @@ type RawRule struct {
 }
 
 func (rawRule RawRule) Parse() Rule {
-	//var iport uint64
-	//var ports []uint16
 	var err error
 	var portsList = filters.PortRules{
 		WhitelistedPorts: filters.PortRanges{},
@@ -143,18 +141,6 @@ func (rawRule RawRule) Parse() Rule {
 
 	ipsList.ParseRules(rawRule.Whitelist.IPs, rawRule.Blacklist.IPs)
 	portsList.ParseRules(rawRule.Whitelist.Ports, rawRule.Blacklist.Ports)
-
-	// TODO: support range ban for ports
-	//if rawRule.Filters.Ports != nil {
-	//	for _, port := range *rawRule.Filters.Ports {
-	//		iport, err = strconv.ParseUint(port, 10, 16)
-	//		if err != nil {
-	//			logging.Warnings.Printf("Invalid port \"%s\" for rule %s\n", port, rawRule.Id)
-	//			continue
-	//		}
-	//		ports = append(ports, uint16(iport))
-	//	}
-	//}
 
 	rule := Rule{
 		Tags:       rawRule.Tags,
