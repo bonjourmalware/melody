@@ -53,9 +53,8 @@ func startEventQualifier(quitErrChan chan error, shutdownChan chan bool, engineS
 			if len(matches) > 0 {
 				for _, match := range matches {
 					ev.AddTags(match.Tags)
-					ev.AddMeta(match.Metadata)
-					ev.AddRefs(match.References)
-					ev.AddStatements(match.Statements)
+					//ev.AddMeta(match.Metadata)
+					//ev.AddRefs(match.References)
 				}
 			}
 

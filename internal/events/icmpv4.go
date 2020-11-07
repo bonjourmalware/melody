@@ -32,7 +32,6 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	ev.SourceIP = ev.IPv4Layer.Header.SrcIP.String()
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
-	ev.Statements = []string{}
 
 	return ev, nil
 }
@@ -109,7 +108,6 @@ func (ev ICMPv4Event) ToLog() EventLog {
 
 	ev.LogData.Metadata = ev.Metadata
 	ev.LogData.References = ev.References
-	ev.LogData.Statements = ev.Statements
 
 	return ev.LogData
 }

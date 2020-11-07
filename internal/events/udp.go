@@ -46,7 +46,6 @@ func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
-	ev.Statements = []string{}
 
 	return ev, nil
 }
@@ -123,7 +122,6 @@ func (ev UDPEvent) ToLog() EventLog {
 
 	ev.LogData.Metadata = ev.Metadata
 	ev.LogData.References = ev.References
-	ev.LogData.Statements = ev.Statements
 
 	return ev.LogData
 }

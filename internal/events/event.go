@@ -16,7 +16,6 @@ type Event interface {
 	GetHTTPData() HTTPEvent
 
 	AddTags(tags []string)
-	AddStatements(statements []string)
 	AddMeta(metadata map[string]string)
 	AddRefs(refs map[string][]string)
 }

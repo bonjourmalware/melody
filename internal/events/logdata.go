@@ -27,7 +27,6 @@ type BaseLogData struct {
 	Tags       []string            `json:"pk_tags"`
 	Metadata   map[string]string   `json:"metadata"`
 	References map[string][]string `json:"references"`
-	Statements []string            `json:"statements"`
 }
 
 type ICMPv4EventLog struct {

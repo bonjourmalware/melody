@@ -83,7 +83,6 @@ func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData.HTTP.IsTLS = ev.IsTLS
 	ev.LogData.Metadata = ev.Metadata
 	ev.LogData.References = ev.References
-	ev.LogData.Statements = ev.Statements
 
 	var headersKeys []string
 	var headersValues []string
@@ -140,7 +139,6 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	ev.Tags = []string{}
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
-	ev.Statements = []string{}
 
 	return ev, nil
 }
@@ -196,7 +194,6 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 	ev.Tags = []string{}
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
-	ev.Statements = []string{}
 
 	return ev, nil
 }

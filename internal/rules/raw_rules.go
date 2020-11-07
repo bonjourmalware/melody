@@ -102,9 +102,9 @@ type ParsedUDPRule struct {
 	Payload  *ConditionsList
 }
 
-type Filters struct{
+type Filters struct {
 	Ports []string `yaml:"ports"`
-	IPs   []string  `yaml:"ips"`
+	IPs   []string `yaml:"ips"`
 }
 
 type RawRule struct {
@@ -119,12 +119,11 @@ type RawRule struct {
 	Layer      string        `yaml:"layer"`
 	IPProtocol RawConditions `yaml:"ip_protocol"`
 
-	Metadata   map[string]string   `yaml:"metadata"`
-	Statements []string            `yaml:"statements"`
-	References map[string][]string `yaml:"references"`
-	Offset     int                 `yaml:"offset"`
-	Depth      int                 `yaml:"depth"`
-	Any        bool                `yaml:"match.any"`
+	Metadata   map[string]string `yaml:"metadata"`
+	References []string          `yaml:"references"`
+	Offset     int               `yaml:"offset"`
+	Depth      int               `yaml:"depth"`
+	Any        bool              `yaml:"match.any"`
 }
 
 func (rawRule RawRule) Parse() Rule {
@@ -150,7 +149,6 @@ func (rawRule RawRule) Parse() Rule {
 		Ports:      portsList,
 		IPs:        ipsList,
 		Metadata:   rawRule.Metadata,
-		Statements: rawRule.Statements,
 		References: rawRule.References,
 	}
 

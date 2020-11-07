@@ -26,8 +26,7 @@ type Rule struct {
 	IPs        filters.IPRules
 	Ports      filters.PortRules
 	Metadata   map[string]string
-	Statements []string
-	References map[string][]string
+	References []string
 
 	MatchAll bool
 }

@@ -47,7 +47,6 @@ func NewTCPEvent(packet gopacket.Packet, IPVersion uint) (*TCPEvent, error) {
 
 	ev.Metadata = make(map[string]string)
 	ev.References = make(map[string][]string)
-	ev.Statements = []string{}
 
 	return ev, nil
 }
@@ -157,7 +156,6 @@ func (ev TCPEvent) ToLog() EventLog {
 	ev.LogData.TCP.Flags = strings.Join(tcpFlagsStr, "")
 	ev.LogData.Metadata = ev.Metadata
 	ev.LogData.References = ev.References
-	ev.LogData.Statements = ev.Statements
 
 	return ev.LogData
 }

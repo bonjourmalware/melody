@@ -12,7 +12,6 @@ type BaseEvent struct {
 	Session    string
 	Timestamp  time.Time
 	Metadata   map[string]string
-	Statements []string
 	References map[string][]string
 	Event
 }
@@ -31,10 +30,6 @@ func (ev BaseEvent) GetDestPort() uint16 {
 
 func (ev *BaseEvent) AddTags(tags []string) {
 	ev.Tags = append(ev.Tags, tags...)
-}
-
-func (ev *BaseEvent) AddStatements(statements []string) {
-	ev.Statements = append(ev.Statements, statements...)
 }
 
 func (ev *BaseEvent) AddMeta(metadata map[string]string) {
