@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/c2h5oh/datasize"
@@ -70,19 +71,19 @@ type Config struct {
 	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
 	MatchProtocols     []string `yaml:"rules.match.protocols"`
 
-	ServerHTTPEnable         bool              `yaml:"server.http.enable"`
-	ServerHTTPPort           int               `yaml:"server.http.port"`
-	ServerHTTPDir            string            `yaml:"server.http.dir"`
-	ServerHTTPResponseStatus int               `yaml:"server.http.response_status"`
-	ServerHTTPHeaders        map[string]string `yaml:"server.http.headers"`
+	ServerHTTPEnable                bool              `yaml:"server.http.enable"`
+	ServerHTTPPort                  int               `yaml:"server.http.port"`
+	ServerHTTPDir                   string            `yaml:"server.http.dir"`
+	ServerHTTPMissingResponseStatus int               `yaml:"server.http.response.missing_status_code"`
+	ServerHTTPHeaders               map[string]string `yaml:"server.http.response.headers"`
 
-	ServerHTTPSEnable         bool              `yaml:"server.https.enable"`
-	ServerHTTPSPort           int               `yaml:"server.https.port"`
-	ServerHTTPSDir            string            `yaml:"server.https.dir"`
-	ServerHTTPSResponseStatus int               `yaml:"server.https.response_status"`
-	ServerHTTPSCert           string            `yaml:"server.https.crt"`
-	ServerHTTPSKey            string            `yaml:"server.https.key"`
-	ServerHTTPSHeaders        map[string]string `yaml:"server.https.headers"`
+	ServerHTTPSEnable                bool              `yaml:"server.https.enable"`
+	ServerHTTPSPort                  int               `yaml:"server.https.port"`
+	ServerHTTPSDir                   string            `yaml:"server.https.dir"`
+	ServerHTTPSMissingResponseStatus int               `yaml:"server.https.response.missing_status_code"`
+	ServerHTTPSCert                  string            `yaml:"server.https.crt"`
+	ServerHTTPSKey                   string            `yaml:"server.https.key"`
+	ServerHTTPSHeaders               map[string]string `yaml:"server.https.response.headers"`
 
 	HomeNet         []string `yaml:"filter.homenet.ipv4"`
 	HomeNet6        []string `yaml:"filter.homenet.ipv6"`
@@ -179,6 +180,16 @@ func (cfg *Config) Load() {
 		}
 
 		cfg.PcapFile = f
+	}
+
+	if http.StatusText(Cfg.ServerHTTPMissingResponseStatus) == "" {
+		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPMissingResponseStatus)
+		os.Exit(1)
+	}
+
+	if http.StatusText(Cfg.ServerHTTPSMissingResponseStatus) == "" {
+		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPSMissingResponseStatus)
+		os.Exit(1)
 	}
 
 	// CLI overrides

@@ -1,17 +1,13 @@
 package router
 
 import (
-	"log"
 	"net/http"
 	"path/filepath"
 
+	"github.com/bonjourmalware/pinknoise/internal/logging"
+
 	"github.com/bonjourmalware/pinknoise/internal/events"
 )
-
-// https://www.alexedwards.net/blog/disable-http-fileserver-directory-listings#using-a-custom-filesystem
-type neuteredFileSystem struct {
-	fs http.FileSystem
-}
 
 func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	f, err := nfs.fs.Open(path)
@@ -35,6 +31,17 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	return f, nil
 }
 
+//func melodyFileServer(root http.FileSystem) http.Handler {
+//fs := http.FileServer(
+//				neuteredFileSystem{
+//					http.Dir(config.Cfg.ServerHTTPDir),
+//				})
+//		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+//
+//		}
+//		fs.ServeHTTP(w, r)
+//}
+
 func headersHandler(h http.Handler, headers map[string]string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for header, val := range headers {
@@ -48,8 +55,7 @@ func httpsLogger(h http.Handler, eventChan chan events.Event) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ev, err := events.NewHTTPEventFromRequest(r)
 		if err != nil {
-			//TODO: write to error log
-			log.Println("ERROR", err)
+			logging.Errors.Println(err)
 			return
 		} else {
 			eventChan <- ev
