@@ -6,7 +6,7 @@ CVE-2020-9054 (ZyXEL NAS):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2020-9054"
+    description: "Attempt to exploit or check for CVE-2020-9054"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-9054"
   match:

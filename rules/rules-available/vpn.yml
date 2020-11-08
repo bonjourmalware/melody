@@ -6,7 +6,7 @@ CVE-2020-19781 (Citrix ADC/Gateway):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2020-19781"
+    description: "Attempt to exploit or check for CVE-2020-19781"
     references:
       - "https://support.citrix.com/article/CTX267027"
   match:
@@ -29,7 +29,7 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2018-13379"
+    description: "Attempt to exploit or check for CVE-2018-13379"
   match:
     http.uri:
       startswith:
@@ -40,3 +40,25 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
     - "vendor.fortinet"
     - "product.fortios"
     - "impact.information_disclosure"
+
+#CVE-2020-5135 (SonicWall VPN Portal):
+#  layer: http
+#  meta:
+#    id: 7d7733e2-6047-4dc5-8bad-609da742f230
+#    author: Hadrien Bouffier
+#    status: stable
+#    created: 2020/11/07
+#    modified: 2020/11/07
+#    description: "Attempt to exploit or check for CVE-2020-5135"
+#    references:
+#      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+firewall+http+config%22"
+#      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+SSL-VPN+http+proxy%22"
+#      - "https://fr.tenable.com/blog/cve-2020-5135-critical-sonicwall-vpn-portal-stack-based-buffer-overflow-vulnerability"
+#  match:
+#
+#  tags:
+#    - "cve-2020-5135"
+#    - "techno.vpn"
+#    - "vendor.sonicwall"
+#    - "product.sonicos"
+#    - "impact.rce"

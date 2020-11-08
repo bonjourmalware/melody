@@ -6,7 +6,7 @@ CVE-2017-17215 (Huawei routers):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2017-17215"
+    description: "Attempt to exploit or check for CVE-2017-17215"
   match:
     http.uri:
       is:
@@ -25,7 +25,7 @@ CVE-2020-8515 (DrayTek routers):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2020-8515"
+    description: "Attempt to exploit or check for CVE-2020-8515"
   match:
     http.uri:
       startswith:
@@ -44,7 +44,7 @@ CVE-2014-8361 (Realtek SDK Miniigd UPnP SOAP):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for CVE-2014-8361"
+    description: "Attempt to exploit or check for CVE-2014-8361"
   match:
     http.uri:
       is:
@@ -65,7 +65,7 @@ ZyXEL Eir D1000:
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for a vulnerable ZyXEL Eir D1000 endpoint"
+    description: "Attempt to exploit or check for a vulnerable ZyXEL Eir D1000 endpoint"
   match:
     http.uri:
       is:
@@ -84,7 +84,7 @@ Linksys routers (Moon worm):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit or check for a vulnerable Lynksys router"
+    description: "Attempt to exploit or check for a vulnerable Lynksys router"
   match:
     http.uri:
       is:

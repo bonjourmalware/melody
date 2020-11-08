@@ -6,7 +6,7 @@ Dropper:
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an attempt to exploit a vulnerability to drop a file on the system"
+    description: "Attempt to exploit a vulnerability to drop a file on the system"
   match:
     tcp.payload:
       contains:

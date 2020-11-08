@@ -6,7 +6,7 @@ RDP Login Attempt:
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Match an RDP login attempt"
+    description: "RDP login attempt"
     references:
       - "https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-rdpbcgr/e78db616-689f-4b8a-8a99-525f7a433ee2"
   match:
