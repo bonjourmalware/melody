@@ -16,12 +16,12 @@ func Start(quitErrChan chan error, shutdownChan chan bool, engineStoppedChan cha
 	go startEventQualifier(quitErrChan, shutdownChan, engineStoppedChan)
 
 	if config.Cfg.ServerHTTPEnable {
-		logging.Std.Println("Starting HTTP server...")
+		logging.Std.Println("Starting HTTP server")
 		go router.StartHTTP(quitErrChan)
 	}
 
 	if config.Cfg.ServerHTTPSEnable {
-		logging.Std.Println("Starting HTTPS server...")
+		logging.Std.Println("Starting HTTPS server")
 		go router.StartHTTPS(quitErrChan, EventChan)
 	}
 }

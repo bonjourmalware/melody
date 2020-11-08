@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -74,9 +72,9 @@ func LoadRulesDir(rulesDir string) {
 			rules = append(rules, rule)
 		}
 
-		for _, proto := range config.Cfg.MatchProtocols {
-			GlobalRules[proto] = append(GlobalRules[proto], rules.Filter(func(rule Rule) bool { return rule.Layer == proto }))
-		}
+		//for _, proto := range config.Cfg.MatchProtocols {
+		//	GlobalRules[proto] = append(GlobalRules[proto], rules.Filter(func(rule Rule) bool { return rule.Layer == proto }))
+		//}
 
 		//GlobalRules = append(GlobalRules, rules)
 	}

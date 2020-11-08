@@ -18,20 +18,62 @@ const (
 	ICMPv4Kind = "icmpv4"
 	ICMPv6Kind = "icmpv6"
 	HTTPKind   = "http"
-	//DefaultKind = "default"
+	defaultConfig = `---
+logs.dir: "logs/"
+
+logs.sensor.file: pinknoise.ndjson
+logs.sensor.max_size: 1000 # MB
+logs.sensor.max_age: 15 # days
+logs.sensor.compress_rotated: true
+
+logs.errors.file: pinknoise.ndjson
+logs.errors.max_size: 1000 # MB
+logs.errors.max_age: 15 # days
+logs.errors.compress_rotated: true
+
+logs.http.post.max_size: "1kb"
+logs.tcp.payload.max_size: "1kb"
+logs.udp.payload.max_size: "1kb"
+
+rules.dir: "rules/rules-enabled"
+
+listen.interface: "lo"
+listen.bpf.file: "filter.bpf"
+
+filter.homenet.ipv4:
+      - "127.0.0.1"
+filter.homenet.ipv6:
+      - "::1"
+
+server.http.enable: true
+server.http.port: 10080
+server.http.dir: "var/http/serve"
+server.http.response.missing_status_code: 200
+server.http.response.headers:
+      Server: "Apache"
+
+server.https.enable: true
+server.https.port: 10443
+server.https.dir: "var/https/serve"
+server.https.crt: "var/https/certs/cert.pem"
+server.https.key: "var/https/certs/key.pem"
+server.https.response.missing_status_code: 200
+server.https.response.headers:
+      Server: "Apache"
+`
 )
 
 var (
 	Cfg = new(Config)
 	Cli = new(CLI)
 
-	SupportedProtocols = []string{
-		TCPKind,
-		UDPKind,
-		ICMPv4Kind,
-		ICMPv6Kind,
-		HTTPKind,
-	}
+	//SupportedProtocols = []string{
+	//	TCPKind,
+	//	UDPKind,
+	//	ICMPv4Kind,
+	//	ICMPv6Kind,
+	//	HTTPKind,
+	//}
 )
 
 type CLI struct {
@@ -62,14 +104,10 @@ type Config struct {
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
 	Interface string `yaml:"listen.interface"`
-	//EnabledPorts       EnabledPorts
-	//RulesVariables     RulesVariables `yaml:"RulesVariables"`
-	//EnableBlacklist    bool           `yaml:"EnableBlacklist"`
-	//EnableWhitelist    bool           `yaml:"EnableWhitelist"`
 	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
 	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
 	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
-	MatchProtocols     []string `yaml:"rules.match.protocols"`
+	//MatchProtocols     []string `yaml:"rules.match.protocols"`
 
 	ServerHTTPEnable                bool              `yaml:"server.http.enable"`
 	ServerHTTPPort                  int               `yaml:"server.http.port"`
@@ -98,22 +136,28 @@ func (cfg *Config) Load() {
 	var tcpByteSize datasize.ByteSize
 	var udpByteSize datasize.ByteSize
 
+	if err := yaml.Unmarshal([]byte(defaultConfig), &cfg); err != nil {
+		log.Println("Failed to load default config")
+		log.Println(err)
+		os.Exit(1)
+	}
+
 	filepath := "config.yml"
 
-	// Default value
-	cfg.MaxPOSTDataSizeRaw = "1kb"
-	cfg.MaxTCPDataSizeRaw = "1kb"
-	cfg.MaxUDPDataSizeRaw = "1kb"
-
-	cfg.LogsSensorFile = "sensor.ndjson"
-	cfg.LogsSensorMaxSize = 200
-	cfg.LogsSensorCompressRotatedLogs = true
-	cfg.LogsSensorMaxAge = 15
-
-	cfg.LogsErrorsFile = "errors.logs"
-	cfg.LogsErrorsMaxSize = 200
-	cfg.LogsErrorsCompressRotatedLogs = true
-	cfg.LogsErrorsMaxAge = 15
+	//// Default value
+	//cfg.MaxPOSTDataSizeRaw = "1kb"
+	//cfg.MaxTCPDataSizeRaw = "1kb"
+	//cfg.MaxUDPDataSizeRaw = "1kb"
+	//
+	//cfg.LogsSensorFile = "sensor.ndjson"
+	//cfg.LogsSensorMaxSize = 200
+	//cfg.LogsSensorCompressRotatedLogs = true
+	//cfg.LogsSensorMaxAge = 15
+	//
+	//cfg.LogsErrorsFile = "errors.logs"
+	//cfg.LogsErrorsMaxSize = 200
+	//cfg.LogsErrorsCompressRotatedLogs = true
+	//cfg.LogsErrorsMaxAge = 15
 
 	cfgData, err := ioutil.ReadFile(filepath)
 	if err != nil {
@@ -157,16 +201,16 @@ func (cfg *Config) Load() {
 		Cfg.BPFFilter = string(bpfData)
 	}
 
-	if len(Cfg.MatchProtocols) == 0 {
-		Cfg.MatchProtocols = SupportedProtocols
-	} else {
-		for _, proto := range Cfg.MatchProtocols {
-			if proto == "all" {
-				Cfg.MatchProtocols = SupportedProtocols
-				break
-			}
-		}
-	}
+	//if len(Cfg.MatchProtocols) == 0 {
+	//	Cfg.MatchProtocols = SupportedProtocols
+	//} else {
+	//	for _, proto := range Cfg.MatchProtocols {
+	//		if proto == "all" {
+	//			Cfg.MatchProtocols = SupportedProtocols
+	//			break
+	//		}
+	//	}
+	//}
 
 	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
 	cfg.MaxTCPDataSize = tcpByteSize.Bytes()

@@ -43,28 +43,35 @@ func init() {
 }
 
 func main() {
+	logging.Std.Println("Starting loggers")
 	logging.Start(quitErrChan, shutdownChan, loggerStoppedChan)
+
+	logging.Std.Println("Starting engine")
 	engine.Start(quitErrChan, shutdownChan, engineStoppedChan)
+
+	logging.Std.Println("Starting sensor")
 	sensor.Start(quitErrChan, shutdownChan, sensorStoppedChan)
 
 	logging.Std.Println("All systems started")
 
 	select {
 	case err := <-quitErrChan:
-		logging.Std.Println(err)
+		logging.Errors.Println(err)
 		close(shutdownChan)
 		break
 	case <-quitSigChan:
 		close(shutdownChan)
 		break
 	case <-shutdownChan:
-		logging.Std.Println("Shutting down...")
+		logging.Std.Println("Shutting down")
 		break
 	}
 
 	<-sensorStoppedChan
+	logging.Std.Println("Sensor stopped")
 	<-engineStoppedChan
+	logging.Std.Println("Engine stopped")
 	<-loggerStoppedChan
-
-	logging.Std.Println("Exited")
+	logging.Std.Println("Logger stopped")
+	logging.Std.Println("Reached shutdown")
 }

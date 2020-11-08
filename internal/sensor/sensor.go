@@ -35,6 +35,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		if err != nil {
 			quitErrChan <- err
 			close(sensorStoppedChan)
+			return
 		}
 	} else {
 		// Open up a pcap handle for packet reads/writes.
@@ -42,6 +43,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		if err != nil {
 			quitErrChan <- err
 			close(sensorStoppedChan)
+			return
 		}
 	}
 
