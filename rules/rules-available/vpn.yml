@@ -1,24 +1,42 @@
-CVE-2020-19781 (Citrix ADC):
+CVE-2020-19781 (Citrix ADC/Gateway):
   layer: http
+  meta:
+    id: a284dbe4-88c3-4da4-b2db-42709dd85305
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match an attempt to exploit or check for CVE-2020-19781"
+    references:
+      - "https://support.citrix.com/article/CTX267027"
   match:
-    uri:
+    http.uri:
       contains:
         - "/vpns/"
-      match: any
   tags:
     - "cve-2020-19781"
-    - "vpn"
-    - "citrix"
+    - "techno.vpn"
+    - "vendor.citrix"
+    - "product.netscaler_application_delivery_controller"
+    - "product.netscaler_gateway"
+    - "impact.information_disclosure"
 
 CVE-2018-13379 (Fortinet FortiOS SSL VPN):
   layer: http
+  meta:
+    id: fd46c426-3e87-4636-9ba6-af8d24dc5633
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match an attempt to exploit or check for CVE-2018-13379"
   match:
-    uri:
+    http.uri:
       startswith:
         - "/remote/fgt_lang?"
-      match: any
   tags:
     - "cve-2018-13379"
-    - "vpn"
-    - "fortinet"
-    - "fortios"
+    - "techno.vpn"
+    - "vendor.fortinet"
+    - "product.fortios"
+    - "impact.information_disclosure"

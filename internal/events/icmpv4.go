@@ -1,9 +1,10 @@
 package events
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
 	"strings"
 	"time"
+
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
@@ -30,8 +31,7 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
 	ev.IPv4Layer = IPv4Layer{Header: IPHeader}
 	ev.SourceIP = ev.IPv4Layer.Header.SrcIP.String()
-	ev.Metadata = make(map[string]string)
-	ev.References = make(map[string][]string)
+	ev.Additional = make(map[string]string)
 
 	return ev, nil
 }
@@ -105,9 +105,7 @@ func (ev ICMPv4Event) ToLog() EventLog {
 	}
 
 	ev.LogData.IP.Fragbits = strings.Join(ipFlagsStr, "")
-
-	ev.LogData.Metadata = ev.Metadata
-	ev.LogData.References = ev.References
+	ev.LogData.Additional = ev.Additional
 
 	return ev.LogData
 }

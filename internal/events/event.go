@@ -16,8 +16,7 @@ type Event interface {
 	GetHTTPData() HTTPEvent
 
 	AddTags(tags []string)
-	AddMeta(metadata map[string]string)
-	AddRefs(refs map[string][]string)
+	AddAdditional(add map[string]string)
 }
 
 type EventLog interface {

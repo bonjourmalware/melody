@@ -7,9 +7,7 @@ import (
 type Rules []Rule
 
 type Rule struct {
-	// Global
 	Name  string
-	Logto string
 	Id    string
 	Tags  []string
 
@@ -25,8 +23,8 @@ type Rule struct {
 
 	IPs        filters.IPRules
 	Ports      filters.PortRules
-	Metadata   map[string]string
-	References []string
+	Metadata   Metadata
+	Additional map[string]string
 
 	MatchAll bool
 }

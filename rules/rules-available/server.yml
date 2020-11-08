@@ -1,13 +1,24 @@
-CVE-2020-14882:
-  id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+CVE-2020-14882 Oracle Weblogic Server RCE:
   layer: http
+  meta:
+    id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match an attempt to exploit or check for CVE-2020-14882"
+    references:
+      - "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"
   match:
     http.method:
       is:
         - "POST"
     http.uri:
-      startswith:
+      contains:
         - "/console/images/%252E%252E%252Fconsole.portal"
+        - "/console/css/%2e"
   tags:
-    - "weblogic"
-    - "CVE-2020-14882"
+    - "cve-2020-14882"
+    - "vendor.oracle"
+    - "product.weblogic"
+    - "impact.rce"

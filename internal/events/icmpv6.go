@@ -27,8 +27,7 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv6).(*layers.IPv6)
 	ev.IPv6Layer = IPv6Layer{Header: IPHeader}
 	ev.SourceIP = ev.IPv6Layer.Header.SrcIP.String()
-	ev.Metadata = make(map[string]string)
-	ev.References = make(map[string][]string)
+	ev.Additional = make(map[string]string)
 
 	return ev, nil
 }
@@ -84,8 +83,7 @@ func (ev ICMPv6Event) ToLog() EventLog {
 		HopLimit:       ev.IPv6Layer.Header.HopLimit,
 	}
 
-	ev.LogData.Metadata = ev.Metadata
-	ev.LogData.References = ev.References
+	ev.LogData.Additional = ev.Additional
 
 	return ev.LogData
 }

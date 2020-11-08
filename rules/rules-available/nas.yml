@@ -1,11 +1,20 @@
 CVE-2020-9054 (ZyXEL NAS):
   layer: http
+  meta:
+    id: d7943e6c-4348-48b1-b2c5-0c553474a7ac
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match an attempt to exploit or check for CVE-2020-9054"
+    references:
+      - "https://nvd.nist.gov/vuln/detail/CVE-2020-9054"
   match:
-    uri:
+    http.uri:
       startswith:
         - "/adv,/cgi-bin/weblogin.cgi?username=admin"
-      match: any
   tags:
     - "cve-2020-9054"
-    - "nas"
-    - "zyxel"
+    - "impact.rce"
+    - "device.nas"
+    - "vendor.zyxel"

@@ -1,9 +1,10 @@
 package events
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
 	"strings"
 	"time"
+
+	"github.com/bonjourmalware/pinknoise/internal/config"
 
 	"github.com/bonjourmalware/pinknoise/internal/sessions"
 
@@ -44,8 +45,7 @@ func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 	ev.UDPLayer = UDPLayer{Header: UDPHeader}
 	ev.DestPort = uint16(UDPHeader.DstPort)
 
-	ev.Metadata = make(map[string]string)
-	ev.References = make(map[string][]string)
+	ev.Additional = make(map[string]string)
 
 	return ev, nil
 }
@@ -120,8 +120,7 @@ func (ev UDPEvent) ToLog() EventLog {
 		Checksum: ev.UDPLayer.Header.Checksum,
 	}
 
-	ev.LogData.Metadata = ev.Metadata
-	ev.LogData.References = ev.References
+	ev.LogData.Additional = ev.Additional
 
 	return ev.LogData
 }

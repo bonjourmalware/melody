@@ -1,15 +1,24 @@
-http:
+CVE-2020-7961 Liferay Portal RCE:
   layer: http
+  meta:
+    id: 30adb6ba-a23e-48ba-bb12-8e91b54817c4
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match an attempt to exploit or check for CVE-2020-7961"
+    references:
+      - "https://nvd.nist.gov/vuln/detail/CVE-2020-7961"
   match:
     http.uri:
-      startswith|any:
+      startswith:
         - "/api/jsonws/"
-        - "nonexistent"
-      any: true
     http.method:
       is:
         - "POST"
-    tcp.hello: abcd
-  any: true
   tags:
-    - "http"
+    - "cve-2020-7961"
+    - "vendor.liferay"
+    - "product.liferay_portal"
+    - "impact.rce"
+    - "techno.cms"

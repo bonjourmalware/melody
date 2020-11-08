@@ -1,11 +1,20 @@
 CVE-2020-0618 (Microsoft SSRS - SQL Server Reporting Services):
   layer: http
+  meta:
+    id: 1663bfba-5033-4886-88ac-bcd45629200c
+    author: Hadrien Bouffier
+    status: stable
+    created: 2020/11/07
+    modified: 2020/11/07
+    description: "Match a scan for Microsoft SSRS endpoint, potentially trying to exploit it"
+    references:
+      - "https://nvd.nist.gov/vuln/detail/CVE-2020-0618"
   match:
-    uri:
-      startswith:
+    http.uri:
+      startswith|nocase:
         - "/ReportServer"
-      match: any
   tags:
     - "cve-2020-0618"
-    - "ssrs"
-    - "microsoft"
+    - "product.ssrs"
+    - "vendor.microsoft"
+    - "impact.rce"

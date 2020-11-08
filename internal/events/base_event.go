@@ -1,8 +1,9 @@
 package events
 
-import "time"
+import (
+	"time"
+)
 
-//TODO Add common properties such as dst_host, src_port to base event
 type BaseEvent struct {
 	IPVersion  uint
 	Tags       []string
@@ -11,8 +12,7 @@ type BaseEvent struct {
 	DestPort   uint16
 	Session    string
 	Timestamp  time.Time
-	Metadata   map[string]string
-	References map[string][]string
+	Additional map[string]string
 	Event
 }
 
@@ -32,17 +32,8 @@ func (ev *BaseEvent) AddTags(tags []string) {
 	ev.Tags = append(ev.Tags, tags...)
 }
 
-func (ev *BaseEvent) AddMeta(metadata map[string]string) {
-	for key, value := range metadata {
-		ev.Metadata[key] = value
-	}
-}
-
-func (ev *BaseEvent) AddRefs(refs map[string][]string) {
-	for key, values := range refs {
-		ev.References[key] = append(ev.References[key], values...)
-		//for _, value := range values {
-		//	ev.References[key] = append(ev.References[key], value)
-		//}
+func (ev *BaseEvent) AddAdditional(add map[string]string) {
+	for key, values := range add {
+		ev.Additional[key] = values
 	}
 }
