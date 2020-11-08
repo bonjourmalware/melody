@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -33,11 +34,21 @@ func melodyFs(root http.FileSystem, notFoundCode int) http.Handler {
 			if os.IsNotExist(err) {
 				w.WriteHeader(notFoundCode)
 				_, _ = w.Write([]byte{})
-				return			}
+				return
+			}
 		}
 
-		if err == nil {
-			_ = f.Close()
+		s, _ := f.Stat()
+		if s.IsDir() {
+			index := filepath.Join(upath, "index.html")
+			if _, err := root.Open(index); err != nil {
+				_ = f.Close()
+				if os.IsNotExist(err) {
+					w.WriteHeader(notFoundCode)
+					_, _ = w.Write([]byte{})
+					return
+				}
+			}
 		}
 
 		fs.ServeHTTP(w, r)

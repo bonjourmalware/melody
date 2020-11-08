@@ -83,6 +83,10 @@ func (ev HTTPEvent) ToLog() EventLog {
 	ev.LogData.HTTP.IsTLS = ev.IsTLS
 	ev.LogData.Additional = ev.Additional
 
+	if val, ok := ev.Headers["User-Agent"]; ok {
+		ev.LogData.HTTP.UserAgent = val
+	}
+
 	var headersKeys []string
 	var headersValues []string
 

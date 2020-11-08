@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/bonjourmalware/pinknoise/internal/events"
 
@@ -21,7 +20,6 @@ func StartHTTP(quitErrChan chan error) {
 			config.Cfg.ServerHTTPHeaders))
 
 	logging.Std.Println("Started HTTP server on port", config.Cfg.ServerHTTPPort)
-	time.Sleep(1 * time.Second)
 	quitErrChan <- http.ListenAndServe(fmt.Sprintf(":%d", config.Cfg.ServerHTTPPort), r)
 }
 
@@ -40,6 +38,5 @@ func StartHTTPS(quitErrChan chan error, eventChan chan events.Event) {
 	}
 
 	logging.Std.Println("Started HTTPS server on port", config.Cfg.ServerHTTPSPort)
-	time.Sleep(1 * time.Second)
 	quitErrChan <- srv.ListenAndServeTLS(config.Cfg.ServerHTTPSCert, config.Cfg.ServerHTTPSKey)
 }
