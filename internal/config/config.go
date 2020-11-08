@@ -13,11 +13,11 @@ import (
 )
 
 const (
-	UDPKind    = "udp"
-	TCPKind    = "tcp"
-	ICMPv4Kind = "icmpv4"
-	ICMPv6Kind = "icmpv6"
-	HTTPKind   = "http"
+	UDPKind       = "udp"
+	TCPKind       = "tcp"
+	ICMPv4Kind    = "icmpv4"
+	ICMPv6Kind    = "icmpv6"
+	HTTPKind      = "http"
 	defaultConfig = `---
 logs.dir: "logs/"
 
@@ -26,7 +26,7 @@ logs.sensor.max_size: 1000 # MB
 logs.sensor.max_age: 15 # days
 logs.sensor.compress_rotated: true
 
-logs.errors.file: pinknoise.ndjson
+logs.errors.file: pinknoise_err.log
 logs.errors.max_size: 1000 # MB
 logs.errors.max_age: 15 # days
 logs.errors.compress_rotated: true
@@ -67,13 +67,13 @@ var (
 	Cfg = new(Config)
 	Cli = new(CLI)
 
-	//SupportedProtocols = []string{
-	//	TCPKind,
-	//	UDPKind,
-	//	ICMPv4Kind,
-	//	ICMPv6Kind,
-	//	HTTPKind,
-	//}
+	SupportedProtocols = []string{
+		TCPKind,
+		UDPKind,
+		ICMPv4Kind,
+		ICMPv6Kind,
+		HTTPKind,
+	}
 )
 
 type CLI struct {
@@ -103,11 +103,11 @@ type Config struct {
 	BPFFilterFile string `yaml:"listen.bpf.file"`
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
-	Interface string `yaml:"listen.interface"`
-	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
-	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
-	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
-	//MatchProtocols     []string `yaml:"rules.match.protocols"`
+	Interface          string `yaml:"listen.interface"`
+	MaxPOSTDataSizeRaw string `yaml:"logs.http.post.max_size"`
+	MaxTCPDataSizeRaw  string `yaml:"logs.tcp.payload.max_size"`
+	MaxUDPDataSizeRaw  string `yaml:"logs.udp.payload.max_size"`
+	MatchProtocols     []string `yaml:"rules.match.protocols"`
 
 	ServerHTTPEnable                bool              `yaml:"server.http.enable"`
 	ServerHTTPPort                  int               `yaml:"server.http.port"`
@@ -201,16 +201,16 @@ func (cfg *Config) Load() {
 		Cfg.BPFFilter = string(bpfData)
 	}
 
-	//if len(Cfg.MatchProtocols) == 0 {
-	//	Cfg.MatchProtocols = SupportedProtocols
-	//} else {
-	//	for _, proto := range Cfg.MatchProtocols {
-	//		if proto == "all" {
-	//			Cfg.MatchProtocols = SupportedProtocols
-	//			break
-	//		}
-	//	}
-	//}
+	if len(Cfg.MatchProtocols) == 0 {
+		Cfg.MatchProtocols = SupportedProtocols
+	} else {
+		for _, proto := range Cfg.MatchProtocols {
+			if proto == "all" {
+				Cfg.MatchProtocols = SupportedProtocols
+				break
+			}
+		}
+	}
 
 	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
 	cfg.MaxTCPDataSize = tcpByteSize.Bytes()

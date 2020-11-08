@@ -3,5 +3,6 @@ pinknoise
 pinknoise.*
 config.yml
 filter.bpf
+logs/
 var/*
 !*/.gitkeep

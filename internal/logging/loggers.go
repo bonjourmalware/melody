@@ -41,7 +41,7 @@ func InitLoggers() {
 			Compress: config.Cfg.LogsErrorsCompressRotatedLogs, // disabled by default,
 		})
 	} else {
-		Errors.SetOutput(os.Stdout)
+		Errors.SetOutput(os.Stderr)
 	}
 
 	if !*config.Cli.Stdout {
