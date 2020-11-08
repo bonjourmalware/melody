@@ -1,9 +1,9 @@
 package events
 
 import (
+	"net"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/rs/xid"
@@ -125,7 +125,7 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 		DestPort:      uint16(dstPort),
 		DestHost:      network.Dst().String(),
 		Body:          NewPayload(params, config.Cfg.MaxPOSTDataSize),
-		IsTLS:         false,
+		IsTLS:         r.TLS != nil,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,
 		Errors:        errs,
@@ -133,10 +133,15 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 
 	// Cannot use promoted (inherited) fields in struct literal
 	ev.Session = sessions.Map.GetUID(transport.String())
-	ev.Kind = config.HTTPKind
 	ev.SourceIP = network.Src().String()
 	ev.Tags = []string{}
 	ev.Additional = make(map[string]string)
+
+	if ev.IsTLS {
+		ev.Kind = config.HTTPSKind
+	} else {
+		ev.Kind = config.HTTPKind
+	}
 
 	return ev, nil
 }
@@ -147,6 +152,7 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 	var errs []string
 	var params []byte
 	var srcIP string
+	var dstHost string
 	var rawDstPort string
 	var rawSrcPort string
 	var err error
@@ -156,11 +162,15 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 		inlineHeaders = append(inlineHeaders, header+": "+r.Header.Get(header))
 	}
 
-	hostChunks := strings.Split(r.Host, ":")
-	dstHost := hostChunks[0]
-	rawDstPort = hostChunks[1]
-	remoteAddrChunks := strings.Split(r.RemoteAddr, ":")
-	srcIP, rawSrcPort = remoteAddrChunks[0], remoteAddrChunks[1]
+	dstHost, rawDstPort, err = net.SplitHostPort(r.Host)
+	if err != nil {
+		errs = append(errs, err.Error())
+	}
+
+	srcIP, rawSrcPort, err = net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		errs = append(errs, err.Error())
+	}
 
 	params, err = parsing.GetBodyPayload(r)
 	if err != nil {
@@ -171,15 +181,14 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 	dstPort, _ := strconv.ParseUint(rawDstPort, 10, 16)
 
 	ev := &HTTPEvent{
-		Verb:       r.Method,
-		Proto:      r.Proto,
-		RequestURI: r.URL.RequestURI(),
-		SourcePort: uint16(srcPort),
-		DestPort:   uint16(dstPort),
-		DestHost:   dstHost,
-		Body:       NewPayload(params, config.Cfg.MaxPOSTDataSize),
-		//IsTLS:         r.TLS != nil,
-		IsTLS:         true,
+		Verb:          r.Method,
+		Proto:         r.Proto,
+		RequestURI:    r.URL.RequestURI(),
+		SourcePort:    uint16(srcPort),
+		DestPort:      uint16(dstPort),
+		DestHost:      dstHost,
+		Body:          NewPayload(params, config.Cfg.MaxPOSTDataSize),
+		IsTLS:         r.TLS != nil,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,
 		Errors:        errs,
@@ -187,10 +196,15 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 
 	// Cannot use promoted (inherited) fields in struct literal
 	ev.Session = xid.New().String()
-	ev.Kind = config.HTTPKind
 	ev.SourceIP = srcIP
 	ev.Tags = []string{}
 	ev.Additional = make(map[string]string)
+
+	if ev.IsTLS {
+		ev.Kind = config.HTTPSKind
+	} else {
+		ev.Kind = config.HTTPKind
+	}
 
 	return ev, nil
 }

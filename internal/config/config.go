@@ -13,37 +13,42 @@ import (
 )
 
 const (
-	UDPKind       = "udp"
-	TCPKind       = "tcp"
-	ICMPv4Kind    = "icmpv4"
-	ICMPv6Kind    = "icmpv6"
-	HTTPKind      = "http"
+	UDPKind    = "udp"
+	TCPKind    = "tcp"
+	ICMPv4Kind = "icmpv4"
+	ICMPv6Kind = "icmpv6"
+	HTTPKind   = "http"
+	HTTPSKind  = "https"
+
 	defaultConfig = `---
 logs.dir: "logs/"
 
 logs.sensor.file: pinknoise.ndjson
 logs.sensor.max_size: 1000 # MB
-logs.sensor.max_age: 15 # days
+logs.sensor.max_age: 30 # days
 logs.sensor.compress_rotated: true
 
 logs.errors.file: pinknoise_err.log
 logs.errors.max_size: 1000 # MB
-logs.errors.max_age: 15 # days
+logs.errors.max_age: 30 # days
 logs.errors.compress_rotated: true
 
-logs.http.post.max_size: "1kb"
-logs.tcp.payload.max_size: "1kb"
-logs.udp.payload.max_size: "1kb"
+logs.http.post.max_size: "10kb"
+logs.tcp.payload.max_size: "10kb"
+logs.udp.payload.max_size: "10kb"
 
 rules.dir: "rules/rules-enabled"
 
 listen.interface: "lo"
 listen.bpf.file: "filter.bpf"
 
-filter.homenet.ipv4:
+filters.ipv4.homenet:
       - "127.0.0.1"
-filter.homenet.ipv6:
+filters.ipv6.homenet:
       - "::1"
+
+filters.ipv4.proto: []
+filters.ipv6.proto: []
 
 server.http.enable: true
 server.http.port: 10080
@@ -73,6 +78,7 @@ var (
 		ICMPv4Kind,
 		ICMPv6Kind,
 		HTTPKind,
+		HTTPSKind,
 	}
 )
 
@@ -103,10 +109,10 @@ type Config struct {
 	BPFFilterFile string `yaml:"listen.bpf.file"`
 	BPFFilter     string
 	//TODO Accept multiple interfaces ([]string)
-	Interface          string `yaml:"listen.interface"`
-	MaxPOSTDataSizeRaw string `yaml:"logs.http.post.max_size"`
-	MaxTCPDataSizeRaw  string `yaml:"logs.tcp.payload.max_size"`
-	MaxUDPDataSizeRaw  string `yaml:"logs.udp.payload.max_size"`
+	Interface          string   `yaml:"listen.interface"`
+	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
+	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
+	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
 	MatchProtocols     []string `yaml:"rules.match.protocols"`
 
 	ServerHTTPEnable                bool              `yaml:"server.http.enable"`
@@ -123,8 +129,14 @@ type Config struct {
 	ServerHTTPSKey                   string            `yaml:"server.https.key"`
 	ServerHTTPSHeaders               map[string]string `yaml:"server.https.response.headers"`
 
-	HomeNet         []string `yaml:"filter.homenet.ipv4"`
-	HomeNet6        []string `yaml:"filter.homenet.ipv6"`
+	HomeNet          []string `yaml:"filters.ipv4.homenet"`
+	HomeNet6         []string `yaml:"filters.ipv6.homenet"`
+	RawDiscardProto4 []string `yaml:"filters.ipv4.proto"`
+	RawDiscardProto6 []string `yaml:"filters.ipv6.proto"`
+
+	DiscardProto4 map[string]interface{}
+	DiscardProto6 map[string]interface{}
+
 	MaxPOSTDataSize uint64
 	MaxTCPDataSize  uint64
 	MaxUDPDataSize  uint64
@@ -143,21 +155,6 @@ func (cfg *Config) Load() {
 	}
 
 	filepath := "config.yml"
-
-	//// Default value
-	//cfg.MaxPOSTDataSizeRaw = "1kb"
-	//cfg.MaxTCPDataSizeRaw = "1kb"
-	//cfg.MaxUDPDataSizeRaw = "1kb"
-	//
-	//cfg.LogsSensorFile = "sensor.ndjson"
-	//cfg.LogsSensorMaxSize = 200
-	//cfg.LogsSensorCompressRotatedLogs = true
-	//cfg.LogsSensorMaxAge = 15
-	//
-	//cfg.LogsErrorsFile = "errors.logs"
-	//cfg.LogsErrorsMaxSize = 200
-	//cfg.LogsErrorsCompressRotatedLogs = true
-	//cfg.LogsErrorsMaxAge = 15
 
 	cfgData, err := ioutil.ReadFile(filepath)
 	if err != nil {
@@ -225,6 +222,24 @@ func (cfg *Config) Load() {
 
 		cfg.PcapFile = f
 	}
+
+	Cfg.DiscardProto4 = make(map[string]interface{})
+	for _, proto := range Cfg.RawDiscardProto4 {
+		if proto == "icmp" { // Allow for 'icmp' as an alias to icmpv4
+			Cfg.DiscardProto4["icmpv4"] = struct{}{}
+		}
+		Cfg.DiscardProto4[proto] = struct{}{}
+	}
+
+	Cfg.DiscardProto6 = make(map[string]interface{})
+	for _, proto := range Cfg.RawDiscardProto6 {
+		if proto == "icmp" { // Allow for 'icmp' as an alias to icmpv6
+			Cfg.DiscardProto6["icmpv6"] = struct{}{}
+		}
+		Cfg.DiscardProto6[proto] = struct{}{}
+	}
+
+	fmt.Println(Cfg.DiscardProto4, Cfg.DiscardProto6)
 
 	if http.StatusText(Cfg.ServerHTTPMissingResponseStatus) == "" {
 		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPMissingResponseStatus)

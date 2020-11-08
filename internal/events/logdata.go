@@ -3,6 +3,7 @@ package events
 import (
 	"encoding/base64"
 	"encoding/json"
+
 	"github.com/google/gopacket/layers"
 )
 
@@ -23,7 +24,7 @@ type BaseLogData struct {
 	SourceIP   string            `json:"src_ip"`
 	DestPort   uint16            `json:"dst_port"`
 	Tags       []string          `json:"matches"`
-	Additional   map[string]string `json:"additional"`
+	Additional map[string]string `json:"embedded"`
 }
 
 type ICMPv4EventLog struct {

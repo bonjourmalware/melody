@@ -2,8 +2,10 @@ package sensor
 
 import (
 	"fmt"
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"os"
 	"time"
+
+	"github.com/bonjourmalware/pinknoise/internal/logging"
 
 	"github.com/bonjourmalware/pinknoise/internal/engine"
 	"github.com/bonjourmalware/pinknoise/internal/events"
@@ -43,7 +45,10 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		if err != nil {
 			quitErrChan <- err
 			close(sensorStoppedChan)
-			return
+			time.Sleep(2 * time.Second)
+			logging.Errors.Println(err)
+			logging.Errors.Println("Failed to shutdown gracefully, exiting now.")
+			os.Exit(1)
 		}
 	}
 
@@ -59,6 +64,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 	sessionsFlushTicker := time.NewTicker(time.Second * 30)
 	src := gopacket.NewPacketSource(handle, handle.LinkType())
 	in := src.Packets()
+	logging.Std.Println("Now listening for packets")
 
 	defer func() {
 		assembler.FlushAll()
@@ -104,6 +110,10 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 
 			switch packet.NetworkLayer().(*layers.IPv4).Protocol {
 			case layers.IPProtocolICMPv4:
+				if _, ok := config.Cfg.DiscardProto4[config.ICMPv4Kind]; ok {
+					return
+				}
+
 				event, err = events.NewICMPv4Event(packet)
 				if err != nil {
 					logging.Errors.Println(err)
@@ -111,6 +121,10 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 				}
 
 			case layers.IPProtocolUDP:
+				if _, ok := config.Cfg.DiscardProto4[config.UDPKind]; ok {
+					return
+				}
+
 				event, err = events.NewUDPEvent(packet, 4)
 				if err != nil {
 					logging.Errors.Println(err)
@@ -118,14 +132,18 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 				}
 
 			case layers.IPProtocolTCP:
+				tcpPacket := packet.TransportLayer().(*layers.TCP)
+				assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+
+				if _, ok := config.Cfg.DiscardProto4[config.TCPKind]; ok {
+					return
+				}
+
 				event, err = events.NewTCPEvent(packet, 4)
 				if err != nil {
 					logging.Errors.Println(err)
 					return
 				}
-
-				tcpPacket := packet.TransportLayer().(*layers.TCP)
-				assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
 
 			default:
 				return
@@ -143,8 +161,13 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 					return
 				}
 			}
+
 			switch packet.NetworkLayer().(*layers.IPv6).NextHeader {
 			case layers.IPProtocolICMPv6:
+				if _, ok := config.Cfg.DiscardProto6[config.ICMPv6Kind]; ok {
+					return
+				}
+
 				event, err = events.NewICMPv6Event(packet)
 				if err != nil {
 					logging.Errors.Println(err)
@@ -154,16 +177,24 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 			default:
 				switch packet.NetworkLayer().(*layers.IPv6).NextLayerType() {
 				case layers.IPProtocolTCP.LayerType():
+					tcpPacket := packet.TransportLayer().(*layers.TCP)
+					assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
+
+					if _, ok := config.Cfg.DiscardProto6[config.TCPKind]; ok {
+						return
+					}
+
 					event, err = events.NewTCPEvent(packet, 6)
 					if err != nil {
 						logging.Errors.Println(err)
 						return
 					}
 
-					tcpPacket := packet.TransportLayer().(*layers.TCP)
-					assembler.AssembleWithTimestamp(packet.NetworkLayer().NetworkFlow(), tcpPacket, packet.Metadata().Timestamp)
-
 				case layers.IPProtocolUDP.LayerType():
+					if _, ok := config.Cfg.DiscardProto6[config.UDPKind]; ok {
+						return
+					}
+
 					event, err = events.NewUDPEvent(packet, 6)
 					if err != nil {
 						logging.Errors.Println(err)

@@ -128,7 +128,7 @@ type RawRule struct {
 	IPProtocol RawConditions `yaml:"ip_protocol"`
 
 	Metadata   Metadata          `yaml:"meta"`
-	Additional map[string]string `yaml:"add"`
+	Additional map[string]string `yaml:"embed"`
 }
 
 func (rawRule RawRule) Parse() Rule {

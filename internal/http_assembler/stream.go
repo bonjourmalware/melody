@@ -40,6 +40,7 @@ func (h *HttpStream) run() {
 			// We must read until we see an EOF... very important!
 			return
 		} else if err != nil {
+
 		} else {
 			ev, _ := events.NewHTTPEvent(req, h.net, h.transport)
 			engine.EventChan <- ev

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/bonjourmalware/pinknoise/internal/config"
+
 	"github.com/bonjourmalware/pinknoise/internal/logging"
 
 	"github.com/bonjourmalware/pinknoise/internal/events"
@@ -53,6 +55,14 @@ func headersHandler(h http.Handler, headers map[string]string) http.Handler {
 
 func httpsLogger(h http.Handler, eventChan chan events.Event) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := config.Cfg.DiscardProto4[config.HTTPSKind]; ok {
+			h.ServeHTTP(w, r) // pass request
+			return
+		} else if _, ok := config.Cfg.DiscardProto6[config.HTTPSKind]; ok {
+			h.ServeHTTP(w, r) // pass request
+			return
+		}
+
 		ev, err := events.NewHTTPEventFromRequest(r)
 		if err != nil {
 			logging.Errors.Println(err)

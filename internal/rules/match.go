@@ -74,6 +74,8 @@ func (rl *Rule) Match(ev events.Event) bool {
 	case config.ICMPv6Kind:
 		return rl.MatchICMPv6Event(ev)
 	case config.HTTPKind:
+		fallthrough
+	case config.HTTPSKind:
 		return rl.MatchHTTPEvent(ev)
 	}
 
