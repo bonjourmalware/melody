@@ -16,7 +16,7 @@ func StartHTTP(quitErrChan chan error) {
 	r := http.NewServeMux()
 	r.Handle("/",
 		headersHandler(
-			melodyFs(http.Dir(config.Cfg.ServerHTTPDir), config.Cfg.ServerHTTPMissingResponseStatus),
+			pinknoiseFs(http.Dir(config.Cfg.ServerHTTPDir), config.Cfg.ServerHTTPMissingResponseStatus),
 			config.Cfg.ServerHTTPHeaders))
 
 	logging.Std.Println("Started HTTP server on port", config.Cfg.ServerHTTPPort)
@@ -28,7 +28,7 @@ func StartHTTPS(quitErrChan chan error, eventChan chan events.Event) {
 	r.Handle("/",
 		httpsLogger(
 			headersHandler(
-				melodyFs(http.Dir(config.Cfg.ServerHTTPSDir), config.Cfg.ServerHTTPSMissingResponseStatus),
+				pinknoiseFs(http.Dir(config.Cfg.ServerHTTPSDir), config.Cfg.ServerHTTPSMissingResponseStatus),
 				config.Cfg.ServerHTTPSHeaders), eventChan))
 
 	srv := &http.Server{

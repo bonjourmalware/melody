@@ -9,7 +9,7 @@ import (
 
 	"github.com/c2h5oh/datasize"
 
-	"github.com/go-yaml/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -24,18 +24,18 @@ const (
 logs.dir: "logs/"
 
 logs.sensor.file: pinknoise.ndjson
-logs.sensor.max_size: 1000 # MB
+logs.sensor.max_size: 1GB
 logs.sensor.max_age: 30 # days
 logs.sensor.compress_rotated: true
 
 logs.errors.file: pinknoise_err.log
-logs.errors.max_size: 1000 # MB
+logs.errors.max_size: 1GB
 logs.errors.max_age: 30 # days
 logs.errors.compress_rotated: true
 
-logs.http.post.max_size: "10kb"
-logs.tcp.payload.max_size: "10kb"
-logs.udp.payload.max_size: "10kb"
+logs.http.post.max_size: "10KB"
+logs.tcp.payload.max_size: "10KB"
+logs.udp.payload.max_size: "10KB"
 
 rules.dir: "rules/rules-enabled"
 
@@ -96,14 +96,16 @@ type Config struct {
 	LogsDir string `yaml:"logs.dir"`
 
 	LogsSensorFile                string `yaml:"logs.sensor.file"`
-	LogsSensorMaxSize             int    `yaml:"logs.sensor.max_size"`
-	LogsSensorMaxAge              int    `yaml:"logs.sensor.max_age"`
-	LogsSensorCompressRotatedLogs bool   `yaml:"logs.sensor.compress_rotated"`
+	LogsSensorMaxSizeRaw          string `yaml:"logs.sensor.max_size"`
+	LogsSensorMaxSize             int
+	LogsSensorMaxAge              int  `yaml:"logs.sensor.max_age"`
+	LogsSensorCompressRotatedLogs bool `yaml:"logs.sensor.compress_rotated"`
 
 	LogsErrorsFile                string `yaml:"logs.errors.file"`
-	LogsErrorsMaxSize             int    `yaml:"logs.errors.max_size"`
-	LogsErrorsMaxAge              int    `yaml:"logs.errors.max_age"`
-	LogsErrorsCompressRotatedLogs bool   `yaml:"logs.errors.compress_rotated"`
+	LogsErrorsMaxSizeRaw          string `yaml:"logs.errors.max_size"`
+	LogsErrorsMaxSize             int
+	LogsErrorsMaxAge              int  `yaml:"logs.errors.max_age"`
+	LogsErrorsCompressRotatedLogs bool `yaml:"logs.errors.compress_rotated"`
 
 	RulesDir      string `yaml:"rules.dir"`
 	BPFFilterFile string `yaml:"listen.bpf.file"`
@@ -147,8 +149,10 @@ func (cfg *Config) Load() {
 	var httpByteSize datasize.ByteSize
 	var tcpByteSize datasize.ByteSize
 	var udpByteSize datasize.ByteSize
+	var sensorFileByteSize datasize.ByteSize
+	var errorsFileByteSize datasize.ByteSize
 
-	if err := yaml.Unmarshal([]byte(defaultConfig), &cfg); err != nil {
+	if err := yaml.Unmarshal([]byte(defaultConfig), cfg); err != nil {
 		log.Println("Failed to load default config")
 		log.Println(err)
 		os.Exit(1)
@@ -163,26 +167,38 @@ func (cfg *Config) Load() {
 		os.Exit(1)
 	}
 
+	if err := yaml.Unmarshal(cfgData, cfg); err != nil {
+		log.Printf("Failed to load the config file [%s]\n", filepath)
+		log.Println(err)
+		os.Exit(1)
+	}
+
 	if err := httpByteSize.UnmarshalText([]byte(cfg.MaxPOSTDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the MaxPOSTDataSize value (%s)\n", cfg.MaxPOSTDataSizeRaw)
+		log.Printf("Failed to parse the logs.http.post.max_size value (%s)\n", cfg.MaxPOSTDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the MaxTCPDataSizeRaw value (%s)\n", cfg.MaxTCPDataSizeRaw)
+		log.Printf("Failed to parse the logs.tcp.payload.max_size value (%s)\n", cfg.MaxTCPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
 	if err := udpByteSize.UnmarshalText([]byte(cfg.MaxUDPDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the MaxUDPDataSizeRaw value (%s)\n", cfg.MaxUDPDataSizeRaw)
+		log.Printf("Failed to parse the logs.udp.payload.max_size value (%s)\n", cfg.MaxUDPDataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	if err := yaml.Unmarshal(cfgData, &cfg); err != nil {
-		log.Printf("Failed to load the config file [%s]\n", filepath)
+	if err := sensorFileByteSize.UnmarshalText([]byte(cfg.LogsSensorMaxSizeRaw)); err != nil {
+		log.Printf("Failed to parse the logs.sensor.max_size value (%s)\n", cfg.LogsSensorMaxSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	if err := errorsFileByteSize.UnmarshalText([]byte(cfg.LogsErrorsMaxSizeRaw)); err != nil {
+		log.Printf("Failed to parse the logs.errors.max_size value (%s)\n", cfg.LogsErrorsMaxSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -209,6 +225,8 @@ func (cfg *Config) Load() {
 		}
 	}
 
+	cfg.LogsSensorMaxSize = int(sensorFileByteSize.MBytes())
+	cfg.LogsErrorsMaxSize = int(errorsFileByteSize.MBytes())
 	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
 	cfg.MaxTCPDataSize = tcpByteSize.Bytes()
 	cfg.MaxUDPDataSize = udpByteSize.Bytes()
@@ -225,7 +243,7 @@ func (cfg *Config) Load() {
 
 	Cfg.DiscardProto4 = make(map[string]interface{})
 	for _, proto := range Cfg.RawDiscardProto4 {
-		if proto == "icmp" { // Allow for 'icmp' as an alias to icmpv4
+		if proto == "icmp" { // Allow for 'icmp' as an alias for icmpv4
 			Cfg.DiscardProto4["icmpv4"] = struct{}{}
 		}
 		Cfg.DiscardProto4[proto] = struct{}{}
@@ -233,13 +251,11 @@ func (cfg *Config) Load() {
 
 	Cfg.DiscardProto6 = make(map[string]interface{})
 	for _, proto := range Cfg.RawDiscardProto6 {
-		if proto == "icmp" { // Allow for 'icmp' as an alias to icmpv6
+		if proto == "icmp" { // Allow for 'icmp' as an alias for icmpv6
 			Cfg.DiscardProto6["icmpv6"] = struct{}{}
 		}
 		Cfg.DiscardProto6[proto] = struct{}{}
 	}
-
-	fmt.Println(Cfg.DiscardProto4, Cfg.DiscardProto6)
 
 	if http.StatusText(Cfg.ServerHTTPMissingResponseStatus) == "" {
 		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPMissingResponseStatus)

@@ -33,7 +33,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	return f, nil
 }
 
-//func melodyFileServer(root http.FileSystem) http.Handler {
+//func pinknoiseFileServer(root http.FileSystem) http.Handler {
 //fs := http.FileServer(
 //				neuteredFileSystem{
 //					http.Dir(config.Cfg.ServerHTTPDir),
