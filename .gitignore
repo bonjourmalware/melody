@@ -2,5 +2,7 @@
 melody
 melody.*
 logs/
-var/*
 !*/.gitkeep
+var/http/serve/*
+var/https/serve/*
+var/https/certs/*
