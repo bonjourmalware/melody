@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 
 	"gopkg.in/yaml.v2"
 )
@@ -19,7 +19,7 @@ var (
 
 type GlobalRawRules []RawRules
 
-func LoadRulesDir(rulesDir string) {
+func LoadRulesDir(rulesDir string) uint {
 	var globalRawRules GlobalRawRules
 	var total uint
 
@@ -87,7 +87,7 @@ func LoadRulesDir(rulesDir string) {
 		}
 	}
 
-	log.Println(fmt.Sprintf("Loaded %d rules", total))
+	return total
 }
 
 func ParseYAMLRulesFile(filepath string) (RawRules, error) {

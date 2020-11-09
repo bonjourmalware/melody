@@ -8,7 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	//"github.com/bonjourmalware/pinknoise/internal/logger"
+	//"github.com/bonjourmalware/melody/internal/logger"
 )
 
 type RawConditions struct {

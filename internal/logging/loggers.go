@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/natefinch/lumberjack"
 )
 

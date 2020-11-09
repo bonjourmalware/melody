@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 	"net/http"
 )
 

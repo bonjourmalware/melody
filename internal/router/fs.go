@@ -13,7 +13,7 @@ type neuteredFileSystem struct {
 	fs http.FileSystem
 }
 
-func pinknoiseFs(root http.FileSystem, notFoundCode int) http.Handler {
+func melodyFs(root http.FileSystem, notFoundCode int) http.Handler {
 	fs := http.FileServer(
 		neuteredFileSystem{
 			root,

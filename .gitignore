@@ -1,6 +1,6 @@
 .idea
-pinknoise
-pinknoise.*
+melody
+melody.*
 logs/
 var/*
 !*/.gitkeep

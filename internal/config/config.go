@@ -23,12 +23,12 @@ const (
 	defaultConfig = `---
 logs.dir: "logs/"
 
-logs.sensor.file: pinknoise.ndjson
+logs.sensor.file: melody.ndjson
 logs.sensor.max_size: 1GB
 logs.sensor.max_age: 30 # days
 logs.sensor.compress_rotated: true
 
-logs.errors.file: pinknoise_err.log
+logs.errors.file: melody_err.log
 logs.errors.max_size: 1GB
 logs.errors.max_age: 30 # days
 logs.errors.compress_rotated: true

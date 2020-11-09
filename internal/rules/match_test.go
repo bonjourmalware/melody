@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/events"
 	"github.com/google/gopacket/layers"
 )
 

@@ -1,11 +1,11 @@
 package engine
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
-	"github.com/bonjourmalware/pinknoise/internal/events"
-	"github.com/bonjourmalware/pinknoise/internal/logging"
-	"github.com/bonjourmalware/pinknoise/internal/router"
-	"github.com/bonjourmalware/pinknoise/internal/rules"
+	"github.com/bonjourmalware/melody/internal/config"
+	"github.com/bonjourmalware/melody/internal/events"
+	"github.com/bonjourmalware/melody/internal/logging"
+	"github.com/bonjourmalware/melody/internal/router"
+	"github.com/bonjourmalware/melody/internal/rules"
 )
 
 var (

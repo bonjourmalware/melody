@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/events"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
@@ -17,7 +17,7 @@ var (
 
 func init() {
 	gopath := os.Getenv("GOPATH")
-	assetsBasePath = path.Join(gopath, "src/github.com/bonjourmalware/pinknoise/tests")
+	assetsBasePath = path.Join(gopath, "src/github.com/bonjourmalware/melody/tests")
 }
 
 func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {

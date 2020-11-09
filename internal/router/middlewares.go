@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/events"
 )
 
 func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
@@ -33,7 +33,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	return f, nil
 }
 
-//func pinknoiseFileServer(root http.FileSystem) http.Handler {
+//func melodyFileServer(root http.FileSystem) http.Handler {
 //fs := http.FileServer(
 //				neuteredFileSystem{
 //					http.Dir(config.Cfg.ServerHTTPDir),

@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/events"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 )
 
 func StartHTTP(quitErrChan chan error) {
 	r := http.NewServeMux()
 	r.Handle("/",
 		headersHandler(
-			pinknoiseFs(http.Dir(config.Cfg.ServerHTTPDir), config.Cfg.ServerHTTPMissingResponseStatus),
+			melodyFs(http.Dir(config.Cfg.ServerHTTPDir), config.Cfg.ServerHTTPMissingResponseStatus),
 			config.Cfg.ServerHTTPHeaders))
 
 	logging.Std.Println("Started HTTP server on port", config.Cfg.ServerHTTPPort)
@@ -28,7 +28,7 @@ func StartHTTPS(quitErrChan chan error, eventChan chan events.Event) {
 	r.Handle("/",
 		httpsLogger(
 			headersHandler(
-				pinknoiseFs(http.Dir(config.Cfg.ServerHTTPSDir), config.Cfg.ServerHTTPSMissingResponseStatus),
+				melodyFs(http.Dir(config.Cfg.ServerHTTPSDir), config.Cfg.ServerHTTPSMissingResponseStatus),
 				config.Cfg.ServerHTTPSHeaders), eventChan))
 
 	srv := &http.Server{

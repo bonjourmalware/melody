@@ -5,14 +5,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/bonjourmalware/pinknoise/internal/engine"
-	"github.com/bonjourmalware/pinknoise/internal/sensor"
+	"github.com/bonjourmalware/melody/internal/engine"
+	"github.com/bonjourmalware/melody/internal/sensor"
 
-	"github.com/bonjourmalware/pinknoise/internal/rules"
+	"github.com/bonjourmalware/melody/internal/rules"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/pborman/getopt"
 )
 
@@ -28,18 +28,18 @@ var (
 func init() {
 	signal.Notify(quitSigChan, syscall.SIGINT, syscall.SIGTERM)
 
-	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'r', "", "Replay a pcap file into the honeypot")
+	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'r', "", "Replay a pcap file into the sensor")
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
-	config.Cli.HomeNet = getopt.ListLong("homenet", 'n', "Overrides the HomeNet values")
-	config.Cli.HomeNet6 = getopt.ListLong("homenet6", 'N', "Overrides the HomeNet6 values")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "Output logged data to stdout instead")
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
 	getopt.Parse()
 
 	config.Cfg.Load()
-
 	logging.InitLoggers()
-	rules.LoadRulesDir(config.Cfg.RulesDir)
+	loaded := rules.LoadRulesDir(config.Cfg.RulesDir)
+
+	logging.Std.Printf("Loaded %d rules\n", loaded)
+	logging.Std.Printf("Listing on interface %s\n", config.Cfg.Interface)
 }
 
 func main() {

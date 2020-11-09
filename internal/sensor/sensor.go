@@ -5,16 +5,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 
-	"github.com/bonjourmalware/pinknoise/internal/engine"
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/engine"
+	"github.com/bonjourmalware/melody/internal/events"
 	"github.com/google/gopacket/layers"
 
-	"github.com/bonjourmalware/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/melody/internal/sessions"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
-	"github.com/bonjourmalware/pinknoise/internal/http_assembler"
+	"github.com/bonjourmalware/melody/internal/config"
+	"github.com/bonjourmalware/melody/internal/http_assembler"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/tcpassembly"

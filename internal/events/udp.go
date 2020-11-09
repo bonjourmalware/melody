@@ -4,9 +4,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 
-	"github.com/bonjourmalware/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/melody/internal/sessions"
 
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"

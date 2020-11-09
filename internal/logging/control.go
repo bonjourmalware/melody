@@ -1,8 +1,8 @@
 package logging
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
-	"github.com/bonjourmalware/pinknoise/internal/events"
+	"github.com/bonjourmalware/melody/internal/config"
+	"github.com/bonjourmalware/melody/internal/events"
 )
 
 var (

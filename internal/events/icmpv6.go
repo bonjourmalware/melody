@@ -1,7 +1,7 @@
 package events
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"time"

@@ -3,7 +3,7 @@ package parsing
 import (
 	"bytes"
 	"fmt"
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 	"io"
 	"io/ioutil"
 	"net/http"

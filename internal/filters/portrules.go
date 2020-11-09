@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 )
 
 type PortRanges []PortRange

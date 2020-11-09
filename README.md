@@ -1,4 +1,4 @@
-# pinknoise
+# Melody
 Internet sensor with built-in tagging engine depending on specific rules describing packets properties. Supported protocols : TCP/UDP/ICMPv4/ICMPv6/HTTP/HTTPS. 
 
 # Rules

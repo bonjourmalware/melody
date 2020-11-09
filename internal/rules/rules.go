@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"github.com/bonjourmalware/pinknoise/internal/filters"
+	"github.com/bonjourmalware/melody/internal/filters"
 )
 
 type Rules []Rule

@@ -4,9 +4,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bonjourmalware/pinknoise/internal/logging"
+	"github.com/bonjourmalware/melody/internal/logging"
 
-	"github.com/bonjourmalware/pinknoise/internal/filters"
+	"github.com/bonjourmalware/melody/internal/filters"
 	"github.com/go-yaml/yaml"
 )
 

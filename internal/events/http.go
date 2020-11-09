@@ -10,11 +10,11 @@ import (
 
 	"github.com/google/gopacket/layers"
 
-	"github.com/bonjourmalware/pinknoise/internal/sessions"
+	"github.com/bonjourmalware/melody/internal/sessions"
 
-	"github.com/bonjourmalware/pinknoise/internal/config"
+	"github.com/bonjourmalware/melody/internal/config"
 
-	"github.com/bonjourmalware/pinknoise/internal/parsing"
+	"github.com/bonjourmalware/melody/internal/parsing"
 	"github.com/google/gopacket"
 )
 
