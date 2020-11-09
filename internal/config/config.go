@@ -42,11 +42,6 @@ rules.dir: "rules/rules-enabled"
 listen.interface: "lo"
 listen.bpf.file: "filter.bpf"
 
-filters.ipv4.homenet:
-      - "127.0.0.1"
-filters.ipv6.homenet:
-      - "::1"
-
 filters.ipv4.proto: []
 filters.ipv6.proto: []
 
@@ -86,8 +81,6 @@ type CLI struct {
 	PcapFilePath *string
 	Stdout       *bool
 	Interface    *string
-	HomeNet      *[]string
-	HomeNet6     *[]string
 	Dump         *bool
 }
 
@@ -131,8 +124,6 @@ type Config struct {
 	ServerHTTPSKey                   string            `yaml:"server.https.key"`
 	ServerHTTPSHeaders               map[string]string `yaml:"server.https.response.headers"`
 
-	HomeNet          []string `yaml:"filters.ipv4.homenet"`
-	HomeNet6         []string `yaml:"filters.ipv6.homenet"`
 	RawDiscardProto4 []string `yaml:"filters.ipv4.proto"`
 	RawDiscardProto6 []string `yaml:"filters.ipv6.proto"`
 
@@ -270,13 +261,5 @@ func (cfg *Config) Load() {
 	// CLI overrides
 	if *Cli.Interface != "" {
 		cfg.Interface = *Cli.Interface
-	}
-
-	if len(*Cli.HomeNet) > 0 {
-		cfg.HomeNet = *Cli.HomeNet
-	}
-
-	if len(*Cli.HomeNet6) > 0 {
-		cfg.HomeNet6 = *Cli.HomeNet6
 	}
 }

@@ -37,7 +37,10 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 		if err != nil {
 			quitErrChan <- err
 			close(sensorStoppedChan)
-			return
+			time.Sleep(2 * time.Second)
+			logging.Errors.Println(err)
+			logging.Errors.Println("Failed to shutdown gracefully, exiting now.")
+			os.Exit(1)
 		}
 	} else {
 		// Open up a pcap handle for packet reads/writes.
@@ -56,7 +59,10 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 	if config.Cfg.BPFFilter != "" {
 		if err := handle.SetBPFFilter(config.Cfg.BPFFilter); err != nil {
 			quitErrChan <- err
-			return
+			time.Sleep(2 * time.Second)
+			logging.Errors.Println(err)
+			logging.Errors.Println("Failed to shutdown gracefully, exiting now.")
+			os.Exit(1)
 		}
 	}
 
@@ -101,13 +107,6 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 
 	if packet.NetworkLayer() != nil {
 		if _, ok := packet.NetworkLayer().(*layers.IPv4); ok {
-			// Ignore outgoing packets
-			for _, ip := range config.Cfg.HomeNet {
-				if packet.NetworkLayer().(*layers.IPv4).SrcIP.String() == ip {
-					return
-				}
-			}
-
 			switch packet.NetworkLayer().(*layers.IPv4).Protocol {
 			case layers.IPProtocolICMPv4:
 				if _, ok := config.Cfg.DiscardProto4[config.ICMPv4Kind]; ok {
@@ -155,13 +154,6 @@ func handlePacket(packet gopacket.Packet, assembler *tcpassembly.Assembler) {
 				engine.EventChan <- event
 			}
 		} else if _, ok := packet.NetworkLayer().(*layers.IPv6); ok {
-			// Ignore outgoing packets
-			for _, ip := range config.Cfg.HomeNet6 {
-				if packet.NetworkLayer().(*layers.IPv6).SrcIP.String() == ip {
-					return
-				}
-			}
-
 			switch packet.NetworkLayer().(*layers.IPv6).NextHeader {
 			case layers.IPProtocolICMPv6:
 				if _, ok := config.Cfg.DiscardProto6[config.ICMPv6Kind]; ok {

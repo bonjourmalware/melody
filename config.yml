@@ -1,0 +1,42 @@
+---
+# logs.dir: "logs/"
+
+# logs.sensor.file: melody.ndjson
+# logs.sensor.max_size: 1000 # MB
+# logs.sensor.max_age: 30 # days
+# logs.sensor.compress_rotated: true
+
+# logs.errors.file: melody_err.log
+# logs.errors.max_size: 1000 # MB
+# logs.errors.max_age: 30 # days
+# logs.errors.compress_rotated: true
+
+# logs.http.post.max_size: "10kb"
+# logs.tcp.payload.max_size: "10kb"
+# logs.udp.payload.max_size: "10kb"
+
+# rules.dir: "rules/rules-enabled"
+
+# listen.interface: "lo"
+# listen.bpf.file: "filter.bpf"
+
+## Filter out specific protocols. 
+## Available protos are : udp, tcp, http, https, icmp, icmpv4 (ipv4 only), icmpv6 (ipv6 only)
+# filters.ipv4.proto: []
+# filters.ipv6.proto: []
+
+# server.http.enable: true
+# server.http.port: 10080
+# server.http.dir: "var/http/serve"
+# server.http.response.missing_status_code: 200
+# server.http.response.headers:
+#       Server: "Apache"
+
+# server.https.enable: true
+# server.https.port: 10443
+# server.https.dir: "var/https/serve"
+# server.https.crt: "var/https/certs/cert.pem"
+# server.https.key: "var/https/certs/key.pem"
+# server.https.response.missing_status_code: 200
+# server.https.response.headers:
+#       Server: "Apache"
