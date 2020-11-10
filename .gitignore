@@ -1,8 +1,0 @@
-.idea
-melody
-melody.*
-logs/
-!*/.gitkeep
-var/http/serve/*
-var/https/serve/*
-var/https/certs/*
