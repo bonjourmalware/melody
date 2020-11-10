@@ -1,9 +1,14 @@
+.PHONY: docs
+
 default:
 	echo "No default make"
 
 certs:
 	mkdir -p var/https/certs
 	openssl req -x509 -subj "/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost" -newkey rsa:4096 -keyout var/https/certs/key.pem -out var/https/certs/cert.pem -days 3650 -nodes
+
+docs:
+	cd docs/; mkdocs gh-deploy
 
 run_local_stdout: build
 	./melody -s
