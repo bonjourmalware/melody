@@ -1,0 +1,2 @@
+# Melody documentation
+## Coming soon
