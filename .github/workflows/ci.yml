@@ -22,10 +22,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
-      - name: Set up GOPATH
-        run: |
-          echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
-          echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
       - uses: actions/checkout@v2
       - name: Run tests
         run: |
