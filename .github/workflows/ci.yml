@@ -16,22 +16,20 @@ jobs:
       matrix:
         go: ["1.13", "1.14", "1.15"]
     steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
       - name: Set up GOPATH
         run: |
           echo "GOPATH=${{ github.workspace }}" >> "$GITHUB_ENV"
           echo "${{ github.workspace }}/bin" >> "$GITHUB_PATH"
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go }}
       - name: Run tests
         run: |
           go test -v -p 1 -race -coverprofile=covprofile -covermode=atomic ./...
-        working-directory: src/github.com/bonjourmalware/melody
       - if: ${{ matrix.go == 1.15 }}
         name: Update coverage
         uses: shogo82148/actions-goveralls@v1.4.2
-        working-directory: src/github.com/bonjourmalware/melody
         with:
           path-to-profile: covprofile
 
