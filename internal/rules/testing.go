@@ -2,13 +2,11 @@ package rules
 
 import (
 	"fmt"
-	"os"
-	"path"
-
 	"github.com/bonjourmalware/melody/internal/events"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
+	"os"
 )
 
 var (
@@ -16,8 +14,7 @@ var (
 )
 
 func init() {
-	gopath := os.Getenv("GOPATH")
-	assetsBasePath = path.Join(gopath, "src/github.com/bonjourmalware/melody/tests")
+	assetsBasePath = "test_resources"
 }
 
 // ReadRawTCPPacketsFromPcap is an helper that reads raw TCP packets from the specified pcap file

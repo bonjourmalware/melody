@@ -15,8 +15,8 @@ linters:
   enable:
     - gofmt
     - golint
-    - gocyclo
     - misspell
+#    - gocyclo
   disable:
     - errcheck
   disable-all: false
