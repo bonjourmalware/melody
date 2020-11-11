@@ -11,7 +11,7 @@
 
 ----
 
-Melody is an internet sensor built for threat intelligence supported by a rule framework allowing to tag specific packets.
+Melody is an internet sensor built for threat intelligence and supported by a rule framework allowing to tag specific packets.
 
 The following protocols are supported :
 + TCP
