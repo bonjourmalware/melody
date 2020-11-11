@@ -37,7 +37,7 @@ func InitLoggers() error {
 		} else {
 			f, err := os.OpenFile(errorsLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
-				return fmt.Errorf("failed to open errors log file '%s'", errorsLogFilepath)
+				return fmt.Errorf("failed to open error log file '%s'", errorsLogFilepath)
 			}
 
 			Sensor.SetOutput(f)
@@ -57,7 +57,7 @@ func InitLoggers() error {
 		} else {
 			f, err := os.OpenFile(errorsLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
-				return fmt.Errorf("failed to open errors log file '%s'", errorsLogFilepath)
+				return fmt.Errorf("failed to open error log file '%s'", errorsLogFilepath)
 			}
 
 			Sensor.SetOutput(f)
