@@ -7,7 +7,7 @@ import (
 	"github.com/bonjourmalware/melody/internal/logging"
 
 	"github.com/bonjourmalware/melody/internal/filters"
-	"github.com/go-yaml/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 // The yml rule file contains multiple named rules

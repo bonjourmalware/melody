@@ -135,20 +135,6 @@ func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionV
 	return match
 }
 
-//func (condsList *ConditionsList) ParseMatchType(matchType string, ruleId string) {
-//	switch matchType {
-//	case "any":
-//		condsList.MatchAny = true
-//	case "all":
-//		condsList.MatchAll = true
-//	}
-//
-//	if !condsList.MatchAny && !condsList.MatchAll {
-//		//logger.Std.Printf("No match behaviour defined for rule %s, defaulting to \"any\"\n", ruleId)
-//		condsList.MatchAny = true
-//	}
-//}
-
 func (rawCondList RawConditions) ParseList(ruleId string) *ConditionsList {
 	if len(rawCondList.Groups) == 0 {
 		return nil
