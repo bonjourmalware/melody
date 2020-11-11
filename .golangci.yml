@@ -1,13 +1,26 @@
-linters:
-  enable:
-    - megacheck
-    - govet
-    - gocyclo
-    - misspell
-    - golint
+run:
+  skip-dirs:
+    - docs
+    - .github
 
 linters-settings:
   gocyclo:
-          # minimal code complexity to report, 30 by default (but we recommend 10-20)
-          #     min-complexity: 10
     min-complexity: 15
+  gofmt:
+    simplify: true
+  misspell:
+    locale: US
+
+linters:
+  enable:
+    - gofmt
+    - golint
+    - gocyclo
+    - misspell
+  disable:
+    - errcheck
+  disable-all: false
+  fast: false
+
+issues:
+  exclude-use-default: false
