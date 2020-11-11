@@ -1,37 +1,66 @@
 ---
+## Melody configuration file
+## This file shows all supported configuration properties with their default values
+
+## Directory where the logs will be written
 # logs.dir: "logs/"
 
+## By default, the logs are compressed (gzip) and rotated after reaching 1G, then discarded after 30 days
+## You can disable the log rotation by setting "logs.sensor.rotation.enable: false"
 # logs.sensor.file: melody.ndjson
-# logs.sensor.max_size: 1000 # MB
-# logs.sensor.max_age: 30 # days
-# logs.sensor.compress_rotated: true
+# logs.sensor.rotation.max_size: 1000 # MB
+# logs.sensor.rotation.max_age: 30 # days
+# logs.sensor.rotation.enable: true
+# logs.sensor.rotation.compress: true
 
+## Same for the error logs
 # logs.errors.file: melody_err.log
-# logs.errors.max_size: 1000 # MB
-# logs.errors.max_age: 30 # days
-# logs.errors.compress_rotated: true
+# logs.errors.rotation.max_size: 1000 # MB
+# logs.errors.rotation.max_age: 30 # days
+# logs.errors.rotation.enable: true
+# logs.errors.rotation.compress: true
 
+## Truncate the logged data in the payload/body after reaching the size limit
+## In such case, the log has the "truncated" field set as "true"
 # logs.http.post.max_size: "10kb"
 # logs.tcp.payload.max_size: "10kb"
 # logs.udp.payload.max_size: "10kb"
 
+## The directory where the active rules lives
 # rules.dir: "rules/rules-enabled"
 
+## The interface on which Melody is listening
+## Listen by default on localhost
+## You want to change it to your internet facing interface (wlp3s0, enp0s25, eth0...)
 # listen.interface: "lo"
-# listen.bpf.file: "filter.bpf"
 
-## Filter out specific protocols. 
-## Available protos are : udp, tcp, http, https, icmp, icmpv4 (ipv4 only), icmpv6 (ipv6 only)
+## Filter out specific protocols.
+## Available protocols are : udp, tcp, http, https, icmp, icmpv4 (ipv4 only), icmpv6 (ipv6 only)
 # filters.ipv4.proto: []
 # filters.ipv6.proto: []
 
+## Filter packets according to the BPF syntax (https://biot.com/capstats/bpf.html)
+## The filter must start with "inbound" to filter outgoing packets
+# filters.bpf.file: "filter.bpf"
+
+## Configure the dummy server spawned by Melody
+## A listening HTTP server is needed to capture full HTTP requests
+## Use iptables to redirect all traffic to the listening port in order to catch HTTP noise on all ports
 # server.http.enable: true
 # server.http.port: 10080
 # server.http.dir: "var/http/serve"
+
+## The missing_status_code is the default HTTP status code sent back if the file is not found
+## A default status code of 200 can be useful to generate false positive in badly configured scanners
 # server.http.response.missing_status_code: 200
+
+## Add or override specific response headers
 # server.http.response.headers:
 #       Server: "Apache"
 
+## Same for the HTTPS server
+## Valid TLS certificates are needed
+## They can be generated using the Makefile (make certs)
 # server.https.enable: true
 # server.https.port: 10443
 # server.https.dir: "var/https/serve"
