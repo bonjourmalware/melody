@@ -10,7 +10,16 @@
 </p>
 
 ----
-Internet sensor with built-in tagging engine depending on specific rules describing packets properties. Supported protocols : TCP/UDP/ICMPv4/ICMPv6/HTTP/HTTPS. 
+
+Melody is an internet sensor built for threat intelligence supported by a rule framework allowing to tag specific packets.
+
+The following protocols are supported :
++ TCP
++ UDP
++ ICMPv4
++ ICMPv6
++ HTTP
++ HTTPS
 
 # Rules
 For rules examples, see rules/rules-available. More to come once the codebase has reached a stable state.
