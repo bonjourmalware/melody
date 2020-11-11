@@ -36,6 +36,8 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - name: Install libpcap dependencies
+        run: sudo apt update && sudo apt install libpcap-dev
       - uses: actions/checkout@v2
       - name: Run lint
         uses: golangci/golangci-lint-action@v2
