@@ -5,6 +5,7 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
+// IPv6LogData is the struct describing the logged data for IPv6 header
 type IPv6LogData struct {
 	Version        uint8             `json:"version"`
 	Length         uint16            `json:"length"`
@@ -16,6 +17,7 @@ type IPv6LogData struct {
 	IPLogData      `json:"-"`
 }
 
+// NewIPv6LogData is used to create a new IPv6LogData struct
 func NewIPv6LogData(ipv6Layer helpers.IPv6Layer) IPv6LogData {
 	return IPv6LogData{
 		Version:        ipv6Layer.Header.Version,

@@ -13,6 +13,7 @@ import (
 	"github.com/c2h5oh/datasize"
 )
 
+// GetBodyPayload extract the body of an http.Request without striping it
 func GetBodyPayload(r *http.Request) ([]byte, error) {
 	var buf bytes.Buffer
 	var b bytes.Buffer

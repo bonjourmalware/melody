@@ -9,9 +9,11 @@ import (
 )
 
 var (
+	// EventChan is the channel used to receive event to qualify
 	EventChan = make(chan events.Event)
 )
 
+// Start starts the matching and tagging engine
 func Start(quitErrChan chan error, shutdownChan chan bool, engineStoppedChan chan bool) {
 	go startEventQualifier(quitErrChan, shutdownChan, engineStoppedChan)
 

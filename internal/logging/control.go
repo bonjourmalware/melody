@@ -6,9 +6,11 @@ import (
 )
 
 var (
+	// LogChan is the channel used to receive events to be logged
 	LogChan = make(chan events.Event)
 )
 
+// Start starts the logging pipeline
 func Start(quitErrChan chan error, shutdownChan chan bool, loggerStoppedChan chan bool) {
 	go receiveEventsForLogging(quitErrChan, shutdownChan, loggerStoppedChan)
 }

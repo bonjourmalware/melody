@@ -33,17 +33,6 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	return f, nil
 }
 
-//func melodyFileServer(root http.FileSystem) http.Handler {
-//fs := http.FileServer(
-//				neuteredFileSystem{
-//					http.Dir(config.Cfg.ServerHTTPDir),
-//				})
-//		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//
-//		}
-//		fs.ServeHTTP(w, r)
-//}
-
 func headersHandler(h http.Handler, headers map[string]string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for header, val := range headers {
@@ -67,9 +56,8 @@ func httpsLogger(h http.Handler, eventChan chan events.Event) http.Handler {
 		if err != nil {
 			logging.Errors.Println(err)
 			return
-		} else {
-			eventChan <- ev
 		}
+		eventChan <- ev
 
 		h.ServeHTTP(w, r) // pass request
 	})

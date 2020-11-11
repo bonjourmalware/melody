@@ -7,7 +7,7 @@ import (
 	"net"
 )
 
-func AddressRange(network *net.IPNet) (net.IP, net.IP, error) {
+func addressRange(network *net.IPNet) (net.IP, net.IP, error) {
 	// the first IP is easy
 	firstIP := network.IP
 

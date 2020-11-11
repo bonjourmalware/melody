@@ -167,9 +167,9 @@ func TestParseOptions(t *testing.T) {
 				"",
 			},
 			ErrDst: []string{
-				fmt.Sprintf("options parsing failed for condition %s : there can only be one of <is|contains|startswith|endswith>\n", "contains|is"),
-				fmt.Sprintf("options parsing failed for condition %s : unknown option \"%s\"\n", "contains|nonexistent", "nonexistent"),
-				fmt.Sprintf("options parsing failed for condition %s : matching mode cannot be empty\n", ""),
+				fmt.Sprintf("options parsing failed for condition %s : there can only be one of <nocase|regex|is|contains|startswith|endswith>", "contains|is"),
+				fmt.Sprintf("options parsing failed for condition %s : unknown option \"%s\"", "contains|nonexistent", "nonexistent"),
+				fmt.Sprintf("options parsing failed for condition %s : matching mode cannot be empty", ""),
 			},
 		},
 	}

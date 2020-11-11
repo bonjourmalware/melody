@@ -11,17 +11,18 @@ import (
 	"net/http"
 )
 
-// HttpStreamFactory implements tcpassembly.StreamFactory
-type HttpStreamFactory struct{}
+// HTTPStreamFactory implements tcpassembly.StreamFactory
+type HTTPStreamFactory struct{}
 
-// HttpStream will handle the actual decoding of http requests.
-type HttpStream struct {
+// HTTPStream will handle the actual decoding of http requests.
+type HTTPStream struct {
 	net, transport gopacket.Flow
 	r              tcpreader.ReaderStream
 }
 
-func (h *HttpStreamFactory) New(net, transport gopacket.Flow) tcpassembly.Stream {
-	hstream := &HttpStream{
+// New creates a new HTTPStreamFactory from the given flow data
+func (h *HTTPStreamFactory) New(net, transport gopacket.Flow) tcpassembly.Stream {
+	hstream := &HTTPStream{
 		net:       net,
 		transport: transport,
 		r:         tcpreader.NewReaderStream(),
@@ -32,7 +33,7 @@ func (h *HttpStreamFactory) New(net, transport gopacket.Flow) tcpassembly.Stream
 	return &hstream.r
 }
 
-func (h *HttpStream) run() {
+func (h *HTTPStream) run() {
 	buf := bufio.NewReader(&h.r)
 	for {
 		req, err := http.ReadRequest(buf)

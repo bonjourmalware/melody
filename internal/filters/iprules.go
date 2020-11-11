@@ -3,25 +3,30 @@ package filters
 import (
 	"bytes"
 	"fmt"
-	"github.com/bonjourmalware/melody/internal/logging"
 	"log"
 	"net"
 	"os"
 	"strings"
+
+	"github.com/bonjourmalware/melody/internal/logging"
 )
 
+// IPRanges abstracts an array of IPRange
 type IPRanges []IPRange
 
+// IPRules groups the whitelisted and blacklisted ip rules
 type IPRules struct {
 	WhitelistedIPs IPRanges
 	BlacklistedIPs IPRanges
 }
 
+// IPRange is a range of IP represented by a lower and an upper bound
 type IPRange struct {
 	Lower net.IP
 	Upper net.IP
 }
 
+// NewIPRange created a new ip range from a lower and an upper bound
 func NewIPRange(lower net.IP, upper net.IP) IPRange {
 	return IPRange{
 		Lower: lower,
@@ -93,6 +98,7 @@ func NewIPRange(lower net.IP, upper net.IP) IPRange {
 //	iprl.WhitelistedIPs.MergeOverlapping()
 //}
 
+// ParseRules loads a whitelist and a blacklist into a set of IPRules
 func (iprl *IPRules) ParseRules(whitelist []string, blacklist []string) {
 	for _, rawRule := range whitelist {
 		rule := strings.Replace(rawRule, " ", "", -1)
@@ -156,10 +162,14 @@ func (iprl *IPRules) ParseRules(whitelist []string, blacklist []string) {
 	iprl.WhitelistedIPs.MergeOverlapping()
 }
 
+//
 // IPRanges methods
-func (prgs *IPRanges) MergeOverlapping() {
-	workSlice := make(IPRanges, len(*prgs))
-	copy(workSlice, *prgs)
+//
+
+// MergeOverlapping optimize the parsed IPRange by keeping only non-overlapping ranges
+func (iprgs *IPRanges) MergeOverlapping() {
+	workSlice := make(IPRanges, len(*iprgs))
+	copy(workSlice, *iprgs)
 
 	for i := 0; i < len(workSlice); i++ {
 		for idx, candidate := range workSlice {
@@ -180,7 +190,7 @@ func (prgs *IPRanges) MergeOverlapping() {
 				break
 			}
 
-			if candidate.ContainsIPNotEqual(workSlice[i].Lower) && !candidate.ContainsIPNotEqual(workSlice[i].Upper) {
+			if !candidate.IsUpperOrLowerBoundary(workSlice[i].Lower) && candidate.IsUpperOrLowerBoundary(workSlice[i].Upper) {
 				// Replace the candidate's upper with the current's upper
 				workSlice[idx].Upper = workSlice[i].Upper
 				workSlice.RemoveAt(i)
@@ -188,7 +198,7 @@ func (prgs *IPRanges) MergeOverlapping() {
 				break
 			}
 
-			if candidate.ContainsIPNotEqual(workSlice[i].Upper) && !candidate.ContainsIPNotEqual(workSlice[i].Lower) {
+			if !candidate.IsUpperOrLowerBoundary(workSlice[i].Upper) && candidate.IsUpperOrLowerBoundary(workSlice[i].Lower) {
 				// Replace the candidate's lower with the current's lower
 				workSlice[idx].Lower = workSlice[i].Lower
 				workSlice.RemoveAt(i)
@@ -198,23 +208,26 @@ func (prgs *IPRanges) MergeOverlapping() {
 		}
 	}
 
-	*prgs = workSlice
+	*iprgs = workSlice
 }
 
-func (prgs *IPRanges) RemoveAt(index int) {
-	workSlice := make(IPRanges, len(*prgs))
-	copy(workSlice, *prgs)
+// RemoveAt is an helper that removes a range at the the given index
+func (iprgs *IPRanges) RemoveAt(index int) {
+	workSlice := make(IPRanges, len(*iprgs))
+	copy(workSlice, *iprgs)
 
 	workSlice = append(workSlice[:index], workSlice[index+1:]...)
-	*prgs = workSlice
+	*iprgs = workSlice
 }
 
-func (prgs *IPRanges) Add(ip net.IP) {
+// Add is an helper that adds a range made of a single IP
+func (iprgs *IPRanges) Add(ip net.IP) {
 	ipr := NewIPRange(ip, ip)
-	*prgs = append(*prgs, ipr)
+	*iprgs = append(*iprgs, ipr)
 }
 
-func (prgs *IPRanges) AddString(ipstr string) error {
+// AddString is an helper that parses and adds a range of IP from a string
+func (iprgs *IPRanges) AddString(ipstr string) error {
 	var ip net.IP
 
 	if val := net.ParseIP(ipstr); val != nil {
@@ -223,17 +236,22 @@ func (prgs *IPRanges) AddString(ipstr string) error {
 		return fmt.Errorf("invalid IP [%s]", ipstr)
 	}
 
-	prgs.Add(ip.To4())
+	iprgs.Add(ip.To4())
 
 	return nil
 }
 
-func (prgs *IPRanges) AddRange(lower net.IP, upper net.IP) {
+// AddRange is an helper that adds a range of IP made of two IPs
+func (iprgs *IPRanges) AddRange(lower net.IP, upper net.IP) {
 	ipr := NewIPRange(lower, upper)
-	*prgs = append(*prgs, ipr)
+	*iprgs = append(*iprgs, ipr)
 }
 
+//
 // IPRange methods
+//
+
+// ContainsIPString is an helper that checks if a range contains the given IP string
 func (iprg IPRange) ContainsIPString(ipstr string) bool {
 	var ip net.IP
 	if val := net.ParseIP(ipstr); val != nil {
@@ -245,6 +263,7 @@ func (iprg IPRange) ContainsIPString(ipstr string) bool {
 	return iprg.ContainsIP(ip)
 }
 
+// ContainsIP is an helper that checks if a range contains the given IP
 func (iprg IPRange) ContainsIP(ip net.IP) bool {
 	if bytes.Compare(ip.To4(), iprg.Lower) >= 0 && bytes.Compare(ip.To4(), iprg.Upper) <= 0 {
 		return true
@@ -253,6 +272,7 @@ func (iprg IPRange) ContainsIP(ip net.IP) bool {
 	return false
 }
 
+// ContainsIPRange is an helper that checks if a range contains the given IP range
 func (iprg IPRange) ContainsIPRange(iprange IPRange) bool {
 	if iprg.ContainsIP(iprange.Lower.To4()) && iprange.ContainsIP(iprange.Upper.To4()) {
 		return true
@@ -261,30 +281,32 @@ func (iprg IPRange) ContainsIPRange(iprange IPRange) bool {
 	return false
 }
 
-func (iprg IPRange) ContainsIPNotEqual(ip net.IP) bool {
-	//if !bytes.Equal(ip.To4(), iprg.Lower) && !bytes.Equal(ip.To4(), iprg.Upper) {
-	//	return true
-	//}
-
+// IsUpperOrLowerBoundary is an helper that checks if the given IP is either the lower of the upper bound of a range
+func (iprg IPRange) IsUpperOrLowerBoundary(ip net.IP) bool {
 	if !net.IP.Equal(ip.To4(), iprg.Lower) && !net.IP.Equal(ip.To4(), iprg.Upper) {
-		return true
+		return false
 	}
 
-	return false
+	return true
 }
 
+// Equals is an helper that checks if an IPRange is equal to another
 func (iprg *IPRange) Equals(iprange IPRange) bool {
 	return net.IP.Equal(iprg.Upper, iprange.Upper.To4()) && net.IP.Equal(iprg.Lower, iprange.Lower.To4())
 }
 
+//
 // CIDR
+//
+
+// WhitelistCIDR parses and adds a CIDR string to the IPRules' whitelist
 func (iprl *IPRules) WhitelistCIDR(rawIPCIDR string) error {
 	_, ipnet, err := net.ParseCIDR(rawIPCIDR)
 	if err != nil {
 		return err
 	}
 
-	ipFrom, ipTo, err := AddressRange(ipnet)
+	ipFrom, ipTo, err := addressRange(ipnet)
 	if err != nil {
 		return err
 	}
@@ -294,13 +316,14 @@ func (iprl *IPRules) WhitelistCIDR(rawIPCIDR string) error {
 	return nil
 }
 
+// BlacklistCIDR parses and adds a CIDR string to the IPRules' blacklist
 func (iprl *IPRules) BlacklistCIDR(rawIPCIDR string) error {
 	_, ipnet, err := net.ParseCIDR(rawIPCIDR)
 	if err != nil {
 		return err
 	}
 
-	ipFrom, ipTo, err := AddressRange(ipnet)
+	ipFrom, ipTo, err := addressRange(ipnet)
 	if err != nil {
 		return err
 	}
@@ -310,7 +333,11 @@ func (iprl *IPRules) BlacklistCIDR(rawIPCIDR string) error {
 	return nil
 }
 
+//
 // Ranges
+//
+
+// WhitelistRange parses and adds an IP range string to the IPRules' whitelist
 func (iprl *IPRules) WhitelistRange(rawIPRange string) error {
 	var ipFrom net.IP
 	var ipTo net.IP
@@ -338,6 +365,7 @@ func (iprl *IPRules) WhitelistRange(rawIPRange string) error {
 	return nil
 }
 
+// BlacklistRange parses and adds an IP range string to the IPRules' blacklist
 func (iprl *IPRules) BlacklistRange(rawIPRange string) error {
 	var ipFrom net.IP
 	var ipTo net.IP
@@ -365,7 +393,11 @@ func (iprl *IPRules) BlacklistRange(rawIPRange string) error {
 	return nil
 }
 
+//
 // Single IPs
+//
+
+// Whitelist checks the validity of an IP string and adds it to the IPRules' whitelist
 func (iprl *IPRules) Whitelist(ip string) error {
 	checkValidIP(ip)
 
@@ -376,6 +408,7 @@ func (iprl *IPRules) Whitelist(ip string) error {
 	return nil
 }
 
+// Blacklist checks the validity of an IP string and adds it to the IPRules' blacklist
 func (iprl *IPRules) Blacklist(ip string) error {
 	checkValidIP(ip)
 
@@ -386,7 +419,10 @@ func (iprl *IPRules) Blacklist(ip string) error {
 	return nil
 }
 
+//
 // Checks
+//
+
 func checkValidIP(ipstr string) {
 	if !isValidIPString(ipstr) {
 		log.Println(fmt.Sprintf("[%s] is not a valid IP address", ipstr))

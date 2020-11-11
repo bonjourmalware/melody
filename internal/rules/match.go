@@ -5,6 +5,8 @@ import (
 	"github.com/bonjourmalware/melody/internal/events"
 )
 
+// Match is the entry point of the Rule matching proc
+// It attempt to match every supported rules to the given event after the rules filters have been applied
 func (rl *Rule) Match(ev events.Event) bool {
 	var noPortsProto = map[string]interface{}{
 		config.ICMPv4Kind: struct{}{},
@@ -82,6 +84,7 @@ func (rl *Rule) Match(ev events.Event) bool {
 	return false
 }
 
+// MatchICMPv6Event attempt to match an ICMPv6 event against the calling Rule
 func (rl *Rule) MatchICMPv6Event(ev events.Event) bool {
 	icmpv6Header := ev.GetICMPv6Header()
 
@@ -140,6 +143,7 @@ func (rl *Rule) MatchICMPv6Event(ev events.Event) bool {
 	return false
 }
 
+// MatchICMPv4Event attempt to match an ICMPv4 event against the calling Rule
 func (rl *Rule) MatchICMPv4Event(ev events.Event) bool {
 	icmpv4Header := ev.GetICMPv4Header()
 
@@ -210,6 +214,7 @@ func (rl *Rule) MatchICMPv4Event(ev events.Event) bool {
 	return false
 }
 
+// MatchUDPEvent attempt to match an UDP event against the calling Rule
 func (rl *Rule) MatchUDPEvent(ev events.Event) bool {
 	udpHeader := ev.GetUDPHeader()
 
@@ -272,6 +277,7 @@ func (rl *Rule) MatchUDPEvent(ev events.Event) bool {
 	return false
 }
 
+// MatchTCPEvent attempt to match a TCP event against the calling Rule
 func (rl *Rule) MatchTCPEvent(ev events.Event) bool {
 	tcpHeader := ev.GetTCPHeader()
 
@@ -370,6 +376,7 @@ func (rl *Rule) MatchTCPEvent(ev events.Event) bool {
 	return false
 }
 
+// MatchHTTPEvent attempt to match an HTTP event against the calling Rule
 func (rl *Rule) MatchHTTPEvent(ev events.Event) bool {
 	httpData := ev.GetHTTPData()
 

@@ -12,6 +12,7 @@ import (
 	"github.com/bonjourmalware/melody/internal/config"
 )
 
+// StartHTTP starts the dummy HTTP server
 func StartHTTP(quitErrChan chan error) {
 	r := http.NewServeMux()
 	r.Handle("/",
@@ -23,6 +24,7 @@ func StartHTTP(quitErrChan chan error) {
 	quitErrChan <- http.ListenAndServe(fmt.Sprintf(":%d", config.Cfg.ServerHTTPPort), r)
 }
 
+// StartHTTPS starts the dummy HTTPS server
 func StartHTTPS(quitErrChan chan error, eventChan chan events.Event) {
 	r := http.NewServeMux()
 	r.Handle("/",

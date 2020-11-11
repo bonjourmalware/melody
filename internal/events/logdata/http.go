@@ -2,13 +2,7 @@ package logdata
 
 import "encoding/json"
 
-type HTTPEventLog struct {
-	HTTP HTTPLogData `json:"http"`
-	IP   IPLogData   `json:"ip"`
-	BaseLogData
-}
-
-
+// HTTPLogData is the struct describing the logged data for reassembled HTTP packets
 type HTTPLogData struct {
 	Verb          string            `json:"verb"`
 	Proto         string            `json:"proto"`
@@ -24,6 +18,13 @@ type HTTPLogData struct {
 	IsTLS         bool              `json:"is_tls"`
 }
 
+// HTTPEventLog is the event log struct for reassembled HTTP packets
+type HTTPEventLog struct {
+	HTTP HTTPLogData `json:"http"`
+	IP   IPLogData   `json:"ip"`
+	BaseLogData
+}
+
 func (eventLog HTTPEventLog) String() (string, error) {
 	data, err := json.Marshal(eventLog)
 	if err != nil {
@@ -31,5 +32,3 @@ func (eventLog HTTPEventLog) String() (string, error) {
 	}
 	return string(data), nil
 }
-
-

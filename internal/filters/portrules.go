@@ -9,18 +9,22 @@ import (
 	"github.com/bonjourmalware/melody/internal/logging"
 )
 
+// PortRanges abstracts an array of PortRange
 type PortRanges []PortRange
 
+// PortRules groups the whitelisted and blacklisted ip rules
 type PortRules struct {
 	WhitelistedPorts PortRanges
 	BlacklistedPorts PortRanges
 }
 
+// PortRange is a range of Port represented by a lower and an upper bound
 type PortRange struct {
 	Lower uint16
 	Upper uint16
 }
 
+// NewPortRange created a new ip range from a lower and an upper bound
 func NewPortRange(lower uint16, upper uint16) PortRange {
 	return PortRange{
 		Lower: lower,
@@ -28,6 +32,7 @@ func NewPortRange(lower uint16, upper uint16) PortRange {
 	}
 }
 
+// ParseRules loads a whitelist and a blacklist into a set of PortRules
 func (prls *PortRules) ParseRules(whitelist []string, blacklist []string) {
 	for _, rawRule := range whitelist {
 		rule := strings.Replace(rawRule, " ", "", -1)
@@ -75,7 +80,11 @@ func (prls *PortRules) ParseRules(whitelist []string, blacklist []string) {
 	prls.WhitelistedPorts.MergeOverlapping()
 }
 
+//
 // PortRanges methods
+//
+
+// MergeOverlapping optimize the parsed PortRange by keeping only non-overlapping ranges
 func (prgs *PortRanges) MergeOverlapping() {
 	workSlice := make(PortRanges, len(*prgs))
 	copy(workSlice, *prgs)
@@ -99,7 +108,7 @@ func (prgs *PortRanges) MergeOverlapping() {
 				break
 			}
 
-			if candidate.ContainsPortNotEqual(workSlice[i].Lower) && !candidate.ContainsPortNotEqual(workSlice[i].Upper) {
+			if !candidate.IsUpperOrLowerBoundary(workSlice[i].Lower) && candidate.IsUpperOrLowerBoundary(workSlice[i].Upper) {
 				// Replace the candidate's upper with the current's upper
 				workSlice[idx].Upper = workSlice[i].Upper
 				workSlice.RemoveAt(i)
@@ -107,7 +116,7 @@ func (prgs *PortRanges) MergeOverlapping() {
 				break
 			}
 
-			if candidate.ContainsPortNotEqual(workSlice[i].Upper) && !candidate.ContainsPortNotEqual(workSlice[i].Lower) {
+			if !candidate.IsUpperOrLowerBoundary(workSlice[i].Upper) && candidate.IsUpperOrLowerBoundary(workSlice[i].Lower) {
 				// Replace the candidate's lower with the current's lower
 				workSlice[idx].Lower = workSlice[i].Lower
 				workSlice.RemoveAt(i)
@@ -120,6 +129,7 @@ func (prgs *PortRanges) MergeOverlapping() {
 	*prgs = workSlice
 }
 
+// RemoveAt is an helper that removes a range at the the given index
 func (prgs *PortRanges) RemoveAt(index int) {
 	workSlice := make(PortRanges, len(*prgs))
 	copy(workSlice, *prgs)
@@ -128,17 +138,23 @@ func (prgs *PortRanges) RemoveAt(index int) {
 	*prgs = workSlice
 }
 
+// Add is an helper that adds a range made of a single Port
 func (prgs *PortRanges) Add(port uint16) {
 	portRange := NewPortRange(port, port)
 	*prgs = append(*prgs, portRange)
 }
 
+// AddRange is an helper that parses and adds a range of Port
 func (prgs *PortRanges) AddRange(lower uint16, upper uint16) {
 	ipr := NewPortRange(lower, upper)
 	*prgs = append(*prgs, ipr)
 }
 
+//
 // PortRange methods
+//
+
+// ContainsPort is an helper that checks if a range contains the given Port
 func (prg PortRange) ContainsPort(port uint16) bool {
 	if port >= prg.Lower && port <= prg.Upper {
 		return true
@@ -147,6 +163,7 @@ func (prg PortRange) ContainsPort(port uint16) bool {
 	return false
 }
 
+// ContainsPortRange is an helper that checks if a range contains the given Port range
 func (prg PortRange) ContainsPortRange(portRange PortRange) bool {
 	if prg.ContainsPort(portRange.Lower) && portRange.ContainsPort(portRange.Upper) {
 		return true
@@ -155,7 +172,8 @@ func (prg PortRange) ContainsPortRange(portRange PortRange) bool {
 	return false
 }
 
-func (prg PortRange) ContainsPortNotEqual(port uint16) bool {
+// IsUpperOrLowerBoundary is an helper that checks if the given Port is either the lower of the upper bound of a range
+func (prg PortRange) IsUpperOrLowerBoundary(port uint16) bool {
 	if prg.Lower != port && prg.Upper != port {
 		return true
 	}
@@ -163,11 +181,16 @@ func (prg PortRange) ContainsPortNotEqual(port uint16) bool {
 	return false
 }
 
+// Equals is an helper that checks if a PortRange is equal to another
 func (prg *PortRange) Equals(portRange PortRange) bool {
 	return prg.Upper == portRange.Upper && prg.Lower == portRange.Lower
 }
 
+//
 // Ranges
+//
+
+// WhitelistRange parses and adds a Port range string to the PortRules' whitelist
 func (prls *PortRules) WhitelistRange(rawPortRange string) error {
 	portFrom, portTo, err := parseRawPortRange(rawPortRange)
 	if err != nil {
@@ -179,6 +202,7 @@ func (prls *PortRules) WhitelistRange(rawPortRange string) error {
 	return nil
 }
 
+// BlacklistRange parses and adds a Port range string to the PortRules' blacklist
 func (prls *PortRules) BlacklistRange(rawPortRange string) error {
 	portFrom, portTo, err := parseRawPortRange(rawPortRange)
 	if err != nil {
@@ -212,7 +236,11 @@ func parseRawPortRange(rawPortRange string) (uint16, uint16, error) {
 	return portFrom, portTo, err
 }
 
+//
 // Single Ports
+//
+
+// Whitelist checks the validity of a Port string and adds it to the PortRules' whitelist
 func (prls *PortRules) Whitelist(port string) error {
 	parsed, err := parsePortString(port)
 	if err != nil {
@@ -223,6 +251,7 @@ func (prls *PortRules) Whitelist(port string) error {
 	return nil
 }
 
+// Blacklist checks the validity of a Port string and adds it to the PortRules' blacklist
 func (prls *PortRules) Blacklist(port string) error {
 	parsed, err := parsePortString(port)
 	if err != nil {
@@ -237,7 +266,7 @@ func parsePortString(port string) (uint16, error) {
 	port = strings.Replace(port, " ", "", -1)
 
 	if strings.HasPrefix(port, "-") {
-		return 0, fmt.Errorf("Port cannot be under 0 : '%s'\n", port)
+		return 0, fmt.Errorf("port cannot be under 0 : '%s'", port)
 	}
 
 	parsed, err := strconv.ParseUint(port, 10, 64)
@@ -246,7 +275,7 @@ func parsePortString(port string) (uint16, error) {
 	}
 
 	if parsed > 65535 {
-		return uint16(parsed), fmt.Errorf("Port must be between 0 and 65535 : '%s'\n", port)
+		return uint16(parsed), fmt.Errorf("port must be between 0 and 65535 : '%s'", port)
 	}
 
 	return uint16(parsed), nil

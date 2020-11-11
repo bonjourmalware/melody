@@ -14,11 +14,14 @@ import (
 )
 
 var (
+	// GlobalRules is the global object holding all the loaded rules
 	GlobalRules = make(map[string][]Rules)
 )
 
+// GlobalRawRules describes a set of RawRules
 type GlobalRawRules []RawRules
 
+// LoadRulesDir walks the given directory to find rule files and load them into GlobalRules
 func LoadRulesDir(rulesDir string) uint {
 	var globalRawRules GlobalRawRules
 	var total uint
@@ -90,6 +93,7 @@ func LoadRulesDir(rulesDir string) uint {
 	return total
 }
 
+// ParseYAMLRulesFile is an helper that parses the given YAML file and return a set of raw rules as RawRules
 func ParseYAMLRulesFile(filepath string) (RawRules, error) {
 	rawRules := RawRules{}
 	rulesData, err := ioutil.ReadFile(filepath)

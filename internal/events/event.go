@@ -2,6 +2,7 @@ package events
 
 import "github.com/google/gopacket/layers"
 
+// Event is the interface implementing common methods to generated events
 type Event interface {
 	//Match(rule rules.Rule) bool
 	ToLog() EventLog
@@ -19,6 +20,7 @@ type Event interface {
 	AddAdditional(add map[string]string)
 }
 
+// EventLog is the interface implementing common methods to generated events' log data
 type EventLog interface {
 	String() (string, error)
 }

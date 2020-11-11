@@ -6,6 +6,7 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
+// ICMPv6LogData is the struct describing the logged data for ICMPv6 packets
 type ICMPv6LogData struct {
 	TypeCode     layers.ICMPv6TypeCode `json:"type_code"`
 	Type         uint8                 `json:"type"`
@@ -14,6 +15,7 @@ type ICMPv6LogData struct {
 	Checksum     uint16                `json:"checksum"`
 }
 
+// ICMPv6EventLog is the event log struct for ICMPv6 packets
 type ICMPv6EventLog struct {
 	ICMPv6 ICMPv6LogData `json:"icmpv6"`
 	IP     IPv6LogData   `json:"ip"`
@@ -27,4 +29,3 @@ func (eventLog ICMPv6EventLog) String() (string, error) {
 	}
 	return string(data), nil
 }
-

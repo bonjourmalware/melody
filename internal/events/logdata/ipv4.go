@@ -7,12 +7,13 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
+// IPv4LogData is the struct describing the logged data for IPv4 header
 type IPv4LogData struct {
 	Version    uint8             `json:"version"`
 	IHL        uint8             `json:"ihl"`
 	TOS        uint8             `json:"tos"`
 	Length     uint16            `json:"length"`
-	Id         uint16            `json:"id"`
+	ID         uint16            `json:"id"`
 	Fragbits   string            `json:"fragbits"`
 	FragOffset uint16            `json:"frag_offset"`
 	TTL        uint8             `json:"ttl"`
@@ -20,6 +21,7 @@ type IPv4LogData struct {
 	IPLogData  `json:"-"`
 }
 
+// NewIPv4LogData is used to create a new IPv4LogData struct
 func NewIPv4LogData(ipv4Layer helpers.IPv4Layer) IPv4LogData {
 	var ipFlagsStr []string
 
@@ -38,7 +40,7 @@ func NewIPv4LogData(ipv4Layer helpers.IPv4Layer) IPv4LogData {
 		IHL:        ipv4Layer.Header.IHL,
 		TOS:        ipv4Layer.Header.TOS,
 		Length:     ipv4Layer.Header.Length,
-		Id:         ipv4Layer.Header.Id,
+		ID:         ipv4Layer.Header.Id,
 		FragOffset: ipv4Layer.Header.FragOffset,
 		TTL:        ipv4Layer.Header.TTL,
 		Protocol:   ipv4Layer.Header.Protocol,

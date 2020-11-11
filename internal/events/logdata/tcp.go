@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 )
 
+// TCPLogData is the struct describing the logged data for TCP packets
 type TCPLogData struct {
 	Window     uint16  `json:"window"`
 	Seq        uint32  `json:"seq"`
@@ -14,6 +15,7 @@ type TCPLogData struct {
 	Payload    Payload `json:"payload"`
 }
 
+// TCPEventLog is the event log struct for TCP packets
 type TCPEventLog struct {
 	TCP TCPLogData `json:"tcp"`
 	IP  IPLogData  `json:"ip"`

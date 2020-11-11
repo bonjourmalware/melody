@@ -11,12 +11,20 @@ import (
 )
 
 var (
-	Sensor   *log.Logger
-	Errors   *log.Logger
+	// Sensor is the sensor logger
+	Sensor *log.Logger
+
+	// Errors is the errors logger
+	Errors *log.Logger
+
+	// Warnings is the warnings logger
 	Warnings *log.Logger
-	Std      *log.Logger
+
+	// Std is the standard logger
+	Std *log.Logger
 )
 
+// InitLoggers setup the logging environment and initialize the loggers according to the loaded configuration
 func InitLoggers() error {
 	Std = log.New(os.Stderr, "", log.Ldate|log.Ltime)
 	Sensor = log.New(nil, "", 0)
@@ -38,7 +46,7 @@ func InitLoggers() error {
 			if _, err := os.Create(errorsLogFilepath); err != nil {
 				return fmt.Errorf("failed to create error log file : %s", err)
 			}
-		}else{
+		} else {
 			return fmt.Errorf("failed to create error log file : %s", err)
 		}
 
@@ -47,7 +55,7 @@ func InitLoggers() error {
 			if _, err := os.Create(sensorLogFilepath); err != nil {
 				return fmt.Errorf("failed to create error log file : %s", err)
 			}
-		}else{
+		} else {
 			return fmt.Errorf("failed to create error log file : %s", err)
 		}
 
@@ -95,36 +103,6 @@ func InitLoggers() error {
 		Sensor.SetOutput(os.Stdout)
 		Warnings.SetOutput(os.Stderr)
 	}
-
-	//if !*config.Cli.Stdout {
-	//	if config.Cfg.LogErrorsEnableRotation {
-	//	} else {
-	//		f, err := os.OpenFile(errorsLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	//		if err != nil {
-	//			return fmt.Errorf("failed to open error log file %: s", errorsLogFilepa err
-	//		}
-	//
-	//		Sensor.SetOutput(f)
-	//	}
-	//}
-	//
-	//if !*config.Cli.Stdout {
-	//	if config.Cfg.LogSensorEnableRotation {
-	//		Sensor.SetOutput(&lumberjack.Logger{
-	//			Filename: filepath.Join(sensorLogFilepath),
-	//			MaxSize:  config.Cfg.LogsSensorMaxSize,             // megabytes
-	//			MaxAge:   config.Cfg.LogsSensorMaxAge,              // days
-	//			Compress: config.Cfg.LogsSensorCompressRotatedLogs, // enabled by default
-	//		})
-	//	} else {
-	//		f, err := os.OpenFile(sensorLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	//		if err != nil {
-	//			return fmt.Errorf("failed to open sensor log file '%s'", sensorLogFilepath)
-	//		}
-	//
-	//		Sensor.SetOutput(f)
-	//	}
-	//}
 
 	return nil
 }

@@ -11,6 +11,7 @@ import (
 	//"github.com/bonjourmalware/melody/internal/logger"
 )
 
+// RawConditions describes the format of a condition field in a rule file
 type RawConditions struct {
 	Groups map[string][]string `yaml:"-,inline"`
 	Any    bool                `yaml:"any"`
@@ -18,19 +19,20 @@ type RawConditions struct {
 	Offset uint                `yaml:"offset"`
 }
 
-//type RawConditions map[string][]string
-
+// ConditionsList describes the format of a list of RawConditions
 type ConditionsList struct {
 	Conditions []Conditions
 	MatchAll   bool
 	//MatchAny   bool
 }
 
+// Conditions describes a parsed RawConditions
 type Conditions struct {
 	Values  []ConditionValue
 	Options Options
 }
 
+// Options describes the available matching options
 type Options struct {
 	Depth      uint
 	Offset     uint
@@ -43,16 +45,18 @@ type Options struct {
 	Regex      bool
 }
 
+// ConditionValue abstracts the parsed value of a condition to use in a match attempt
 type ConditionValue struct {
 	CompiledRegex *regexp.Regexp
 	ByteValue     []byte
 }
 
-func (condsList ConditionsList) Match(received []byte) bool {
-	if condsList.Conditions != nil {
-		if !condsList.MatchAll {
+// Match matches a byte array against a ConditionsList
+func (clst ConditionsList) Match(received []byte) bool {
+	if clst.Conditions != nil {
+		if !clst.MatchAll {
 			var condOK = false
-			for _, condGroup := range condsList.Conditions {
+			for _, condGroup := range clst.Conditions {
 				// If any condition group is valid, continue
 
 				if condGroup.Match(received) {
@@ -65,7 +69,7 @@ func (condsList ConditionsList) Match(received []byte) bool {
 				return false
 			}
 		} else { // condList.MatchAll
-			for _, condGroup := range condsList.Conditions {
+			for _, condGroup := range clst.Conditions {
 				// If any condition group is invalid, rule is false
 				// Continue if the test for all the values are successful
 
@@ -79,18 +83,19 @@ func (condsList ConditionsList) Match(received []byte) bool {
 	return true
 }
 
-func (cond Conditions) Match(received []byte) bool {
+// Match matches a byte array against a set of conditions
+func (cds Conditions) Match(received []byte) bool {
 	var contentMatch bool
 	var matchCounter int
-	var valuesLen = len(cond.Values)
+	var valuesLen = len(cds.Values)
 
-	for _, condVal := range cond.Values {
-		contentMatch = cond.MatchBytesWithOptions(received, condVal)
+	for _, condVal := range cds.Values {
+		contentMatch = cds.MatchBytesWithOptions(received, condVal)
 
-		if cond.Options.All && !contentMatch {
+		if cds.Options.All && !contentMatch {
 			return false
 			//	Continue unless all the tests passed
-		} else if cond.Options.All && matchCounter < valuesLen {
+		} else if cds.Options.All && matchCounter < valuesLen {
 			matchCounter++
 			continue
 		} else if contentMatch {
@@ -102,70 +107,73 @@ func (cond Conditions) Match(received []byte) bool {
 	return contentMatch
 }
 
+// MatchBytesWithOptions matches a byte array against a set of conditions, according to the specified ConditionValue
 // This function only cares about the matching modifier ("contains", "startswith", etc, not "all")
 // The condition's options are being taken care of in the Conditions.Match function
-func (cond Conditions) MatchBytesWithOptions(received []byte, condVal ConditionValue) bool {
+func (cds Conditions) MatchBytesWithOptions(received []byte, condVal ConditionValue) bool {
 	var match bool
 	var condValContent = condVal.ByteValue
 
-	if cond.Options.Nocase {
+	if cds.Options.Nocase {
 		received = bytes.ToLower(received)
 		condValContent = bytes.ToLower(condValContent)
 	}
 
-	if cond.Options.Offset > 0 && cond.Options.Offset < uint(len(received)) {
-		received = received[cond.Options.Offset:]
+	if cds.Options.Offset > 0 && cds.Options.Offset < uint(len(received)) {
+		received = received[cds.Options.Offset:]
 	}
 
-	if cond.Options.Depth > 0 && cond.Options.Depth < uint(len(received)) {
-		received = received[:cond.Options.Depth]
+	if cds.Options.Depth > 0 && cds.Options.Depth < uint(len(received)) {
+		received = received[:cds.Options.Depth]
 	}
 
-	if cond.Options.Is {
+	if cds.Options.Is {
 		match = bytes.Equal(received, condValContent)
-	} else if cond.Options.Regex {
+	} else if cds.Options.Regex {
 		match = condVal.CompiledRegex.Match(received)
-	} else if cond.Options.Contains {
+	} else if cds.Options.Contains {
 		match = bytes.Contains(received, condValContent)
-	} else if cond.Options.Startswith {
+	} else if cds.Options.Startswith {
 		match = bytes.HasPrefix(received, condValContent)
-	} else if cond.Options.Endswith {
+	} else if cds.Options.Endswith {
 		match = bytes.HasSuffix(received, condValContent)
 	}
 	return match
 }
 
-func (rawCondList RawConditions) ParseList(ruleId string) *ConditionsList {
-	if len(rawCondList.Groups) == 0 {
+// ParseList parses a RawConditions set to create a ConditionsList
+func (rclst RawConditions) ParseList(ruleID string) *ConditionsList {
+	if len(rclst.Groups) == 0 {
 		return nil
 	}
 
 	condsList := ConditionsList{
-		MatchAll: !rawCondList.Any,
+		MatchAll: !rclst.Any,
 	}
 	var bufCond Conditions
 
-	for options, val := range rawCondList.Groups {
+	for options, val := range rclst.Groups {
 		bufCond = Conditions{}
 		err := bufCond.ParseOptions(options)
 		if err != nil {
-			log.Printf("Failed to parse rule %s : %s\n", ruleId, err)
+			log.Printf("Failed to parse rule %s : %s\n", ruleID, err)
 			return &ConditionsList{}
 		}
 		bufCond.ParseValues(val)
-		bufCond.Options.Offset = rawCondList.Offset
-		bufCond.Options.Depth = rawCondList.Depth
-		//bufCond.Options.All = rawCondList.Any == false
+		bufCond.Options.Offset = rclst.Offset
+		bufCond.Options.Depth = rclst.Depth
+		//bufCond.Options.All = rclst.Any == false
 
 		condsList.Conditions = append(condsList.Conditions, bufCond)
 	}
 
-	//condsList.ParseMatchType(rawCondList.MatchType, ruleId)
+	//condsList.ParseMatchType(rclst.MatchType, ruleID)
 
 	return &condsList
 }
 
-func (cond *Conditions) ParseOptions(opt string) error {
+// ParseOptions parses a condition's name to extract the options separated by a |
+func (cds *Conditions) ParseOptions(opt string) error {
 	chunks := strings.Split(opt, "|")
 	modeQty := 0
 	var newOption Options
@@ -174,7 +182,7 @@ func (cond *Conditions) ParseOptions(opt string) error {
 	newOption.All = true
 
 	if opt == "" {
-		return fmt.Errorf("options parsing failed for condition %s : matching mode cannot be empty\n", opt)
+		return fmt.Errorf("options parsing failed for condition %s : matching mode cannot be empty", opt)
 	}
 
 	for _, chunk := range chunks {
@@ -198,21 +206,22 @@ func (cond *Conditions) ParseOptions(opt string) error {
 			modeQty++
 			newOption.Endswith = true
 		default:
-			return fmt.Errorf("options parsing failed for condition %s : unknown option \"%s\"\n", opt, chunk)
+			return fmt.Errorf("options parsing failed for condition %s : unknown option \"%s\"", opt, chunk)
 		}
 	}
 
 	if modeQty > 1 {
-		return fmt.Errorf("options parsing failed for condition %s : there can only be one of <is|contains|startswith|endswith>\n", opt)
+		return fmt.Errorf("options parsing failed for condition %s : there can only be one of <nocase|regex|is|contains|startswith|endswith>", opt)
 	}
 
 	//newOption.All = any == false
-	cond.Options = newOption
+	cds.Options = newOption
 
 	return nil
 }
 
-func (cond *Conditions) ParseValues(list []string) {
+// ParseValues loads a Conditions set from a list of condition strings
+func (cds *Conditions) ParseValues(list []string) {
 	var err error
 	var condValBuf = ConditionValue{}
 
@@ -220,7 +229,7 @@ func (cond *Conditions) ParseValues(list []string) {
 		buffer := []byte(val)
 
 		condValBuf = ConditionValue{}
-		if cond.Options.Regex {
+		if cds.Options.Regex {
 			condValBuf.CompiledRegex, err = regexp.Compile(val)
 			if err != nil {
 				log.Println("Failed to compile regex", val, ":", err)
@@ -235,10 +244,12 @@ func (cond *Conditions) ParseValues(list []string) {
 
 		condValBuf.ByteValue = parsedBuffer
 
-		cond.Values = append(cond.Values, condValBuf)
+		cds.Values = append(cds.Values, condValBuf)
 	}
 }
 
+// ParseHybridPattern parses a byte array composed of hybrid hex and ascii characters and returns its
+// equivalent as a byte array
 func ParseHybridPattern(buffer []byte) ([]byte, error) {
 	var isHex bool
 	var parsedBuffer []byte

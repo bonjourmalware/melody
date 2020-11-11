@@ -13,20 +13,22 @@ import (
 
 	"github.com/bonjourmalware/melody/internal/sessions"
 
-	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/bonjourmalware/melody/internal/assembler"
+	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/tcpassembly"
 )
 
+// Start starts the pipeline to receive packets
 func Start(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan chan bool) {
 	go ReceivePackets(quitErrChan, shutdownChan, sensorStoppedChan)
 }
 
+// ReceivePackets setup the capture using the loaded configuration
 func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan chan bool) {
 	// Set up HTTP assembly
-	streamFactory := &assembler.HttpStreamFactory{}
+	streamFactory := &assembler.HTTPStreamFactory{}
 	streamPool := tcpassembly.NewStreamPool(streamFactory)
 	httpAssembler := tcpassembly.NewAssembler(streamPool)
 	var handle *pcap.Handle
@@ -74,7 +76,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 
 	defer func() {
 		httpAssembler.FlushAll()
-		sessions.Map.FlushAll()
+		sessions.SessionMap.FlushAll()
 		close(sensorStoppedChan)
 	}()
 
@@ -92,7 +94,7 @@ loop:
 			httpAssembler.FlushOlderThan(time.Now().Add(time.Minute * -2))
 		case <-sessionsFlushTicker.C:
 			// Every 30 seconds, flush inactive flows
-			sessions.Map.FlushOlderThan(time.Now().Add(time.Second * -30))
+			sessions.SessionMap.FlushOlderThan(time.Now().Add(time.Second * -30))
 		case <-shutdownChan:
 			return
 		}

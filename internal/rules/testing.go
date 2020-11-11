@@ -20,6 +20,7 @@ func init() {
 	assetsBasePath = path.Join(gopath, "src/github.com/bonjourmalware/melody/tests")
 }
 
+// ReadRawTCPPacketsFromPcap is an helper that reads raw TCP packets from the specified pcap file
 func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 	var packets []gopacket.Packet
 	_, rawPackets, err := ReadPacketsFromPcap(pcapfile, layers.IPProtocolTCP, true)
@@ -33,6 +34,7 @@ func ReadRawTCPPacketsFromPcap(pcapfile string) ([]gopacket.Packet, error) {
 	return packets, nil
 }
 
+// ReadPacketsFromPcap is an helper that reads packets from the specified pcap file and returns them as an array of Event
 func ReadPacketsFromPcap(pcapfile string, filter layers.IPProtocol, raw bool) ([]events.Event, []gopacket.Packet, error) {
 	var Events []events.Event
 	var rawPackets []gopacket.Packet
@@ -124,6 +126,7 @@ loop:
 	return ret, rawRet, nil
 }
 
+// LoadRuleFile is an helper that parses the rule file at the given path and returns a rule set
 func LoadRuleFile(rulefile string) (map[string]Rule, error) {
 	ruleset := make(map[string]Rule)
 	rulefilePath := MakeAssetFullPath(rulefile)
@@ -138,6 +141,7 @@ func LoadRuleFile(rulefile string) (map[string]Rule, error) {
 	return ruleset, nil
 }
 
+// MakeAssetFullPath is an helper that returns the path to the tests resources as defined by the assetsBasePath variable
 func MakeAssetFullPath(path string) string {
 	return fmt.Sprintf("%s/%s", assetsBasePath, path)
 }

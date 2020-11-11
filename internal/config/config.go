@@ -13,12 +13,23 @@ import (
 )
 
 const (
-	UDPKind    = "udp"
-	TCPKind    = "tcp"
+	// UDPKind is the constant used to define a Kind as UDP
+	UDPKind = "udp"
+
+	// TCPKind is the constant used to define a Kind as TCP
+	TCPKind = "tcp"
+
+	// ICMPv4Kind is the constant used to define a Kind as ICMPv4
 	ICMPv4Kind = "icmpv4"
+
+	// ICMPv6Kind is the constant used to define a Kind as ICMPv6
 	ICMPv6Kind = "icmpv6"
-	HTTPKind   = "http"
-	HTTPSKind  = "https"
+
+	// HTTPKind is the constant used to define a Kind as HTTP
+	HTTPKind = "http"
+
+	// HTTPSKind is the constant used to define a Kind as HTTPS
+	HTTPSKind = "https"
 
 	defaultConfig = `---
 logs.dir: "logs/"
@@ -66,9 +77,12 @@ server.https.response.headers:
 )
 
 var (
+	// Cfg exposes the global config
 	Cfg = new(Config)
+	// Cli exposes the CLI config
 	Cli = new(CLI)
 
+	// SupportedProtocols lists the network protocols supported by Melody
 	SupportedProtocols = []string{
 		TCPKind,
 		UDPKind,
@@ -79,6 +93,7 @@ var (
 	}
 )
 
+// CLI describes the available CLI config keys
 type CLI struct {
 	PcapFilePath *string
 	BPF          *string
@@ -141,13 +156,26 @@ type Config struct {
 	PcapFile        *os.File
 }
 
-func (cfg *Config) Load() {
-	var httpByteSize datasize.ByteSize
-	var tcpByteSize datasize.ByteSize
-	var udpByteSize datasize.ByteSize
-	var sensorFileByteSize datasize.ByteSize
-	var errorsFileByteSize datasize.ByteSize
+func rawDatasizeToBytes(raw string) (uint64, error) {
+	var byteSize datasize.ByteSize
+	if err := byteSize.UnmarshalText([]byte(raw)); err != nil {
+		return 0, err
+	}
 
+	return byteSize.Bytes(), nil
+}
+
+func rawDatasizeToMegabytes(raw string) (int, error) {
+	var byteSize datasize.ByteSize
+	if err := byteSize.UnmarshalText([]byte(raw)); err != nil {
+		return 0, err
+	}
+
+	return int(byteSize.MBytes()), nil
+}
+
+// Load set the default values and parse the user's config
+func (cfg *Config) Load() {
 	if err := yaml.Unmarshal([]byte(defaultConfig), cfg); err != nil {
 		log.Println("Failed to load default config")
 		log.Println(err)
@@ -165,36 +193,6 @@ func (cfg *Config) Load() {
 
 	if err := yaml.Unmarshal(cfgData, cfg); err != nil {
 		log.Printf("Failed to load the config file [%s]\n", filepath)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := httpByteSize.UnmarshalText([]byte(cfg.MaxPOSTDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the logs.http.post.max_size value (%s)\n", cfg.MaxPOSTDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := tcpByteSize.UnmarshalText([]byte(cfg.MaxTCPDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the logs.tcp.payload.max_size value (%s)\n", cfg.MaxTCPDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := udpByteSize.UnmarshalText([]byte(cfg.MaxUDPDataSizeRaw)); err != nil {
-		log.Printf("Failed to parse the logs.udp.payload.max_size value (%s)\n", cfg.MaxUDPDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := sensorFileByteSize.UnmarshalText([]byte(cfg.LogsSensorMaxSizeRaw)); err != nil {
-		log.Printf("Failed to parse the logs.sensor.max_size value (%s)\n", cfg.LogsSensorMaxSizeRaw)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := errorsFileByteSize.UnmarshalText([]byte(cfg.LogsErrorsMaxSizeRaw)); err != nil {
-		log.Printf("Failed to parse the logs.errors.max_size value (%s)\n", cfg.LogsErrorsMaxSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -221,11 +219,40 @@ func (cfg *Config) Load() {
 		}
 	}
 
-	cfg.LogsSensorMaxSize = int(sensorFileByteSize.MBytes())
-	cfg.LogsErrorsMaxSize = int(errorsFileByteSize.MBytes())
-	cfg.MaxPOSTDataSize = httpByteSize.Bytes()
-	cfg.MaxTCPDataSize = tcpByteSize.Bytes()
-	cfg.MaxUDPDataSize = udpByteSize.Bytes()
+	cfg.LogsSensorMaxSize, err = rawDatasizeToMegabytes(cfg.LogsSensorMaxSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.sensor.max_size value (%s)\n", cfg.LogsSensorMaxSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.LogsErrorsMaxSize, err = rawDatasizeToMegabytes(cfg.LogsErrorsMaxSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.errors.max_size value (%s)\n", cfg.LogsErrorsMaxSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.MaxPOSTDataSize, err = rawDatasizeToBytes(cfg.MaxPOSTDataSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.http.post.max_size value (%s)\n", cfg.MaxPOSTDataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.MaxTCPDataSize, err = rawDatasizeToBytes(cfg.MaxTCPDataSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.tcp.post.max_size value (%s)\n", cfg.MaxTCPDataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.MaxUDPDataSize, err = rawDatasizeToBytes(cfg.MaxUDPDataSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.udp.post.max_size value (%s)\n", cfg.MaxUDPDataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
 
 	if Cli.PcapFilePath != nil && *Cli.PcapFilePath != "" {
 		f, err := os.Open(*Cli.PcapFilePath)

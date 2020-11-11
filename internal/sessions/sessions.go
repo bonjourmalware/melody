@@ -6,46 +6,51 @@ import (
 	"github.com/rs/xid"
 )
 
+// Session abstracts a session made of a last seen record and an uid
 type Session struct {
 	lastSeen time.Time
 	uid      string
 }
 
-type SessionMap map[string]*Session
+// sessionMap abstracts a hash table of multiple Session sorted by their flow data
+type sessionMap map[string]*Session
 
 var (
-	Map = make(SessionMap)
+	// SessionMap is the global sessions hash table
+	SessionMap = make(sessionMap)
 )
 
-func (sessions SessionMap) GetUID(flow string) string {
-	if session, ok := sessions[flow]; ok {
+func (m sessionMap) GetUID(flow string) string {
+	if session, ok := m[flow]; ok {
 		return session.uid
 	}
 
-	return sessions.add(flow)
+	return m.add(flow)
 }
 
-func (sessions *SessionMap) add(flow string) string {
+func (m *sessionMap) add(flow string) string {
 	//var ts = strconv.FormatInt(time.Now().UnixNano(), 10)
 	var ts = xid.New().String()
 
-	(*sessions)[flow] = &Session{
+	(*m)[flow] = &Session{
 		uid:      ts,
 		lastSeen: time.Now(),
 	}
 	return ts
 }
 
-func (sessions *SessionMap) FlushOlderThan(deadline time.Time) {
-	for flow, session := range *sessions {
+// FlushOlderThan cleans the session mapping of sessions not seen since the given deadline
+func (m *sessionMap) FlushOlderThan(deadline time.Time) {
+	for flow, session := range *m {
 		if session.lastSeen.Before(deadline) {
-			delete(*sessions, flow)
+			delete(*m, flow)
 		}
 	}
 }
 
-func (sessions *SessionMap) FlushAll() {
-	for flow := range *sessions {
-		delete(*sessions, flow)
+// FlushAll removes all sessions from the session mapping
+func (m *sessionMap) FlushAll() {
+	for flow := range *m {
+		delete(*m, flow)
 	}
 }
