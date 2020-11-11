@@ -16,6 +16,8 @@ jobs:
       matrix:
         go: ["1.13", "1.14", "1.15"]
     steps:
+      - name: Install libpcap dependencies
+        run: sudo apt update && sudo apt install libpcap-dev
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
