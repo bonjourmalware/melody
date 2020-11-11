@@ -1,21 +1,33 @@
 ---
 ## Melody configuration file
-## This file shows all supported configuration properties with their default values
+## This file shows all supported configuration keys with their default values
+
+##
+## Logs
+##
 
 ## Directory where the logs will be written
 # logs.dir: "logs/"
 
 ## By default, the logs are compressed (gzip) and rotated after reaching 1G, then discarded after 30 days
 ## You can disable the log rotation by setting "logs.sensor.rotation.enable: false"
+## The minimum rotation.max_size is 1 megabyte, anything below will disable the rotation based on file size
+##    Supported notation : "M, G, MB, GB" (case insensitive)
+##    Raw number are parsed as bytes ("1240000" == "1M")
+##    Warning : anything below "1240000" (raw) will be parsed as 0 megabytes
+##    Using raw values is discouraged
+## The minimum rotation.max_age is 1 day, anything below will disable the rotation based on file age
+
+## Sensor logs
 # logs.sensor.file: melody.ndjson
-# logs.sensor.rotation.max_size: 1000 # MB
+# logs.sensor.rotation.max_size: 1G
 # logs.sensor.rotation.max_age: 30 # days
 # logs.sensor.rotation.enable: true
 # logs.sensor.rotation.compress: true
 
-## Same for the error logs
+## Error logs
 # logs.errors.file: melody_err.log
-# logs.errors.rotation.max_size: 1000 # MB
+# logs.errors.rotation.max_size: 1G
 # logs.errors.rotation.max_age: 30 # days
 # logs.errors.rotation.enable: true
 # logs.errors.rotation.compress: true
@@ -26,13 +38,25 @@
 # logs.tcp.payload.max_size: "10kb"
 # logs.udp.payload.max_size: "10kb"
 
+##
+## Rules
+##
+
 ## The directory where the active rules lives
 # rules.dir: "rules/rules-enabled"
 
+##
+## Listen
+##
+
 ## The interface on which Melody is listening
 ## Listen by default on localhost
-## You want to change it to your internet facing interface (wlp3s0, enp0s25, eth0...)
+## You want to change it to your internet facing interface (wlp3s0, ens3, enp0s25, eth0...)
 # listen.interface: "lo"
+
+##
+## Filters
+##
 
 ## Filter out specific protocols.
 ## Available protocols are : udp, tcp, http, https, icmp, icmpv4 (ipv4 only), icmpv6 (ipv6 only)
@@ -42,6 +66,10 @@
 ## Filter packets according to the BPF syntax (https://biot.com/capstats/bpf.html)
 ## The filter must start with "inbound" to filter outgoing packets
 # filters.bpf.file: "filter.bpf"
+
+##
+## Dummy server
+##
 
 ## Configure the dummy server spawned by Melody
 ## A listening HTTP server is needed to capture full HTTP requests

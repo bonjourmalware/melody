@@ -24,14 +24,16 @@ const (
 logs.dir: "logs/"
 
 logs.sensor.file: melody.ndjson
-logs.sensor.max_size: 1GB
-logs.sensor.max_age: 30 # days
-logs.sensor.compress_rotated: true
+logs.sensor.rotation.max_size: 1G
+logs.sensor.rotation.max_age: 30 # days
+logs.sensor.rotation.enable: true
+logs.sensor.rotation.compress: true
 
 logs.errors.file: melody_err.log
-logs.errors.max_size: 1GB
-logs.errors.max_age: 30 # days
-logs.errors.compress_rotated: true
+logs.errors.rotation.max_size: 1G
+logs.errors.rotation.max_age: 30 # days
+logs.errors.rotation.enable: true
+logs.errors.rotation.compress: true
 
 logs.http.post.max_size: "10KB"
 logs.tcp.payload.max_size: "10KB"
@@ -90,16 +92,18 @@ type Config struct {
 	LogsDir string `yaml:"logs.dir"`
 
 	LogsSensorFile                string `yaml:"logs.sensor.file"`
-	LogsSensorMaxSizeRaw          string `yaml:"logs.sensor.max_size"`
+	LogsSensorMaxSizeRaw          string `yaml:"logs.sensor.rotation.max_size"`
 	LogsSensorMaxSize             int
-	LogsSensorMaxAge              int  `yaml:"logs.sensor.max_age"`
-	LogsSensorCompressRotatedLogs bool `yaml:"logs.sensor.compress_rotated"`
+	LogsSensorMaxAge              int  `yaml:"logs.sensor.rotation.max_age"`
+	LogsSensorCompressRotatedLogs bool `yaml:"logs.sensor.rotation.compress"`
+	LogSensorEnableRotation       bool `yaml:"logs.sensor.rotation.enable"`
 
 	LogsErrorsFile                string `yaml:"logs.errors.file"`
-	LogsErrorsMaxSizeRaw          string `yaml:"logs.errors.max_size"`
+	LogsErrorsMaxSizeRaw          string `yaml:"logs.errors.rotation.max_size"`
 	LogsErrorsMaxSize             int
-	LogsErrorsMaxAge              int  `yaml:"logs.errors.max_age"`
-	LogsErrorsCompressRotatedLogs bool `yaml:"logs.errors.compress_rotated"`
+	LogsErrorsMaxAge              int  `yaml:"logs.errors.rotation.max_age"`
+	LogsErrorsCompressRotatedLogs bool `yaml:"logs.errors.rotation.compress"`
+	LogErrorsEnableRotation       bool `yaml:"logs.errors.rotation.enable"`
 
 	RulesDir string `yaml:"rules.dir"`
 	BPFFile  string `yaml:"filters.bpf.file"`

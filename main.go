@@ -36,7 +36,11 @@ func init() {
 	getopt.Parse()
 
 	config.Cfg.Load()
-	logging.InitLoggers()
+	err := logging.InitLoggers()
+	if err != nil {
+		logging.Std.Println(err)
+		os.Exit(1)
+	}
 	loaded := rules.LoadRulesDir(config.Cfg.RulesDir)
 
 	logging.Std.Printf("Loaded %d rules\n", loaded)
