@@ -3,6 +3,8 @@ linters:
     - megacheck
     - govet
     - gocyclo
+    - misspell
+    - golint
 
 linters-settings:
   gocyclo:

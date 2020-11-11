@@ -40,7 +40,7 @@ logs.udp.payload.max_size: "10KB"
 rules.dir: "rules/rules-enabled"
 
 listen.interface: "lo"
-listen.bpf.file: "filter.bpf"
+filters.bpf.file: "filter.bpf"
 
 filters.ipv4.proto: []
 filters.ipv6.proto: []
@@ -79,6 +79,7 @@ var (
 
 type CLI struct {
 	PcapFilePath *string
+	BPF          *string
 	Stdout       *bool
 	Interface    *string
 	Dump         *bool
@@ -100,9 +101,9 @@ type Config struct {
 	LogsErrorsMaxAge              int  `yaml:"logs.errors.max_age"`
 	LogsErrorsCompressRotatedLogs bool `yaml:"logs.errors.compress_rotated"`
 
-	RulesDir      string `yaml:"rules.dir"`
-	BPFFilterFile string `yaml:"listen.bpf.file"`
-	BPFFilter     string
+	RulesDir string `yaml:"rules.dir"`
+	BPFFile  string `yaml:"filters.bpf.file"`
+	BPF      string
 	//TODO Accept multiple interfaces ([]string)
 	Interface          string   `yaml:"listen.interface"`
 	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
@@ -194,15 +195,15 @@ func (cfg *Config) Load() {
 		os.Exit(1)
 	}
 
-	if Cfg.BPFFilterFile != "" {
-		bpfData, err := ioutil.ReadFile(Cfg.BPFFilterFile)
+	if Cfg.BPFFile != "" {
+		bpfData, err := ioutil.ReadFile(Cfg.BPFFile)
 		if err != nil {
-			log.Printf("Failed to read BPF file at [%s]\n", Cfg.BPFFilterFile)
+			log.Printf("Failed to read BPF file at [%s]\n", Cfg.BPFFile)
 			log.Println(err)
 			os.Exit(1)
 		}
 
-		Cfg.BPFFilter = string(bpfData)
+		Cfg.BPF = string(bpfData)
 	}
 
 	if len(Cfg.MatchProtocols) == 0 {
@@ -261,5 +262,9 @@ func (cfg *Config) Load() {
 	// CLI overrides
 	if *Cli.Interface != "" {
 		cfg.Interface = *Cli.Interface
+	}
+
+	if *Cli.BPF != "" {
+		cfg.BPF = *Cli.BPF
 	}
 }

@@ -28,7 +28,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 	// Set up HTTP assembly
 	streamFactory := &assembler.HttpStreamFactory{}
 	streamPool := tcpassembly.NewStreamPool(streamFactory)
-	assembler := tcpassembly.NewAssembler(streamPool)
+	httpAssembler := tcpassembly.NewAssembler(streamPool)
 	var handle *pcap.Handle
 	var err error
 
@@ -56,8 +56,8 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 	}
 
 	defer handle.Close()
-	if config.Cfg.BPFFilter != "" {
-		if err := handle.SetBPFFilter(config.Cfg.BPFFilter); err != nil {
+	if config.Cfg.BPF != "" {
+		if err := handle.SetBPFFilter(config.Cfg.BPF); err != nil {
 			quitErrChan <- err
 			time.Sleep(2 * time.Second)
 			logging.Errors.Println(err)
@@ -73,7 +73,7 @@ func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppe
 	logging.Std.Println("Now listening for packets")
 
 	defer func() {
-		assembler.FlushAll()
+		httpAssembler.FlushAll()
 		sessions.Map.FlushAll()
 		close(sensorStoppedChan)
 	}()
@@ -86,10 +86,10 @@ loop:
 			if packet == nil {
 				break loop
 			}
-			handlePacket(packet, assembler)
+			handlePacket(packet, httpAssembler)
 		case <-assemblerFlushTicker.C:
 			// Every minute, flush connections that haven't seen activity in the past 2 minutes
-			assembler.FlushOlderThan(time.Now().Add(time.Minute * -2))
+			httpAssembler.FlushOlderThan(time.Now().Add(time.Minute * -2))
 		case <-sessionsFlushTicker.C:
 			// Every 30 seconds, flush inactive flows
 			sessions.Map.FlushOlderThan(time.Now().Add(time.Second * -30))

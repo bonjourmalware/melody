@@ -29,6 +29,7 @@ func init() {
 	signal.Notify(quitSigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'r', "", "Replay a pcap file into the sensor")
+	config.Cli.BPF = getopt.StringLong("bpf", 'f', "", "Override the filter.bpf file with the specified filter")
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "Output logged data to stdout instead")
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
