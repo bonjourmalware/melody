@@ -1,6 +1,7 @@
 package events
 
 import (
+	logdata2 "github.com/bonjourmalware/melody/internal/events/logdata"
 	"net"
 	"net/http"
 	"strconv"
@@ -29,11 +30,11 @@ type HTTPEvent struct {
 	HeadersKeys   []string          `json:"headers_keys"`
 	HeadersValues []string          `json:"headers_values"`
 	InlineHeaders []string
-	Errors        []string `json:"errors"`
-	Body          Payload  `json:"body"`
-	IsTLS         bool     `json:"is_tls"`
+	Errors        []string         `json:"errors"`
+	Body          logdata2.Payload `json:"body"`
+	IsTLS         bool             `json:"is_tls"`
 	Req           *http.Request
-	LogData       HTTPEventLog
+	LogData       logdata2.HTTPEventLog
 	BaseEvent
 }
 
@@ -46,7 +47,7 @@ func (ev HTTPEvent) GetHTTPData() HTTPEvent {
 }
 
 func (ev HTTPEvent) ToLog() EventLog {
-	ev.LogData = HTTPEventLog{}
+	ev.LogData = logdata2.HTTPEventLog{}
 	ev.LogData.Timestamp = time.Now().Format(time.RFC3339Nano)
 	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Type = ev.Kind
@@ -58,16 +59,7 @@ func (ev HTTPEvent) ToLog() EventLog {
 	if len(ev.Tags) == 0 {
 		ev.LogData.Tags = []string{}
 	} else {
-		var set = make(map[string]struct{})
-		for _, tag := range ev.Tags {
-			if _, ok := set[tag]; !ok {
-				set[tag] = struct{}{}
-			}
-		}
-
-		for tag := range set {
-			ev.LogData.Tags = append(ev.LogData.Tags, tag)
-		}
+		ev.LogData.Tags = ev.Tags.ToArray()
 	}
 
 	ev.LogData.Session = ev.Session
@@ -128,7 +120,7 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 		SourcePort:    uint16(srcPort),
 		DestPort:      uint16(dstPort),
 		DestHost:      network.Dst().String(),
-		Body:          NewPayload(params, config.Cfg.MaxPOSTDataSize),
+		Body:          logdata2.NewPayloadLogData(params, config.Cfg.MaxPOSTDataSize),
 		IsTLS:         r.TLS != nil,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,
@@ -138,7 +130,7 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	// Cannot use promoted (inherited) fields in struct literal
 	ev.Session = sessions.Map.GetUID(transport.String())
 	ev.SourceIP = network.Src().String()
-	ev.Tags = []string{}
+	ev.Tags = make(Tags)
 	ev.Additional = make(map[string]string)
 
 	if ev.IsTLS {
@@ -191,7 +183,7 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 		SourcePort:    uint16(srcPort),
 		DestPort:      uint16(dstPort),
 		DestHost:      dstHost,
-		Body:          NewPayload(params, config.Cfg.MaxPOSTDataSize),
+		Body:          logdata2.NewPayloadLogData(params, config.Cfg.MaxPOSTDataSize),
 		IsTLS:         r.TLS != nil,
 		Headers:       headers,
 		InlineHeaders: inlineHeaders,
@@ -201,7 +193,7 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 	// Cannot use promoted (inherited) fields in struct literal
 	ev.Session = xid.New().String()
 	ev.SourceIP = srcIP
-	ev.Tags = []string{}
+	ev.Tags = make(Tags)
 	ev.Additional = make(map[string]string)
 
 	if ev.IsTLS {

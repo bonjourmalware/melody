@@ -1,8 +1,10 @@
 package events
 
 import (
-	"strings"
 	"time"
+
+	"github.com/bonjourmalware/melody/internal/events/helpers"
+	"github.com/bonjourmalware/melody/internal/events/logdata"
 
 	"github.com/bonjourmalware/melody/internal/config"
 
@@ -12,10 +14,10 @@ import (
 
 type ICMPv4Event struct {
 	//ICMPv4Header *layers.ICMPv4
-	LogData ICMPv4EventLog
+	LogData logdata.ICMPv4EventLog
 	BaseEvent
-	IPv4Layer
-	ICMPv4Layer
+	helpers.IPv4Layer
+	helpers.ICMPv4Layer
 }
 
 func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
@@ -26,30 +28,19 @@ func NewICMPv4Event(packet gopacket.Packet) (*ICMPv4Event, error) {
 	ev.Timestamp = packet.Metadata().Timestamp
 
 	ICMPv4Header, _ := packet.Layer(layers.LayerTypeICMPv4).(*layers.ICMPv4)
-	ev.ICMPv4Layer = ICMPv4Layer{Header: ICMPv4Header}
+	ev.ICMPv4Layer = helpers.ICMPv4Layer{Header: ICMPv4Header}
 
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-	ev.IPv4Layer = IPv4Layer{Header: IPHeader}
+	ev.IPv4Layer = helpers.IPv4Layer{Header: IPHeader}
 	ev.SourceIP = ev.IPv4Layer.Header.SrcIP.String()
 	ev.Additional = make(map[string]string)
+	ev.Tags = make(Tags)
 
 	return ev, nil
 }
 
-//func (ev ICMPv4Event) GetIPv4Header() *layers.IPv4 {
-//	return ev.IPHeader
-//}
-
-//func (ev ICMPv4Event) Match(rule rules.Rule) bool {
-//	return false
-//}
-
 func (ev ICMPv4Event) ToLog() EventLog {
-	var ipFlagsStr []string
-
-	ev.LogData = ICMPv4EventLog{}
-	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
-	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
+	ev.LogData = logdata.ICMPv4EventLog{}
 	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
 
 	ev.LogData.Type = ev.Kind
@@ -61,19 +52,10 @@ func (ev ICMPv4Event) ToLog() EventLog {
 	if len(ev.Tags) == 0 {
 		ev.LogData.Tags = []string{}
 	} else {
-		var set = make(map[string]struct{})
-		for _, tag := range ev.Tags {
-			if _, ok := set[tag]; !ok {
-				set[tag] = struct{}{}
-			}
-		}
-
-		for tag := range set {
-			ev.LogData.Tags = append(ev.LogData.Tags, tag)
-		}
+		ev.LogData.Tags = ev.Tags.ToArray()
 	}
 
-	ev.LogData.ICMPv4 = ICMPv4LogData{
+	ev.LogData.ICMPv4 = logdata.ICMPv4LogData{
 		TypeCode:     ev.ICMPv4Layer.Header.TypeCode,
 		Type:         ev.ICMPv4Layer.Header.TypeCode.Type(),
 		Code:         ev.ICMPv4Layer.Header.TypeCode.Code(),
@@ -83,28 +65,7 @@ func (ev ICMPv4Event) ToLog() EventLog {
 		Seq:          ev.ICMPv4Layer.Header.Seq,
 	}
 
-	ev.LogData.IP = IPv4LogData{
-		Version:    ev.IPv4Layer.Header.Version,
-		IHL:        ev.IPv4Layer.Header.IHL,
-		TOS:        ev.IPv4Layer.Header.TOS,
-		Length:     ev.IPv4Layer.Header.Length,
-		Id:         ev.IPv4Layer.Header.Id,
-		FragOffset: ev.IPv4Layer.Header.FragOffset,
-		TTL:        ev.IPv4Layer.Header.TTL,
-		Protocol:   ev.IPv4Layer.Header.Protocol,
-	}
-
-	if ev.IPv4Layer.Header.Flags&layers.IPv4EvilBit != 0 {
-		ipFlagsStr = append(ipFlagsStr, "EV")
-	}
-	if ev.IPv4Layer.Header.Flags&layers.IPv4DontFragment != 0 {
-		ipFlagsStr = append(ipFlagsStr, "DF")
-	}
-	if ev.IPv4Layer.Header.Flags&layers.IPv4MoreFragments != 0 {
-		ipFlagsStr = append(ipFlagsStr, "MF")
-	}
-
-	ev.LogData.IP.Fragbits = strings.Join(ipFlagsStr, "")
+	ev.LogData.IP = logdata.NewIPv4LogData(ev.IPv4Layer)
 	ev.LogData.Additional = ev.Additional
 
 	return ev.LogData

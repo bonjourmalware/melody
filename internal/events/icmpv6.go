@@ -1,17 +1,20 @@
 package events
 
 import (
+	"time"
+
 	"github.com/bonjourmalware/melody/internal/config"
+	"github.com/bonjourmalware/melody/internal/events/helpers"
+	"github.com/bonjourmalware/melody/internal/events/logdata"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
-	"time"
 )
 
 type ICMPv6Event struct {
-	LogData ICMPv6EventLog
+	LogData logdata.ICMPv6EventLog
 	BaseEvent
-	IPv6Layer
-	ICMPv6Layer
+	helpers.IPv6Layer
+	helpers.ICMPv6Layer
 }
 
 func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
@@ -22,12 +25,13 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 	ev.Timestamp = packet.Metadata().Timestamp
 
 	ICMPv6Header, _ := packet.Layer(layers.LayerTypeICMPv6).(*layers.ICMPv6)
-	ev.ICMPv6Layer = ICMPv6Layer{Header: ICMPv6Header}
+	ev.ICMPv6Layer = helpers.ICMPv6Layer{Header: ICMPv6Header}
 
 	IPHeader, _ := packet.Layer(layers.LayerTypeIPv6).(*layers.IPv6)
-	ev.IPv6Layer = IPv6Layer{Header: IPHeader}
+	ev.IPv6Layer = helpers.IPv6Layer{Header: IPHeader}
 	ev.SourceIP = ev.IPv6Layer.Header.SrcIP.String()
 	ev.Additional = make(map[string]string)
+	ev.Tags = make(Tags)
 
 	return ev, nil
 }
@@ -41,7 +45,7 @@ func NewICMPv6Event(packet gopacket.Packet) (*ICMPv6Event, error) {
 //}
 
 func (ev ICMPv6Event) ToLog() EventLog {
-	ev.LogData = ICMPv6EventLog{}
+	ev.LogData = logdata.ICMPv6EventLog{}
 	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
 	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
@@ -51,29 +55,19 @@ func (ev ICMPv6Event) ToLog() EventLog {
 	ev.LogData.DestPort = ev.DestPort
 	ev.LogData.Session = ev.Session
 
-	// Deduplicate tags
 	if len(ev.Tags) == 0 {
 		ev.LogData.Tags = []string{}
 	} else {
-		var set = make(map[string]struct{})
-		for _, tag := range ev.Tags {
-			if _, ok := set[tag]; !ok {
-				set[tag] = struct{}{}
-			}
-		}
-
-		for tag := range set {
-			ev.LogData.Tags = append(ev.LogData.Tags, tag)
-		}
+		ev.LogData.Tags = ev.Tags.ToArray()
 	}
 
-	ev.LogData.ICMPv6 = ICMPv6LogData{
+	ev.LogData.ICMPv6 = logdata.ICMPv6LogData{
 		TypeCode:     ev.ICMPv6Layer.Header.TypeCode,
 		TypeCodeName: ev.ICMPv6Layer.Header.TypeCode.String(),
 		Checksum:     ev.ICMPv6Layer.Header.Checksum,
 	}
 
-	ev.LogData.IP = IPv6LogData{
+	ev.LogData.IP = logdata.IPv6LogData{
 		Version:        ev.IPv6Layer.Header.Version,
 		Length:         ev.IPv6Layer.Header.Length,
 		NextHeader:     ev.IPv6Layer.Header.NextHeader,

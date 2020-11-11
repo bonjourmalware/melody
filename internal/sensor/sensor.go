@@ -14,7 +14,7 @@ import (
 	"github.com/bonjourmalware/melody/internal/sessions"
 
 	"github.com/bonjourmalware/melody/internal/config"
-	"github.com/bonjourmalware/melody/internal/http_assembler"
+	"github.com/bonjourmalware/melody/internal/assembler"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/pcap"
 	"github.com/google/gopacket/tcpassembly"
@@ -26,7 +26,7 @@ func Start(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan cha
 
 func ReceivePackets(quitErrChan chan error, shutdownChan chan bool, sensorStoppedChan chan bool) {
 	// Set up HTTP assembly
-	streamFactory := &http_assembler.HttpStreamFactory{}
+	streamFactory := &assembler.HttpStreamFactory{}
 	streamPool := tcpassembly.NewStreamPool(streamFactory)
 	assembler := tcpassembly.NewAssembler(streamPool)
 	var handle *pcap.Handle

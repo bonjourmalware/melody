@@ -4,6 +4,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bonjourmalware/melody/internal/events/helpers"
+	"github.com/bonjourmalware/melody/internal/events/logdata"
+
 	"github.com/bonjourmalware/melody/internal/config"
 
 	"github.com/bonjourmalware/melody/internal/sessions"
@@ -15,11 +18,11 @@ import (
 type UDPEvent struct {
 	//IPHeader  *layers.IPv4
 	//UDPHeader *layers.UDP
-	LogData UDPEventLog
+	LogData logdata.UDPEventLog
 	BaseEvent
-	UDPLayer
-	IPv4Layer
-	IPv6Layer
+	helpers.UDPLayer
+	helpers.IPv4Layer
+	helpers.IPv6Layer
 }
 
 func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
@@ -33,19 +36,20 @@ func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 	switch IPVersion {
 	case 4:
 		IPHeader, _ := packet.Layer(layers.LayerTypeIPv4).(*layers.IPv4)
-		ev.IPv4Layer = IPv4Layer{Header: IPHeader}
+		ev.IPv4Layer = helpers.IPv4Layer{Header: IPHeader}
 		ev.SourceIP = IPHeader.SrcIP.String()
 	case 6:
 		IPHeader, _ := packet.Layer(layers.LayerTypeIPv6).(*layers.IPv6)
-		ev.IPv6Layer = IPv6Layer{Header: IPHeader}
+		ev.IPv6Layer = helpers.IPv6Layer{Header: IPHeader}
 		ev.SourceIP = IPHeader.SrcIP.String()
 	}
 
 	UDPHeader, _ := packet.Layer(layers.LayerTypeUDP).(*layers.UDP)
-	ev.UDPLayer = UDPLayer{Header: UDPHeader}
+	ev.UDPLayer = helpers.UDPLayer{Header: UDPHeader}
 	ev.DestPort = uint16(UDPHeader.DstPort)
 
 	ev.Additional = make(map[string]string)
+	ev.Tags = make(Tags)
 
 	return ev, nil
 }
@@ -53,7 +57,7 @@ func NewUDPEvent(packet gopacket.Packet, IPVersion uint) (*UDPEvent, error) {
 func (ev UDPEvent) ToLog() EventLog {
 	var ipFlagsStr []string
 
-	ev.LogData = UDPEventLog{}
+	ev.LogData = logdata.UDPEventLog{}
 	//ev.LogData.Timestamp = time.Now().Format(time.RFC3339)
 	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
@@ -66,16 +70,7 @@ func (ev UDPEvent) ToLog() EventLog {
 	if len(ev.Tags) == 0 {
 		ev.LogData.Tags = []string{}
 	} else {
-		var set = make(map[string]struct{})
-		for _, tag := range ev.Tags {
-			if _, ok := set[tag]; !ok {
-				set[tag] = struct{}{}
-			}
-		}
-
-		for tag := range set {
-			ev.LogData.Tags = append(ev.LogData.Tags, tag)
-		}
+		ev.LogData.Tags = ev.Tags.ToArray()
 	}
 
 	switch ev.IPVersion {
@@ -90,7 +85,7 @@ func (ev UDPEvent) ToLog() EventLog {
 			ipFlagsStr = append(ipFlagsStr, "MF")
 		}
 
-		ev.LogData.IP = IPv4LogData{
+		ev.LogData.IP = logdata.IPv4LogData{
 			Version:    ev.IPv4Layer.Header.Version,
 			IHL:        ev.IPv4Layer.Header.IHL,
 			TOS:        ev.IPv4Layer.Header.TOS,
@@ -103,7 +98,7 @@ func (ev UDPEvent) ToLog() EventLog {
 		}
 
 	case 6:
-		ev.LogData.IP = IPv6LogData{
+		ev.LogData.IP = logdata.IPv6LogData{
 			Version:        ev.IPv6Layer.Header.Version,
 			Length:         ev.IPv6Layer.Header.Length,
 			NextHeader:     ev.IPv6Layer.Header.NextHeader,
@@ -114,8 +109,8 @@ func (ev UDPEvent) ToLog() EventLog {
 		}
 	}
 
-	ev.LogData.UDP = UDPLogData{
-		Payload:  NewPayload(ev.UDPLayer.Header.Payload, config.Cfg.MaxUDPDataSize),
+	ev.LogData.UDP = logdata.UDPLogData{
+		Payload:  logdata.NewPayloadLogData(ev.UDPLayer.Header.Payload, config.Cfg.MaxUDPDataSize),
 		Length:   ev.UDPLayer.Header.Length,
 		Checksum: ev.UDPLayer.Header.Checksum,
 	}

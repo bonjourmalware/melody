@@ -1,4 +1,4 @@
-package events
+package helpers
 
 import "github.com/google/gopacket/layers"
 

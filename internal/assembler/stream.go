@@ -1,4 +1,4 @@
-package http_assembler
+package assembler
 
 import (
 	"bufio"
