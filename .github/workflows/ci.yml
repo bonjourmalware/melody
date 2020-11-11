@@ -13,6 +13,7 @@ jobs:
     name: Unit and integrations tests
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         go: ["1.13", "1.14", "1.15"]
     steps:
