@@ -60,7 +60,7 @@ CVE-2014-8361 (Realtek SDK Miniigd UPnP SOAP):
 ZyXEL Eir D1000:
   layer: http
   meta:
-    id:98d37645-256a-48d4-a4fe-105907805417
+    id: 98d37645-256a-48d4-a4fe-105907805417
     author: Hadrien Bouffier
     status: stable
     created: 2020/11/07
