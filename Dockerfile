@@ -16,9 +16,11 @@ RUN go mod download
 
 COPY . .
 
-# it will take the flags from the environment
-RUN go build -ldflags="-s -w" -o melody
-#RUN setcap cap_net_raw,cap_setpcap=ep ./melody
+RUN go build -ldflags="-s -w -extldflags '-static'" -o /app/melody
+
+# Copy only what's needed
+FROM scratch
+COPY --from=base /app /app
+WORKDIR /app
 
 ENTRYPOINT ["/app/melody"]
-#ENTRYPOINT ["/bin/ash", "-c", "sleep 100000000"]
