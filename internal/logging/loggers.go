@@ -42,21 +42,25 @@ func InitLoggers() error {
 		}
 
 		_, err := os.Stat(errorsLogFilepath)
-		if os.IsNotExist(err) {
-			if _, err := os.Create(errorsLogFilepath); err != nil {
-				return fmt.Errorf("failed to create error log file : %s", err)
+		if err != nil {
+			if os.IsNotExist(err) {
+				if _, err := os.Create(errorsLogFilepath); err != nil {
+					return fmt.Errorf("failed to create the error log file : %s", err)
+				}
+			} else {
+				return fmt.Errorf("failed to create the error log file : %s", err)
 			}
-		} else {
-			return fmt.Errorf("failed to create error log file : %s", err)
 		}
 
 		_, err = os.Stat(sensorLogFilepath)
-		if os.IsNotExist(err) {
-			if _, err := os.Create(sensorLogFilepath); err != nil {
-				return fmt.Errorf("failed to create error log file : %s", err)
+		if err != nil {
+			if os.IsNotExist(err) {
+				if _, err := os.Create(sensorLogFilepath); err != nil {
+					return fmt.Errorf("failed to create the error log file : %s", err)
+				}
+			} else {
+				return fmt.Errorf("failed to create the error log file : %s", err)
 			}
-		} else {
-			return fmt.Errorf("failed to create error log file : %s", err)
 		}
 
 		if config.Cfg.LogErrorsEnableRotation {
@@ -76,7 +80,7 @@ func InitLoggers() error {
 		} else {
 			errorsFile, err := os.OpenFile(errorsLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
-				return fmt.Errorf("failed to open error log file : %s", err)
+				return fmt.Errorf("failed to open the error log file : %s", err)
 			}
 
 			Errors.SetOutput(errorsFile)
@@ -93,7 +97,7 @@ func InitLoggers() error {
 		} else {
 			sensorFile, err := os.OpenFile(sensorLogFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 			if err != nil {
-				return fmt.Errorf("failed to open sensor log file : %s", err)
+				return fmt.Errorf("failed to open the sensor log file : %s", err)
 			}
 
 			Sensor.SetOutput(sensorFile)
