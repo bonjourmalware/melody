@@ -2,7 +2,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
   layer: http
   meta:
     id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
@@ -14,7 +14,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
       is:
         - "POST"
     http.uri:
-      contains:
+      contains|any:
         - "/console/images/%252E%252E%252Fconsole.portal"
         - "/console/css/%2e"
   tags:
