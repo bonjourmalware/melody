@@ -2,6 +2,7 @@
 melody
 melody.*
 logs/
+docs/site
 !*/.gitkeep
 var/http/serve/*
 var/https/serve/*

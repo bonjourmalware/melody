@@ -6,7 +6,7 @@ CVE-2020-19781 (Citrix ADC/Gateway):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Checking or tying to exploit CVE-2020-19781"
+    description: "Checking or trying to exploit CVE-2020-19781"
     references:
       - "https://support.citrix.com/article/CTX267027"
   match:
@@ -29,7 +29,7 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Checking or tying to exploit CVE-2018-13379"
+    description: "Checking or trying to exploit CVE-2018-13379"
   match:
     http.uri:
       startswith:
@@ -49,7 +49,7 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
 #    status: stable
 #    created: 2020/11/07
 #    modified: 2020/11/07
-#    description: "Checking or tying to exploit CVE-2020-5135"
+#    description: "Checking or trying to exploit CVE-2020-5135"
 #    references:
 #      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+firewall+http+config%22"
 #      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+SSL-VPN+http+proxy%22"

@@ -18,7 +18,7 @@ A rule file can contain multiple rule descriptions.
         status: stable
         created: 2020/11/07
         modified: 2020/11/07
-        description: "Checking or tying to exploit CVE-2020-14882"
+        description: "Checking or trying to exploit CVE-2020-14882"
         references:
           - "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"
       match:
@@ -68,7 +68,7 @@ The `meta` section contains all the rule's metadata. Every key are mandatory, ex
 |**status**|*string*|The status gives an indication of the usability of the rule|stable, experimental|status: stable|
 |**created**|*yyyy/mm/dd*|Creation date|-|created: 2020/11/07|
 |**modified**|*yyyy/mm/dd*|Last modification date|-|modified: 2020/11/07|
-|**description**|*string*|A quick description of what the rule is attempting to match|-|description: Checking or tying to exploit CVE-2020-14882|
+|**description**|*string*|A quick description of what the rule is attempting to match|-|description: Checking or trying to exploit CVE-2020-14882|
 |**references**|*array*|The status gives an indication of the usability of the rule|-|references: <br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://github.com/jas502n/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- ...|
 
 !!! Important

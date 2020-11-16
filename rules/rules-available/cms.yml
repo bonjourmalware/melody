@@ -6,7 +6,7 @@ CVE-2020-7961 Liferay Portal RCE:
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Checking or tying to exploit CVE-2020-7961"
+    description: "Checking or trying to exploit CVE-2020-7961"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-7961"
   match:
