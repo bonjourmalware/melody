@@ -31,17 +31,27 @@ build:
 
 install: build
 	mkdir /opt/melody
-	ln -rs ./melody /opt/melody/
-	cp ./config.yml.sample /opt/melody/config.yml
-	cp ./filter.bpf.sample /opt/melody/filter.bpf
-	echo "Don't forget to update /opt/melody/config.yml and /opt/melody/filter.bpf"
+	ln -s "$(shell pwd)/melody" /opt/melody/
+	ln -s "$(shell pwd)/config.yml" /opt/melody/config.yml
+	ln -s "$(shell pwd)/filter.bpf" /opt/melody/filter.bpf
+	ln -s "$(shell pwd)/rules" /opt/melody/rules
+
+	@echo "> Setting listening interface to \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\""
+	sed -i "s/# listen.interface: \"lo\"/listen.interface: \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\"/g" /opt/melody/config.yml
+	@echo
+	@echo -n "Current listening interface :\n\t"
+	@grep listen.interface /opt/melody/config.yml
+
+	@echo "Current BPF is '$(shell cat /opt/melody/filter.bpf)'"
+
+	# Don't forget to filter the noise by editing filter.bpf
 
 supervisor:
-	sudo ln -rs ./etc/melody.conf /etc/supervisor/conf.d/
+	sudo ln -s $(shell pwd)/etc/melody.conf /etc/supervisor/conf.d/
 	sudo supervisorctl reload
 	sudo supervisorctl status all
 
 service:
-	sudo ln -rs ./etc/melody.service /etc/systemd/system/melody.service
+	sudo ln -s $(shell pwd)/etc/melody.service /etc/systemd/system/melody.service
 	sudo systemctl daemon-reload && sudo systemctl enable melody
 	sudo systemctl status melody

@@ -1,5 +1,4 @@
-# Quickstart
-## Before we start
+### Before we start
 
 Hi !
 
@@ -21,10 +20,18 @@ git clone https://github.com/bonjourmalware/melody
 !!! Tip
     You can also write the configuration files later or use CLI options to use it as a standalone binary
 
-## Firewall
-Don't forget to check your firewall state to ensure you're not blocking packets from reaching the sensor.
+### Firewall
+Don't forget to check your firewall to ensure you're not blocking packets from reaching the sensor.
 
-## Build from source
+### Build from source
+
+!!! warning
+    You need the libpcap headers before building Melody. Install them with :
+    ```bash
+    sudo apt update
+    sudo apt install libpcap-dev
+    ```
+
 Build Melody with :
 
 ```
@@ -38,26 +45,29 @@ go build -ldflags="-s -w -extldflags=-static" -o melody
 sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 ```
 
-!!! warning
-    You need the libpcap headers before building Melody. Install them with :
-    ```bash
-    sudo apt update
-    sudo apt install libpcap-dev
-    ```
-
-## Grab a release
+### Grab a release
 
 You can grab the latest release by visiting https://github.com/bonjourmalware/melody/releases/latest.
 
-## Docker
+### Docker
 You can also use Docker and pull the image from Docker Hub :
 
 ```
 docker pull bonjourmalware/melody:latest
 ```
 
-# Configuration
-## Melody configuration
+Run it with :
+
+```
+docker run \
+                --net=host \
+                --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \      
+                --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \      
+                melody
+```
+
+## Configuration
+### Melody configuration
 All the available configuration options are listed with their default values in the `config.yml` file.
 
 You'll want to look at a few things before getting started :
@@ -72,9 +82,12 @@ You'll want to look at a few things before getting started :
     
     If you find an interface name with `TCP` in place of `NPF`, try swaping both.
     
-    See [Find Windows interfaces]()
+    See [Find Windows interfaces]() for more details.
      
-    Don't forget to wrap your string with `'` to prevent the parsing of the escaping `\`.
+    Don't forget to wrap your string with `'` to prevent the parsing of the escaping `\` : 
+    ```
+    interface: '\Device\NPF_{4E273621-5161-46C8-895A-48D0E52A0B83}'
+    ```
 
 !!! Note
     Note that Melody listen on `lo` by default. You can override the listening interface with the `-i` switch.
@@ -94,14 +107,14 @@ You'll want to look at a few things before getting started :
     ln -rs ./rules/rules-available/*.yml ./rules/rules-enabled/
     ```
 
-## HTTP/S server
+### HTTP/S server
 In order to capture the full HTTP transactions, the client must have a server to connect to. To ease that process, a dummy HTTP/S server is available.
 
-Its default configuration is to answer `200 OK` on every routes, with a `Server: Apache` header.
+The default configuration is to answer `200 OK` on every routes, along with a `Server: Apache` header.
 
-### iptables
+#### iptables
 
-To capture the HTTP traffic your server receives on every ports, we advise you to use `iptables` to redirect the data from every ports to the one Melody is listening on.
+To capture the HTTP traffic your server receives on every ports, I recommend using `iptables` to redirect the data from every ports to the one Melody is listening on.
 
 !!! Danger
     Be very careful while applying these modifications. You must at least exclude your remote connection port using the `! --dports ` switch, or you will be locked out. 
@@ -133,19 +146,22 @@ Here the ports `1234` and `5678` have been excluded from the redirection.
     
     As Melody sits on the data link layer, the program will receive the packets before being handled by network layer programs such as `iptables` or `ufw`. 
 
-# Berkley Packet Filter (BPF)
+!!! Note
+    I won't cover it here as I'm now knowledgeable enough on this, but you'll want to look at advfirewall and the `portproxy` command to replicate this on Windows.
 
-Next you need to customize the `filter.bpf` file. **This is where you filter the data that reaches Melody.**
+## Berkley Packet Filter (BPF)
 
-By default, only inbound traffic is allowed and all 127.0.0.0/24 subnet banned. 
+The next step is the customization of the `filter.bpf` file. **This is where you filter the data that reaches Melody.**
+
+By default, only inbound traffic is allowed and all 127.0.0.0/24 subnet are banned. 
 
 !!! Note
-    You can use the `-f` switch to set a filter via CLI.    
+    You can use the `-F|--filter` switch to set a filter via CLI.    
 
 !!! Tip
-    If you're using a VPS, you might need to filter out the source IP of the servers used by your hosting provider to check the status of your server. 
+    If you're using a VPS, you might need to filter out the IP addresses your hosting provider uses to check the status of your server. 
 
-## Source IP filtering
+### Source IP filtering
 Use `[src|dst] net <network>` to filter packets according to their IP.
 
 Example :
@@ -160,7 +176,7 @@ You can specify a range to exclude using the CIDR notation :
 inbound and not net 127.0.0.0/24
 ```
 
-## Port filtering
+### Port filtering
 Use `[src|dst] port <port>` to filter packets according to their port.
 
 Example :
@@ -185,20 +201,20 @@ and not net 192.0.2.1
 ```
 
 !!! Important
-    Your file should always start with the `inbound` keyword. We recommend adding your filter rules below, starting with an `and` keyword.
+    Your file should always start with the `inbound` keyword. I recommend adding your filter rules below, starting with an `and` keyword.
 
 
-## Advanced
+### Advanced
 
 [Here is all you need to know about the BPF syntax](https://biot.com/capstats/bpf.html) and [here is a great source of examples to get quickly started](https://www.ibm.com/support/knowledgecenter/SS42VS_7.4/com.ibm.qradar.doc/c_forensics_bpf.html).
 
-# Rules
+## Rules
 
-Melody rules are used to apply tags on matching packets. They have multiple use cases, such as monitoring emerging threats, automated droppers, vulnerability scanners...
+Melody rules are used to apply tags on matching packets. They have multiple use cases, such as monitoring emerging threats, automated droppers, vulnerability scanners, etc.
 
 You can look into the `$melody/rules/rule-available` and `$melody/internal/rules/test_resources` folders to quickly find working examples. 
 
-## Basics
+### Basics
 
 A rule file can contain multiple rules description and constitute a ruleset. 
 
@@ -231,20 +247,67 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
     impact: "rce"
 ```
 
-This rule is part of the default `server.yml` ruleset.
+This rule is part of the default `server.yml` ruleset and tag CVE-2020-14882-related packets.
 
-If a packet match, the tags will be appended to the `matches` field in the packet's log.
+If a packet match, its tags will be appended to the `matches` field in the packet's log.
 
-The rules options and the available properties by layer type are described in the [Rules section.](/rules)
+See the [Rules section](/rules) for details on the rules syntax.
 
 !!! Important
     You must generate a new UUIDv4 [for each rule you create](/rules#meta).
 
-## Output
-
+### Output
+#### Stdout
 You can redirect the output to stdout by using the `-s` switch.
 
-All the console messages are printed to stderr in order to allow piping Melody's data into `jq`.
+!!! Example
+    ```json
+    {
+      "tcp": {
+        "window": 512,
+        "seq": 1906765553,
+        "ack": 2514263732,
+        "data_offset": 8,
+        "flags": "PA",
+        "urgent": 0,
+        "payload": {
+          "content": "I made a discovery today. I found a computer.\n",
+          "base64": "SSBtYWRlIGEgZGlzY292ZXJ5IHRvZGF5LiAgSSBmb3VuZCBhIGNvbXB1dGVyLgo=",
+          "truncated": false
+        }
+      },
+      "ip": {
+        "version": 4,
+        "ihl": 5,
+        "tos": 0,
+        "length": 99,
+        "id": 39114,
+        "fragbits": "DF",
+        "frag_offset": 0,
+        "ttl": 64,
+        "protocol": 6
+      },
+      "timestamp": "2020-11-16T15:50:01.277828+01:00",
+      "session": "bup9368o4skolf20rt8g",
+      "type": "tcp",
+      "src_ip": "127.0.0.1",
+      "dst_port": 1234,
+      "matches": {},
+      "embedded": {}
+    }
+    ```
 
-A dump mode is also available. Similar to `tcpdump`, it will print raw formated packets to stdout instead of Melody json lines.
-    
+#### Dump
+A dump mode is also available with the `-d|--dump` switch. Similar to `tcpdump`, it will print raw packets to stdout instead of Melody json lines.
+
+!!! Example
+    ```toml
+    PACKET: 76 bytes, wire length 76 cap length 76 @ 2020-11-16 15:46:00.927899 +0100 CET
+    - Layer 1 (14 bytes) = Ethernet {Contents=[..14..] Payload=[..62..] SrcMAC=00:00:00:00:00:00 DstMAC=00:00:00:00:00:00 EthernetType=IPv4 Length=0}
+    - Layer 2 (20 bytes) = IPv4     {Contents=[..20..] Payload=[..42..] Version=4 IHL=5 TOS=0 Length=62 Id=39110 Flags=DF FragOffset=0 TTL=64 Protocol=TCP Checksum=41969 SrcIP=127.0.0.1 DstIP=127.0.0.1 Options=[] Padding=[]}
+    - Layer 3 (32 bytes) = TCP      {Contents=[..32..] Payload=[..10..] SrcPort=58766 DstPort=1234(search-agent) Seq=1906765476 Ack=2514263732 DataOffset=8 FIN=false SYN=false RST=false PSH=true ACK=true URG=false ECE=false CWR=false NS=false Window=512 Checksum=65074 Urgent=0 Options=[TCPOption(NOP:), TCPOption(NOP:), TCPOption(Timestamps:1712590417/1712586943 0x66140e51661400bf)] Padding=[]}
+    - Layer 4 (10 bytes) = Payload  10 byte(s)
+    ```
+
+!!! Note
+    All the console messages are printed to stderr in order to allow piping Melody's data into `jq`.

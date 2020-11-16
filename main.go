@@ -14,7 +14,7 @@ import (
 	"github.com/bonjourmalware/melody/internal/logging"
 
 	"github.com/bonjourmalware/melody/internal/config"
-	"github.com/pborman/getopt"
+	"github.com/pborman/getopt/v2"
 )
 
 var (
@@ -38,7 +38,10 @@ func init() {
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "Output logged data to stdout instead")
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
+	getopt.FlagLong(&config.Cli.FreeConfig, "option", 'o', "Override configuration keys")
 	getopt.Parse()
+
+	config.Cli.FreeConfig.ParseMultipleOptions()
 
 	config.Cfg.Load()
 	err := logging.InitLoggers()
@@ -79,9 +82,12 @@ func main() {
 
 	<-sensorStoppedChan
 	logging.Std.Println("Sensor stopped")
+
 	<-engineStoppedChan
 	logging.Std.Println("Engine stopped")
+
 	<-loggerStoppedChan
 	logging.Std.Println("Logger stopped")
+
 	logging.Std.Println("Reached shutdown")
 }

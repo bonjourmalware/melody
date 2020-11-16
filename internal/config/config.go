@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/bonjourmalware/melody/internal/clihelper"
+
 	"github.com/c2h5oh/datasize"
 
 	"gopkg.in/yaml.v3"
@@ -105,6 +107,7 @@ type CLI struct {
 	ConfigDirPath  *string
 	BPFFilePath    *string
 	HomeDirPath    *string
+	FreeConfig     clihelper.MultiString
 }
 
 // Config structure which mirrors the yaml file
@@ -386,5 +389,12 @@ func (cfg *Config) loadCLIOverrides() {
 
 	if *Cli.BPF != "" {
 		cfg.BPF = *Cli.BPF
+	}
+
+	for _, val := range Cli.FreeConfig.Array() {
+		if err := yaml.Unmarshal([]byte(val), cfg); err != nil {
+			log.Printf("Failed to load free config option : %s\n", val)
+			log.Println(err)
+		}
 	}
 }

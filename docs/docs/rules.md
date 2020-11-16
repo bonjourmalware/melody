@@ -196,7 +196,7 @@ They live on the same line, split by `|`. All *modifiers* can be mixed at once.
 
 #### Hybrid pattern
 
-`complex` *condition*'s values support hex representation of strings by wrapping them in two `|`.
+`complex` *condition*'s support hex values by wrapping them between two `|`.
 
 You can mix hex and ascii in a single string as well.
 
@@ -208,7 +208,7 @@ You can mix hex and ascii in a single string as well.
     ```
     
     !!! Note
-        `0xbeef` notation is invalid. You can mix spaced and not spaced hex bytes though.
+        '0x' hex notation (`|0xbe 0xef|`) is invalid. You can mix spaced and not spaced hex bytes though.
 
 
 ### tags
@@ -220,6 +220,6 @@ This is a block where the user can will embed any data in the `embedded` key of 
 !!! Example
     ```yaml
     embed:
-      key1: "value1"
-      key2: "value2"
+      my_crime: "curiosity"
+      ...
     ```

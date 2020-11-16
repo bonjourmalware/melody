@@ -1,10 +1,9 @@
 !!! warning
-    This documentation is actively being built and should be out in the coming weeks.
+    This documentation is actively being built and reach its final form in the coming weeks.
 
+Welcome to the ~**Melodoc**~.
 
-Welcome to the ~Melodoc~.
-
-Melody is an internet sensor built for threat intelligence. This tool have multiple uses :
+Melody is an internet sensor built for threat intelligence. This tool have multiple use cases :
 
 + Build historic data to extract trends and patterns 
 + Keep an eye on specific threats
@@ -12,8 +11,12 @@ Melody is an internet sensor built for threat intelligence. This tool have multi
 + Index malicious activity by detecting exploitation attempts and targeted scanners
 + Put it in front of your application to get easily parsable data about malicious activity it receives
 
-Deploying it can be as easy as pulling the latest compiled binary, adding your favorite rules and mixing it with a `config.yml` file to customize it to your needs. You can then forget it[^1] and let the melody of the internet flow to you.
+Deploying it can be as easy as pulling the latest compiled binary or the official Docker image. 
 
-Melody will handle log rotation for you. It can run forever on the lightest VPS.
+Add your favorite rules, some configuration tweaks, a BPF to clean the noise a bit and then forget it[^1] and let the internet symphony flow to you.
+
+You can tweak the options either with a file or directly by passing options trough the CLI, allowing Melody to act as a standalone application.
+
+Melody will also handle log rotation for you. It has been designed to be able to run forever on the smallest VPS while handling millions of packets a day.
 
 [^1]: You should either setup an automated patching process or come back often to apply security patches on the host though
