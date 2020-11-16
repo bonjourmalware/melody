@@ -121,7 +121,7 @@ sudo iptables -A PREROUTING -t nat -i ens3 -p tcp -m multiport ! --dports 1234,5
 Here the ports `1234` and `5678` have been excluded from the redirection.
 
 !!! Note
-    Using the `sudo iptables -t nat -L PREROUTING -n -v` command, you should see somethinkg like this :
+    Using the `sudo iptables -t nat -L PREROUTING -n -v` command, you should see something like this :
     ```
     Chain PREROUTING (policy ACCEPT 1226K packets, 57M bytes)
      pkts bytes target     prot opt in     out     source               destination         
