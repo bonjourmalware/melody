@@ -69,11 +69,10 @@ func (ev TCPEvent) ToLog() EventLog {
 	ev.LogData.DestPort = ev.DestPort
 	ev.LogData.Session = ev.Session
 
-	// Deduplicate tags
 	if len(ev.Tags) == 0 {
-		ev.LogData.Tags = []string{}
+		ev.LogData.Tags = make(map[string][]string)
 	} else {
-		ev.LogData.Tags = ev.Tags.ToArray()
+		ev.LogData.Tags = ev.Tags
 	}
 
 	switch ev.IPVersion {

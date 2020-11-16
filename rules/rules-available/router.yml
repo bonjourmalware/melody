@@ -2,96 +2,95 @@ CVE-2017-17215 (Huawei routers):
   layer: http
   meta:
     id: 846cef81-3e82-40ba-a8ed-54137ccea691
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2017-17215"
+    description: "Checking or tying to exploit CVE-2017-17215"
   match:
     http.uri:
       is:
         - "/ctrlt/DeviceUpgrade_1"
   tags:
-    - "cve-2017-17215"
-    - "device.router"
-    - "vendor.huawei"
-    - "impact.rce"
+    cve: "cve-2017-17215"
+    device: "router"
+    vendor: "huawei"
+    impact: "rce"
 
 CVE-2020-8515 (DrayTek routers):
   layer: http
   meta:
     id: b7f564b2-44f0-434f-bf9a-7f55c0e50463
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2020-8515"
+    description: "Checking or tying to exploit CVE-2020-8515"
   match:
     http.uri:
       startswith:
         - "/cgi-bin/mainfunction.cgi"
   tags:
-    - "cve-2020-8515"
-    - "device.router"
-    - "vendor.draytek"
-    - "impact.rce"
+    cve: "cve-2020-8515"
+    device: "router"
+    vendor: "draytek"
+    impact: "rce"
 
 CVE-2014-8361 (Realtek SDK Miniigd UPnP SOAP):
   layer: http
   meta:
     id: dd852a90-625e-416a-a69d-ad22554f9d25
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2014-8361"
+    description: "Checking or tying to exploit CVE-2014-8361"
   match:
     http.uri:
       is:
         - "/picsdesc.xml"
   tags:
-    - "cve-2014-8361"
-    - "device.router"
-    - "vendor.realtek"
-    - "impact.rce"
-    - "techno.soap"
-    - "techno.upnp"
+    cve: "cve-2014-8361"
+    device: "router"
+    vendor: "realtek"
+    impact: "rce"
+    techno: "soap"
 
 ZyXEL Eir D1000:
   layer: http
   meta:
     id: 98d37645-256a-48d4-a4fe-105907805417
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for a vulnerable ZyXEL Eir D1000 endpoint"
+    description: "Checking or tying to exploit a vulnerable ZyXEL Eir D1000 endpoint"
   match:
     http.uri:
       is:
         - "/UD/act?1"
   tags:
-    - "device.router"
-    - "vendor.zyxel"
-    - "impact.rce"
-    - "techno.soap"
+    device: "router"
+    vendor: "zyxel"
+    impact: "rce"
+    techno: "soap"
 
 Linksys routers (Moon worm):
   layer: http
   meta:
     id: 22ac8b19-2ed3-430e-8980-fcb30d96ccb4
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for a vulnerable Lynksys router"
+    description: "Checking or tying to exploit a vulnerable Lynksys router"
   match:
     http.uri:
       is:
         - "/tmUnblock.cgi"
   tags:
-    - "device.router"
-    - "vendor.linksys"
-    - "impact.rce"
-    - "malware.moon_worm"
-    - "malware_type.worm"
+    device: "router"
+    vendor: "linksys"
+    impact: "rce"
+    malware: "moon_worm"
+    malware_type: "worm"

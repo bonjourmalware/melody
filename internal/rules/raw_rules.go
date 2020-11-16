@@ -135,9 +135,9 @@ type RawRule struct {
 
 	Match interface{} `yaml:"match"`
 
-	Tags       []string      `yaml:"tags"`
-	Layer      string        `yaml:"layer"`
-	IPProtocol RawConditions `yaml:"ip_protocol"`
+	Tags       map[string]string `yaml:"tags"`
+	Layer      string            `yaml:"layer"`
+	IPProtocol RawConditions     `yaml:"ip_protocol"`
 
 	Metadata   Metadata          `yaml:"meta"`
 	Additional map[string]string `yaml:"embed"`

@@ -51,9 +51,9 @@ func (ev ICMPv6Event) ToLog() EventLog {
 	ev.LogData.Session = ev.Session
 
 	if len(ev.Tags) == 0 {
-		ev.LogData.Tags = []string{}
+		ev.LogData.Tags = make(map[string][]string)
 	} else {
-		ev.LogData.Tags = ev.Tags.ToArray()
+		ev.LogData.Tags = ev.Tags
 	}
 
 	ev.LogData.ICMPv6 = logdata.ICMPv6LogData{

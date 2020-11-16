@@ -2,7 +2,7 @@ RDP Login Attempt:
   layer: tcp
   meta:
     id: cbe12945-d9d1-4a9d-9138-e07c4d504eb7
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
@@ -15,7 +15,7 @@ RDP Login Attempt:
         - "Cookie: mstshash="
       offset: 11
   tags:
-    - "proto.rdp"
-    - "action.login"
-    - "data.username"
-    - "techno.remote_desktop"
+    proto: "rdp"
+    action: "login"
+    data: "username"
+    techno: "remote_desktop"

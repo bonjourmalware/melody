@@ -1,11 +1,11 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/c2h5oh/datasize"
 
@@ -51,6 +51,7 @@ logs.tcp.payload.max_size: "10KB"
 logs.udp.payload.max_size: "10KB"
 
 rules.dir: "rules/rules-enabled"
+rules.match.protocols: ["all"]
 
 listen.interface: "lo"
 filters.bpf.file: "filter.bpf"
@@ -95,16 +96,24 @@ var (
 
 // CLI describes the available CLI config keys
 type CLI struct {
-	PcapFilePath *string
-	BPF          *string
-	Stdout       *bool
-	Interface    *string
-	Dump         *bool
+	PcapFilePath   *string
+	BPF            *string
+	Stdout         *bool
+	Interface      *string
+	Dump           *bool
+	ConfigFilePath *string
+	ConfigDirPath  *string
+	BPFFilePath    *string
+	HomeDirPath    *string
 }
 
 // Config structure which mirrors the yaml file
 type Config struct {
-	LogsDir string `yaml:"logs.dir"`
+	ConfigFilePath string
+	ConfigDirPath  string
+	BPFFilePath    string
+	HomeDirPath    string
+	LogsDir        string `yaml:"logs.dir"`
 
 	LogsSensorFile                string `yaml:"logs.sensor.file"`
 	LogsSensorMaxSizeRaw          string `yaml:"logs.sensor.rotation.max_size"`
@@ -123,7 +132,7 @@ type Config struct {
 	RulesDir string `yaml:"rules.dir"`
 	BPFFile  string `yaml:"filters.bpf.file"`
 	BPF      string
-	//TODO Accept multiple interfaces ([]string)
+
 	Interface          string   `yaml:"listen.interface"`
 	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
 	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
@@ -156,6 +165,42 @@ type Config struct {
 	PcapFile        *os.File
 }
 
+// Load set the default values and parse the user's config
+func (cfg *Config) Load() {
+	if err := yaml.Unmarshal([]byte(defaultConfig), cfg); err != nil {
+		log.Println("Failed to load default config")
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	if err := cfg.parseConfigAt(nil); err != nil {
+		log.Println("Failed to parse default config")
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.ConfigDirPath = "."
+	cfg.HomeDirPath = "."
+	cfg.ConfigFilePath = "config.yml"
+	cfg.BPFFilePath = "filter.bpf"
+
+	cfg.loadCLIConfigEnv()
+
+	if err := cfg.parseConfig(); err != nil {
+		log.Println("Failed to read config file")
+		log.Println(err)
+		log.Println("Fallback on default config values")
+	}
+
+	if err := cfg.parseBPF(); err != nil {
+		log.Println("Failed to read BPF file")
+		log.Println(err)
+		log.Printf("Fallback on default filter ('%s')\n", cfg.BPF)
+	}
+
+	cfg.loadCLIOverrides()
+}
+
 func rawDatasizeToBytes(raw string) (uint64, error) {
 	var byteSize datasize.ByteSize
 	if err := byteSize.UnmarshalText([]byte(raw)); err != nil {
@@ -174,38 +219,61 @@ func rawDatasizeToMegabytes(raw string) (int, error) {
 	return int(byteSize.MBytes()), nil
 }
 
-// Load set the default values and parse the user's config
-func (cfg *Config) Load() {
-	if err := yaml.Unmarshal([]byte(defaultConfig), cfg); err != nil {
-		log.Println("Failed to load default config")
-		log.Println(err)
-		os.Exit(1)
-	}
+func (cfg *Config) parseConfig() error {
+	var err error
+	var ok bool
+	homeDirConfigPath := filepath.Join(Cfg.ConfigDirPath, Cfg.ConfigFilePath)
 
-	filepath := "config.yml"
-
-	cfgData, err := ioutil.ReadFile(filepath)
-	if err != nil {
-		log.Println(fmt.Sprintf("Failed to read config file at [%s]", filepath))
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if err := yaml.Unmarshal(cfgData, cfg); err != nil {
-		log.Printf("Failed to load the config file [%s]\n", filepath)
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	if Cfg.BPFFile != "" {
-		bpfData, err := ioutil.ReadFile(Cfg.BPFFile)
+	if ok, err = exists(homeDirConfigPath); ok {
+		err := cfg.parseConfigAt(&Cfg.ConfigFilePath)
 		if err != nil {
-			log.Printf("Failed to read BPF file at [%s]\n", Cfg.BPFFile)
-			log.Println(err)
-			os.Exit(1)
+			return err
+		}
+	}
+
+	return err
+}
+
+func (cfg *Config) parseBPF() error {
+	var err error
+	var ok bool
+	homeDirBPFPath := filepath.Join(Cfg.ConfigDirPath, Cfg.BPFFilePath)
+
+	// Default BPF filter
+	cfg.BPF = "inbound and not net 127.0.0.0/24"
+
+	if ok, err = exists(homeDirBPFPath); ok {
+		err := cfg.parseBPFAt(homeDirBPFPath)
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
+}
+
+func (cfg *Config) parseBPFAt(filepath string) error {
+	bpfData, err := ioutil.ReadFile(filepath)
+	if err != nil {
+		return err
+	}
+
+	Cfg.BPF = string(bpfData)
+	return nil
+}
+
+func (cfg *Config) parseConfigAt(filepath *string) error {
+	var err error
+
+	if filepath != nil {
+		cfgData, err := ioutil.ReadFile(*filepath)
+		if err != nil {
+			return err
 		}
 
-		Cfg.BPF = string(bpfData)
+		if err := yaml.Unmarshal(cfgData, cfg); err != nil {
+			return err
+		}
 	}
 
 	if len(Cfg.MatchProtocols) == 0 {
@@ -290,7 +358,28 @@ func (cfg *Config) Load() {
 		os.Exit(1)
 	}
 
-	// CLI overrides
+	return nil
+}
+
+func (cfg *Config) loadCLIConfigEnv() {
+	if *Cli.HomeDirPath != "" {
+		cfg.HomeDirPath = *Cli.HomeDirPath
+	}
+
+	if *Cli.ConfigDirPath != "" {
+		cfg.ConfigDirPath = *Cli.ConfigDirPath
+	}
+
+	if *Cli.ConfigFilePath != "" {
+		cfg.ConfigFilePath = *Cli.ConfigFilePath
+	}
+
+	if *Cli.BPFFilePath != "" {
+		cfg.BPFFilePath = *Cli.BPFFilePath
+	}
+}
+
+func (cfg *Config) loadCLIOverrides() {
 	if *Cli.Interface != "" {
 		cfg.Interface = *Cli.Interface
 	}

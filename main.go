@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 
 	"github.com/bonjourmalware/melody/internal/engine"
@@ -29,7 +30,11 @@ func init() {
 	signal.Notify(quitSigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	config.Cli.PcapFilePath = getopt.StringLong("pcap", 'r', "", "Replay a pcap file into the sensor")
-	config.Cli.BPF = getopt.StringLong("bpf", 'f', "", "Override the filter.bpf file with the specified filter")
+	config.Cli.BPF = getopt.StringLong("filter", 'F', "", "Override the filter.bpf file with the specified filter")
+	config.Cli.HomeDirPath = getopt.StringLong("home-dir", 'H', "", "Set the home directory")
+	config.Cli.ConfigDirPath = getopt.StringLong("config-dir", 'C', "", "Set the config directory")
+	config.Cli.ConfigFilePath = getopt.StringLong("config", 'c', "", "Path to the config file to load")
+	config.Cli.BPFFilePath = getopt.StringLong("bpf", 'f', "", "Path to the BPF file")
 	config.Cli.Interface = getopt.StringLong("interface", 'i', "", "Listen on the specified interface")
 	config.Cli.Stdout = getopt.BoolLong("stdout", 's', "Output logged data to stdout instead")
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
@@ -41,7 +46,7 @@ func init() {
 		logging.Std.Println(err)
 		os.Exit(1)
 	}
-	loaded := rules.LoadRulesDir(config.Cfg.RulesDir)
+	loaded := rules.LoadRulesDir(filepath.Join(config.Cfg.HomeDirPath, config.Cfg.RulesDir))
 
 	logging.Std.Printf("Loaded %d rules\n", loaded)
 	logging.Std.Printf("Listing on interface %s\n", config.Cfg.Interface)

@@ -16,7 +16,7 @@ type Event interface {
 	GetTCPHeader() *layers.TCP
 	GetHTTPData() HTTPEvent
 
-	AddTags(tags []string)
+	AddTags(tags map[string]string)
 	AddAdditional(add map[string]string)
 }
 

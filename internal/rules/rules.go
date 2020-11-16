@@ -11,7 +11,7 @@ type Rules []Rule
 type Rule struct {
 	Name string
 	ID   string
-	Tags []string
+	Tags map[string]string
 
 	Layer string
 

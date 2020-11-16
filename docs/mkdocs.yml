@@ -1,5 +1,26 @@
 site_name: Melody Documentation
 theme:
   name: material
-  palette: 
-    primary: teal
+  palette:
+    primary: cyan
+nav:
+- Introduction: introduction.md
+- Features: features.md
+- Requirements: requirements.md
+- Quickstart: quickstart.md
+- Installation: installation.md
+- Rules: rules.md
+- Layers: layers.md
+- Use cases: use_cases.md
+- Links: links.md
+
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - footnotes
+  - toc:
+      permalink: "#"
+plugins:
+    - search
+    - awesome-pages

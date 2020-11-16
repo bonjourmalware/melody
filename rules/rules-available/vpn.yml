@@ -2,11 +2,11 @@ CVE-2020-19781 (Citrix ADC/Gateway):
   layer: http
   meta:
     id: a284dbe4-88c3-4da4-b2db-42709dd85305
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2020-19781"
+    description: "Checking or tying to exploit CVE-2020-19781"
     references:
       - "https://support.citrix.com/article/CTX267027"
   match:
@@ -25,31 +25,31 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
   layer: http
   meta:
     id: fd46c426-3e87-4636-9ba6-af8d24dc5633
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2018-13379"
+    description: "Checking or tying to exploit CVE-2018-13379"
   match:
     http.uri:
       startswith:
         - "/remote/fgt_lang?"
   tags:
-    - "cve-2018-13379"
-    - "techno.vpn"
-    - "vendor.fortinet"
-    - "product.fortios"
-    - "impact.information_disclosure"
+    cve: "cve-2018-13379"
+    techno: "vpn"
+    vendor: "fortinet"
+    product: "fortios"
+    impact: "information_disclosure"
 
 #CVE-2020-5135 (SonicWall VPN Portal):
 #  layer: http
 #  meta:
 #    id: 7d7733e2-6047-4dc5-8bad-609da742f230
-#    author: Hadrien Bouffier
+#    author: BonjourMalware
 #    status: stable
 #    created: 2020/11/07
 #    modified: 2020/11/07
-#    description: "Attempt to exploit or check for CVE-2020-5135"
+#    description: "Checking or tying to exploit CVE-2020-5135"
 #    references:
 #      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+firewall+http+config%22"
 #      - "https://www.shodan.io/search?query=product%3A%22SonicWALL+SSL-VPN+http+proxy%22"

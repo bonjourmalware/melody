@@ -2,11 +2,11 @@ CVE-2020-7961 Liferay Portal RCE:
   layer: http
   meta:
     id: 30adb6ba-a23e-48ba-bb12-8e91b54817c4
-    author: Hadrien Bouffier
+    author: BonjourMalware
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2020-7961"
+    description: "Checking or tying to exploit CVE-2020-7961"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-7961"
   match:
@@ -17,8 +17,8 @@ CVE-2020-7961 Liferay Portal RCE:
       is:
         - "POST"
   tags:
-    - "cve-2020-7961"
-    - "vendor.liferay"
-    - "product.liferay_portal"
-    - "impact.rce"
-    - "techno.cms"
+    cve: "cve-2020-7961"
+    vendor: "liferay"
+    product: "liferay_portal"
+    impact: "rce"
+    techno: "cms"

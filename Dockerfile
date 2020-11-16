@@ -1,6 +1,7 @@
 FROM golang:alpine as base
 
-RUN apk --update add --no-cache ca-certificates libpcap-dev build-base
+# Install libpcap headers and the compilation tools needed
+RUN apk add --update --no-cache ca-certificates libpcap-dev build-base
 
 WORKDIR /app
 

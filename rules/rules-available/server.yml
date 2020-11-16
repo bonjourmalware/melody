@@ -6,7 +6,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
     status: stable
     created: 2020/11/07
     modified: 2020/11/07
-    description: "Attempt to exploit or check for CVE-2020-14882"
+    description: "Checking or tying to exploit CVE-2020-14882"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"
   match:
@@ -18,7 +18,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
         - "/console/images/%252E%252E%252Fconsole.portal"
         - "/console/css/%2e"
   tags:
-    - "cve-2020-14882"
-    - "vendor.oracle"
-    - "product.weblogic"
-    - "impact.rce"
+    cve: "cve-2020-14882"
+    vendor: "oracle"
+    product: "weblogic"
+    impact: "rce"
