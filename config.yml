@@ -45,6 +45,11 @@
 ## The directory where the active rules lives
 # rules.dir: "rules/rules-enabled"
 
+## Whitelist the protocols on which you want to apply rules
+## Please note that the filtered protocols will still be logged
+## Available values : all, http, icmp, tcp, udp, icmpv4, icmpv6
+# rules.match.protocols: ["all"]
+
 ##
 ## Listen
 ##
