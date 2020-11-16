@@ -16,9 +16,12 @@
     <a href="https://bonjourmalware.github.io/melody/"><img src="https://img.shields.io/badge/%F0%9F%93%9A-Documentation-informational" alt="Documentation"/></a>
     <a href="https://bonjourmalware.github.io/melody/installation"><img src="https://img.shields.io/badge/%F0%9F%93%9A-Installation-informational" alt="Installation"/></a>
     <a href="https://bonjourmalware.github.io/melody/quickstart"><img src="https://img.shields.io/badge/%F0%9F%93%9A-Quickstart-informational" alt="Quickstart"/></a>
-    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="Go Report Card"/></a>
 </p>
 
+<p align="center">
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="Go Report Card"/></a>
+</p>
+   
 ----
 
 Melody is a transparent internet sensor built for threat intelligence and supported by a detection rule framework which allows you to tag packets of interest for further analysis and threat monitoring.
