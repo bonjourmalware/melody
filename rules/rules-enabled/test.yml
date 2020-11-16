@@ -1,9 +1,0 @@
-test:
-  layer: http
-  match:
-    http.body:
-      is|regex:
-        - "(?:[0-9]{1,3}.){3}[0-9]{1,3}"
-  tags:
-    test: "success"
-    impact: "info_disclosure"

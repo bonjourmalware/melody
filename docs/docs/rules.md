@@ -124,11 +124,11 @@ The available *conditions* depends on the `layer` key. The keys are namespaced a
 !!! Example
     `udp.payload`, `tcp.flags`, `http.uri`...
 
-There are 4 types of *condition* types : `string`, `number`, `array` or `complex`. 
+There are 4 types of *conditions* : `string`, `number`, `array` or `complex`. 
 
 The `complex` *condition* type supports *matching operators* and inline *modifiers*.
 
-Check the layer's documentation to see which fields support `complex` *conditions*.
+To check which fields support `complex` *conditions*, take a look at the [layer's documentation](/layers).
 
 !!! Note
     The `number` types takes advantage of YAML to support octal (0o1234), hex (0x1234) and decimal (1234) representation. 
@@ -142,18 +142,23 @@ The *matching operator* specifies how to handle data.
 A single *condition* can be made of a set of *matching operators*.
 
 !!! Important
-    By default, a rule needs to validate all the *conditions* to match. However, you can specify `any: true` to force a rule to test all of its ccondition and match as soon as it find a valid one.
+    By default, a rule needs to validate all the *conditions* to match. However, you can specify `any: true` to force a rule to test all of its conditions and return a match as soon as it find a valid one.
 
 !!! Example
     ```yaml
     udp.payload:
       contains:
         - "after all, we're all alike."
+      startswith:
+        - "Damn kids"
+      any: true
     ```
     
-    In this example, the *condition* key is `udp.payload` and the *matching operator* is `contains`.
+    In this example, the *condition* key is `udp.payload` and the *matching operators* are `contains` and `startswith`. 
     
-    This rule will match if the verb of an HTTP packet is exactly `POST`.
+    This rule will match if the payload of an UDP packet startswith the string "Damn kids" OR contains "after all, we're all alike.". 
+    
+    The rule needs both to match if we remove the `any: true` option.
 
 |Name|Description|
 |---|---|
@@ -168,23 +173,23 @@ A single *condition* can be made of a set of *matching operators*.
 They live on the same line, split by `|`. All *modifiers* can be mixed at once.
 
 !!! Important
-    By default, a *condition* needs to validate all of its values to match. However, you can use the `|any` *modifier* to force a condition to test all of its values and to be validated on the first match.
+    By default, a *condition* needs to match all of the given values (AND). However, you can use the `|any` *modifier* to reverse it and force it to test all the values and to return on the first match.
 
 !!! Example
     ```yaml
-    http.uri:
-      contains|any:
-        - "/console/images/%252E%252E%252Fconsole.portal"
-        - "/console/css/%2e"
+    http.body:
+      contains|any|nocase:
+        - "Enter my world"
+        - "the beauty of the baud"
     ```
     
-    In this example, the *modifier* is `any`. This rule will match if the URI field of an HTTP packet contains any item in the list.
+    In this example, the *modifiers* are `any` and `nocase`. This rule will match if the URI field of an HTTP packet contains any item in the list.
 
 |Name|Description|Example|
 |---|---|---|
 |any|The rule match if **any** of the values in the list matches|-|
 |nocase|The match is **case insensitive**|abcd == aBcD == ABCD|
-|regex|The value is a **regular expression**|'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$' == 192.0.2.1|
+|regex|The value is a **regular expression**|'(?:[0-9]{1,3}\.){3}[0-9]{1,3}' == 192.0.2.1|
 
 !!! Danger
     Although the regex is compiled only once, it can cause severe overhead while matching packets. Use it with caution.
