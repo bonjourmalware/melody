@@ -41,8 +41,6 @@ func init() {
 	getopt.FlagLong(&config.Cli.FreeConfig, "option", 'o', "Override configuration keys")
 	getopt.Parse()
 
-	config.Cli.FreeConfig.ParseMultipleOptions()
-
 	config.Cfg.Load()
 	err := logging.InitLoggers()
 	if err != nil {
