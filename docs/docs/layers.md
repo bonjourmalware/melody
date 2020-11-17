@@ -16,13 +16,59 @@
 !!! Important
     HTTP being an application protocol, the full packet is assembled from multiple frames and thus does not have its transport information embedded.
      
-    However, the reassembled packet data share its session with the TCP frames it comes from. You can link them together by lookinp up the session.
+    However, the reassembled packet data share its session with the TCP frames it comes from. You can link them together by looking up the session.
     
     !!! Note
         Since HTTPS packets are captured by the webserver and not reassembled, they have their own session and are **not** linked with the assembled frames.    
 
 ### Log data
 
+!!! Example
+    ```json
+    {
+      "http": {
+        "verb": "POST",
+        "proto": "HTTP/1.1",
+        "uri": "/",
+        "src_port": 51746,
+        "dst_host": "127.0.0.1",
+        "user_agent": "curl/7.58.0",
+        "headers": {
+          "Accept": "*/*",
+          "Content-Length": "14",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "curl/7.58.0"
+        },
+        "headers_keys": [
+          "User-Agent",
+          "Accept",
+          "Content-Length",
+          "Content-Type"
+        ],
+        "headers_values": [
+          "curl/7.58.0",
+          "*/*",
+          "14",
+          "application/x-www-form-urlencoded"
+        ],
+        "errors": null,
+        "body": {
+          "content": "Enter my world",
+          "base64": "RW50ZXIgbXkgd29ybGQ=",
+          "truncated": false
+        },
+        "is_tls": false
+      },
+      "ip": null,
+      "timestamp": "2020-11-17T21:16:23.847161686+01:00",
+      "session": "buq2v5oo4skos28gfp20",
+      "type": "http",
+      "src_ip": "127.0.0.1",
+      "dst_port": 10080,
+      "matches": {},
+      "embedded": {}
+    }
+    ```
 
 ## TCP
 ### Rules
@@ -161,37 +207,37 @@ TCP fragbits values :
 
 !!! Example
 
-```json
-{
-  "icmpv4": {
-    "type_code": 2048,
-    "type": 8,
-    "code": 0,
-    "type_code_name": "EchoRequest",
-    "checksum": 23981,
-    "id": 8140,
-    "seq": 1
-  },
-  "ip": {
-    "version": 4,
-    "ihl": 5,
-    "tos": 0,
-    "length": 84,
-    "id": 50747,
-    "fragbits": "DF",
-    "frag_offset": 0,
-    "ttl": 64,
-    "protocol": 1
-  },
-  "timestamp": "2020-11-17T19:05:24.541282+01:00",
-  "session": "n/a",
-  "type": "icmpv4",
-  "src_ip": "127.0.0.1",
-  "dst_port": 0,
-  "matches": {},
-  "embedded": {}
-}
-```
+    ```json
+    {
+      "icmpv4": {
+        "type_code": 2048,
+        "type": 8,
+        "code": 0,
+        "type_code_name": "EchoRequest",
+        "checksum": 23981,
+        "id": 8140,
+        "seq": 1
+      },
+      "ip": {
+        "version": 4,
+        "ihl": 5,
+        "tos": 0,
+        "length": 84,
+        "id": 50747,
+        "fragbits": "DF",
+        "frag_offset": 0,
+        "ttl": 64,
+        "protocol": 1
+      },
+      "timestamp": "2020-11-17T19:05:24.541282+01:00",
+      "session": "n/a",
+      "type": "icmpv4",
+      "src_ip": "127.0.0.1",
+      "dst_port": 0,
+      "matches": {},
+      "embedded": {}
+    }
+    ```
 
 ## ICMPv6
 ### Rules
@@ -207,30 +253,30 @@ TCP fragbits values :
 
 !!! Example
 
-```json
-{
-  "icmpv6": {
-    "type_code": 32768,
-    "type": 0,
-    "code": 0,
-    "type_code_name": "EchoRequest",
-    "checksum": 55474
-  },
-  "ip": {
-    "version": 6,
-    "length": 64,
-    "next_header": 58,
-    "next_header_name": "ICMPv6",
-    "traffic_class": 0,
-    "flow_label": 366894,
-    "hop_limit": 64
-  },
-  "timestamp": "2020-11-17T19:06:25.056576+01:00",
-  "session": "n/a",
-  "type": "icmpv6",
-  "src_ip": "::1",
-  "dst_port": 0,
-  "matches": {},
-  "embedded": {}
-}
-```
+    ```json
+    {
+      "icmpv6": {
+        "type_code": 32768,
+        "type": 0,
+        "code": 0,
+        "type_code_name": "EchoRequest",
+        "checksum": 55474
+      },
+      "ip": {
+        "version": 6,
+        "length": 64,
+        "next_header": 58,
+        "next_header_name": "ICMPv6",
+        "traffic_class": 0,
+        "flow_label": 366894,
+        "hop_limit": 64
+      },
+      "timestamp": "2020-11-17T19:06:25.056576+01:00",
+      "session": "n/a",
+      "type": "icmpv6",
+      "src_ip": "::1",
+      "dst_port": 0,
+      "matches": {},
+      "embedded": {}
+    }
+    ```
