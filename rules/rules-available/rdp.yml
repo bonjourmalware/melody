@@ -2,6 +2,7 @@ RDP Login Attempt:
   layer: tcp
   meta:
     id: cbe12945-d9d1-4a9d-9138-e07c4d504eb7
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

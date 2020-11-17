@@ -1,3 +1,57 @@
+### TL;DR
+#### Release
+Get the release for your system at `https://github.com/bonjourmalware/actions-lab/releases`.
+
+```bash
+make install            # Create Melody's home in /opt
+make certs              # Make self signed certs for the HTTPS fileserver
+make default_rules      # Enable the default rules
+make service            # Create a systemd service to restart the program automatically and launch it at startup 
+
+sudo systemctl stop melody  # Stop the service while we're configuring it
+```
+
+Update the `filter.bpf` file to filter out unwanted packets.
+
+```bash
+sudo systemctl start melody     # Start Melody
+sudo systemctl status melody    # Check that Melody is running    
+```
+
+The logs you start to pile up in `/opt/melody/logs/melody.ndjson`.
+
+```bash
+tail -f /opt/melody/logs/melody.ndjson # | jq
+```
+
+#### From source
+
+```bash
+
+git clone https://github.com/bonjourmalware/melody /opt/melody
+cd /opt/melody
+make build
+```
+
+Then continue with the steps from the [release](#release) TL;DR.
+
+#### Docker
+
+```bash
+mkdir -p /opt/melody/logs
+cd /opt/melody/
+
+docker pull bonjourmalware/melody:latest
+docker run \
+    --net=host \
+    --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \  # Remove this line if you're using the default filter
+    --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \  # Remove this line if you're using the default config
+    --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \                      # The directory must exists in your current directory before running the container
+    melody
+```
+
+The logs you start to pile up in `/opt/melody/logs/melody.ndjson`.
+
 ### Before we start
 
 Hi !
@@ -60,10 +114,11 @@ Run it with :
 
 ```
 docker run \
-                --net=host \
-                --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \      
-                --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \      
-                melody
+    --net=host \
+    --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \
+    --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \      
+    --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \      
+    melody
 ```
 
 ## Configuration
@@ -223,8 +278,10 @@ Here is a rule example that detects CVE-2020-14882 (Oracle Weblogic RCE) scans o
 ```yaml
 CVE-2020-14882 Oracle Weblogic Server RCE:
   layer: http
+  version: 1.0
   meta:
     id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

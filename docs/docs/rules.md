@@ -14,6 +14,7 @@ A rule file can contain multiple rule descriptions.
       layer: http
       meta:
         id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+        version: 1.0
         author: BonjourMalware
         status: stable
         created: 2020/11/07
@@ -36,9 +37,12 @@ A rule file can contain multiple rule descriptions.
         impact: "rce"
     ```
 
+!!! Tip
+    You can whitelist or blacklist ports and IP addresses with the `whitelist` sections `blacklist` (not shown here).
+
 ## Structure
 
-The rules have 5 sections : `layer`, `meta`, `match`, `tags` and `embed`.
+The rules have 7 sections : `layer`, `meta`, `match`, `whitelist`, `blacklist`, `tags` and `embed`.
 
 ### layer
 The rule will look for matches in the specified `layer`'s protocol data.
@@ -56,20 +60,21 @@ The following layers are supported by Melody :
 |icmpv6|❌|✅|
 
 !!! important
-    You must keep in mind that a rule only applies to a single layer. Use multiple rules to look for the same thing in different layers.
+    A single rule only applies to the targeted layer. Use multiple rules if you want to match multiple layers.
 
 ### meta
 The `meta` section contains all the rule's metadata. Every key are mandatory, except `references`. 
 
 |Key|Type|Description|Values|Examples|
 |---|---|---|---|---|
-|**id**|*string*|Rule's unique identifier. Each rule must have a unique UUIDv4|-|id: c30370f7-aaa8-41d0-a392-b56c94869128|
-|**author**|*string*|The name of the rule's author|-|author: BonjourMalware|
-|**status**|*string*|The status gives an indication of the usability of the rule|stable, experimental|status: stable|
-|**created**|*yyyy/mm/dd*|Creation date|-|created: 2020/11/07|
-|**modified**|*yyyy/mm/dd*|Last modification date|-|modified: 2020/11/07|
-|**description**|*string*|A quick description of what the rule is attempting to match|-|description: Checking or trying to exploit CVE-2020-14882|
-|**references**|*array*|The status gives an indication of the usability of the rule|-|references: <br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://github.com/jas502n/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- ...|
+|**id**|*string*|Rule's unique identifier. Each rule must have a unique UUIDv4|-|<pre>id: c30370f7-aaa8-41d0-a392-b56c94869128</pre>|
+|**version**|*string*|Rule syntax version|1.0|<pre>version: 1.0</pre>|
+|**author**|*string*|The name of the rule's author|-|<pre>author: BonjourMalware</pre>|
+|**status**|*string*|The status gives an indication of the usability of the rule|stable, experimental|<pre>status: stable</pre>|
+|**created**|*yyyy/mm/dd*|Creation date|-|<pre>created: 2020/11/07</pre>|
+|**modified**|*yyyy/mm/dd*|Last modification date|-|<pre>modified: 2020/11/07</pre>|
+|**description**|*string*|A quick description of what the rule is attempting to match|-|<pre>description: Checking or trying to exploit CVE-2020-14882</pre>|
+|**references**|*array*|The status gives an indication of the usability of the rule|-|<pre>references: <br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://github.com/jas502n/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- ...</pre>|
 
 !!! Important
     You must generate a new UUIDv4 for the `id` of every rule you create.
@@ -124,19 +129,44 @@ The available *conditions* depends on the `layer` key. The keys are namespaced a
 !!! Example
     `udp.payload`, `tcp.flags`, `http.uri`...
 
-There are 4 types of *conditions* : `string`, `number`, `array` or `complex`. 
+There are 3 types of *conditions* : `number`, `flags` or `complex`. 
 
-The `complex` *condition* type supports *matching operators* and inline *modifiers*.
+##### Number
+A number.
 
-To check which fields support `complex` *conditions*, take a look at the [layer's documentation](/layers).
+!!! Example
+    ```yaml
+    tcp.window: 512
+    ```
 
 !!! Note
     The `number` types takes advantage of YAML to support octal (0o1234), hex (0x1234) and decimal (1234) representation. 
-    
-!!! Warning
-     However, the `string` type fields does not support hex notation.
 
-#### Matching operators
+##### Flags
+
+`flags` *condition* are made of a list of flag combination to match.
+
+The *condition* is valid as soon as a match is found (OR).
+
+!!! Example
+    ```
+    tcp.flags:
+      - "PA"
+      - "S"
+    ```
+    
+    This rule will match a TCP packet with its flag bits set to "PA" (PSH-ACK, 0x18) or "S" (SYN, 0x2).
+    
+!!! Note 
+    Only two fields support `flags` *condition* : `tcp.flags` and `tcp.fragbits`.
+
+##### Complex
+
+The `complex` *condition* type supports *matching operators* and inline *modifiers*.
+
+To check which fields support `complex` *conditions*, take a look at the [layers documentation](/layers).
+
+###### Matching operators
 The *matching operator* specifies how to handle data.
 
 A single *condition* can be made of a set of *matching operators*.
@@ -167,7 +197,7 @@ A single *condition* can be made of a set of *matching operators*.
 |startswith|The packet's field value **starts** with the *condition*'s value|
 |endswith|The packet's field value **ends** with the *condition*'s value|
 
-#### Modifiers
+###### Modifiers
 *Modifiers* are a way to quickly set options for the *matching operator*.
 
 They live on the same line, split by `|`. All *modifiers* can be mixed at once.
@@ -194,7 +224,7 @@ They live on the same line, split by `|`. All *modifiers* can be mixed at once.
 !!! Danger
     Although the regex is compiled only once, it can cause severe overhead while matching packets. Use it with caution.
 
-#### Hybrid pattern
+###### Hybrid pattern
 
 `complex` *condition*'s support hex values by wrapping them between two `|`.
 
@@ -210,6 +240,67 @@ You can mix hex and ascii in a single string as well.
     !!! Note
         '0x' hex notation (`|0xbe 0xef|`) is invalid. You can mix spaced and not spaced hex bytes though.
 
+### Whitelist and blacklist
+
+These two fields can be used to filter the packets on which the rule is applied.
+
+IP source addresses and ports are supported.
+
+#### IP address
+
+!!! Example
+    ```yaml
+    whitelist:
+      ips:
+        - 127.0.0.1
+    ```
+    
+    This example only tries to match the packets coming from 127.0.0.1.
+
+    ```yaml
+    blacklist:
+      ips:
+        - 127.0.0.1
+    ```
+    
+    Use the blacklist keyword to reverse the logic and apply the rule to all packets but the one coming from 127.0.0.1.
+
+!!! Example
+    ```yaml
+    whitelist:
+      ips:
+        - 127.0.0.0/24
+    ```
+    
+    CIDR notation supported.
+
+#### Ports
+
+!!! Example
+    ```yaml
+    whitelist:
+      ports:
+        - 80
+    ```
+    
+    This example only tries to match the packets going to port 80 .
+
+    ```yaml
+    blacklist:
+      ports:
+        - 80
+    ```
+    
+    Use the blacklist keyword to reverse the logic and apply the rule to all packets but the one going to port 80.
+
+!!! Example
+    ```yaml
+    whitelist:
+      ports:
+        - 8000 - 9000
+    ```
+    
+    Port ranges are supported. You can choose to put spaces or not.
 
 ### tags
 Each of the key/value pair in the `tags` object will be appended to the `matches` field of each of the matching packets.

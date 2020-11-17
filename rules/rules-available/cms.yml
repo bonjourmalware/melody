@@ -2,6 +2,7 @@ CVE-2020-7961 Liferay Portal RCE:
   layer: http
   meta:
     id: 30adb6ba-a23e-48ba-bb12-8e91b54817c4
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

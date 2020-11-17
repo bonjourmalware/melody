@@ -1,5 +1,6 @@
 ok_uri:
   layer: http
+  version: 1.0
   id: 9fac5a6d-a3c5-487a-950d-4c56a6d025ad
   match:
     http.uri:
@@ -9,6 +10,7 @@ ok_uri:
 
 nok_uri:
   layer: http
+  version: 1.0
   id: 300ebc19-8f48-4fbe-a39a-9b3457b0bd96
   match:
     http.uri:
@@ -18,18 +20,21 @@ nok_uri:
 
 ok_is_tls:
   layer: http
+  version: 1.0
   id: 352e81f5-beaa-49c5-8306-87f7ba4092bd
   match:
     http.tls: false
 
 nok_is_tls:
   layer: http
+  version: 1.0
   id: dca1a1ac-3c44-40ae-a1c0-0b8881e9f23e
   match:
     http.tls: true
 
 ok_headers:
   layer: http
+  version: 1.0
   id: 5a819c44-bc45-4db1-9504-198a79da689d
   match:
     http.headers:
@@ -38,6 +43,7 @@ ok_headers:
 
 nok_headers:
   layer: http
+  version: 1.0
   id: 795e097a-662d-4839-9301-97e73bd5a4bc
   match:
     http.headers:
@@ -46,6 +52,7 @@ nok_headers:
 
 ok_body:
   layer: http
+  version: 1.0
   id: 740055f3-1b77-4677-89ec-bcea34097593
   match:
     http.body:
@@ -54,6 +61,7 @@ ok_body:
 
 nok_body:
   layer: http
+  version: 1.0
   id: 4adf1dc4-912c-459a-82f8-5b3aa0f20bba
   match:
     http.body:
@@ -62,6 +70,7 @@ nok_body:
 
 ok_proto:
   layer: http
+  version: 1.0
   id: f0b82f01-cbf7-4af7-bf26-44dc9403f0f9
   match:
     http.proto:
@@ -70,6 +79,7 @@ ok_proto:
 
 nok_proto:
   layer: http
+  version: 1.0
   id: c0917358-a738-4afe-83e9-9ababa745b62
   match:
     http.proto:
@@ -78,6 +88,7 @@ nok_proto:
 
 ok_method:
   layer: http
+  version: 1.0
   id: b2656489-6118-4e9e-aebd-1413737666ad
   match:
     http.method:
@@ -86,6 +97,7 @@ ok_method:
 
 nok_method:
   layer: http
+  version: 1.0
   id: c1e40473-e250-48eb-b5ff-cf25cd4469a0
   match:
     http.method:

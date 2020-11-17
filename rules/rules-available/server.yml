@@ -2,6 +2,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
   layer: http
   meta:
     id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

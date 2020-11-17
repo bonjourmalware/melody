@@ -2,6 +2,7 @@ Dropper:
   layer: tcp
   meta:
     id: 00831c4f-17ec-4221-a2e8-85e1b146c35e
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

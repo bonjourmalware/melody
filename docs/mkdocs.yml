@@ -4,17 +4,15 @@ theme:
   palette:
     primary: cyan
 nav:
-- Introduction: introduction.md
 - Features: features.md
 - Requirements: requirements.md
 - Quickstart: quickstart.md
 - Installation: installation.md
 - Rules: rules.md
-- Log data: logdata.md
 - Layers: layers.md
+- Log data: logdata.md
 - Use cases: use_cases.md
 - Links: links.md
-
 
 markdown_extensions:
   - admonition

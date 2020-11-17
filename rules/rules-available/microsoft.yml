@@ -2,6 +2,7 @@ CVE-2020-0618 (Microsoft SSRS - SQL Server Reporting Services):
   layer: http
   meta:
     id: 1663bfba-5033-4886-88ac-bcd45629200c
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

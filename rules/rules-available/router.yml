@@ -2,6 +2,7 @@ CVE-2017-17215 (Huawei routers):
   layer: http
   meta:
     id: 846cef81-3e82-40ba-a8ed-54137ccea691
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -21,6 +22,7 @@ CVE-2020-8515 (DrayTek routers):
   layer: http
   meta:
     id: b7f564b2-44f0-434f-bf9a-7f55c0e50463
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -40,6 +42,7 @@ CVE-2014-8361 (Realtek SDK Miniigd UPnP SOAP):
   layer: http
   meta:
     id: dd852a90-625e-416a-a69d-ad22554f9d25
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -60,6 +63,7 @@ ZyXEL Eir D1000:
   layer: http
   meta:
     id: 98d37645-256a-48d4-a4fe-105907805417
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -79,6 +83,7 @@ Linksys routers (Moon worm):
   layer: http
   meta:
     id: 22ac8b19-2ed3-430e-8980-fcb30d96ccb4
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

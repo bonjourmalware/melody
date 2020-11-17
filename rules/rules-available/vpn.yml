@@ -2,6 +2,7 @@ CVE-2020-19781 (Citrix ADC/Gateway):
   layer: http
   meta:
     id: a284dbe4-88c3-4da4-b2db-42709dd85305
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -25,6 +26,7 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
   layer: http
   meta:
     id: fd46c426-3e87-4636-9ba6-af8d24dc5633
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
@@ -45,6 +47,7 @@ CVE-2018-13379 (Fortinet FortiOS SSL VPN):
 #  layer: http
 #  meta:
 #    id: 7d7733e2-6047-4dc5-8bad-609da742f230
+#    version: 1.0
 #    author: BonjourMalware
 #    status: stable
 #    created: 2020/11/07

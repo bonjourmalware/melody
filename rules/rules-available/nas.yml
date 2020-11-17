@@ -2,6 +2,7 @@ CVE-2020-9054 (ZyXEL NAS):
   layer: http
   meta:
     id: d7943e6c-4348-48b1-b2c5-0c553474a7ac
+    version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07

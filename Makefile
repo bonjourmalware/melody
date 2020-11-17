@@ -7,12 +7,16 @@ certs:
 	mkdir -p var/https/certs
 	openssl req -x509 -subj "/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost" -newkey rsa:4096 -keyout var/https/certs/key.pem -out var/https/certs/cert.pem -days 3650 -nodes
 
+default_rules:
+	ln -rs ./rules/rules-available/* ./rules/rules-enable/
+
 docker_build:
 	docker build . -t melody
 
 docker_run:
 	docker run \
 		--net=host \
+		--mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \
 		--mount type=bind,source="$(shell pwd)"/config.yml,target=/app/config.yml,readonly \
 		--mount type=bind,source="$(shell pwd)"/logs,target=/app/logs/ \
 		melody
@@ -29,12 +33,13 @@ build:
 	go build -ldflags="-s -w -extldflags=-static" -o melody
 	sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 
-install: build
+install:
 	mkdir /opt/melody
-	ln -s "$(shell pwd)/melody" /opt/melody/
-	ln -s "$(shell pwd)/config.yml" /opt/melody/config.yml
-	ln -s "$(shell pwd)/filter.bpf" /opt/melody/filter.bpf
-	ln -s "$(shell pwd)/rules" /opt/melody/rules
+	cp -v "$(shell pwd)/melody" /opt/melody/
+	cp -v "$(shell pwd)/config.yml" /opt/melody/config.yml
+	cp -v "$(shell pwd)/filter.bpf" /opt/melody/filter.bpf
+	cp -av "$(shell pwd)/rules" /opt/melody/rules
+	cp -av "$(shell pwd)/var" /opt/melody/rules
 
 	@echo "> Setting listening interface to \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\""
 	sed -i "s/# listen.interface: \"lo\"/listen.interface: \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\"/g" /opt/melody/config.yml
