@@ -10,7 +10,7 @@ nav:
 - Installation: installation.md
 - Rules: rules.md
 - Layers: layers.md
-- Use cases: use_cases.md
+#- Use cases: use_cases.md
 - Links: links.md
 
 markdown_extensions:
