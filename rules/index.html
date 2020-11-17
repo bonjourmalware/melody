@@ -1,0 +1,1082 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.4">
+    
+    
+      
+        <title>Rules - Melody Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.358818c7.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f0267088.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#00bdd6">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="cyan" data-md-color-accent="">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#first-look" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Melody Documentation" class="md-header-nav__button md-logo" aria-label="Melody Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Melody Documentation
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Rules
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Melody Documentation" class="md-nav__button md-logo" aria-label="Melody Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Melody Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../features/" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../requirements/" class="md-nav__link">
+      Requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../quickstart/" class="md-nav__link">
+      Quickstart
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../installation/" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Rules
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Rules
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-look" class="md-nav__link">
+    First look
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    Structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer" class="md-nav__link">
+    layer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta" class="md-nav__link">
+    meta
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match" class="md-nav__link">
+    match
+  </a>
+  
+    <nav class="md-nav" aria-label="match">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    Conditions
+  </a>
+  
+    <nav class="md-nav" aria-label="Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    Number
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flags" class="md-nav__link">
+    Flags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex" class="md-nav__link">
+    Complex
+  </a>
+  
+    <nav class="md-nav" aria-label="Complex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matching-operators" class="md-nav__link">
+    Matching operators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifiers" class="md-nav__link">
+    Modifiers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hybrid-pattern" class="md-nav__link">
+    Hybrid pattern
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#whitelist-and-blacklist" class="md-nav__link">
+    Whitelist and blacklist
+  </a>
+  
+    <nav class="md-nav" aria-label="Whitelist and blacklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ip-address" class="md-nav__link">
+    IP address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ports" class="md-nav__link">
+    Ports
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#embed" class="md-nav__link">
+    embed
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../layers/" class="md-nav__link">
+      Layers
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../links/" class="md-nav__link">
+      Links
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-look" class="md-nav__link">
+    First look
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    Structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer" class="md-nav__link">
+    layer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta" class="md-nav__link">
+    meta
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#match" class="md-nav__link">
+    match
+  </a>
+  
+    <nav class="md-nav" aria-label="match">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conditions" class="md-nav__link">
+    Conditions
+  </a>
+  
+    <nav class="md-nav" aria-label="Conditions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    Number
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flags" class="md-nav__link">
+    Flags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex" class="md-nav__link">
+    Complex
+  </a>
+  
+    <nav class="md-nav" aria-label="Complex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matching-operators" class="md-nav__link">
+    Matching operators
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifiers" class="md-nav__link">
+    Modifiers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hybrid-pattern" class="md-nav__link">
+    Hybrid pattern
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#whitelist-and-blacklist" class="md-nav__link">
+    Whitelist and blacklist
+  </a>
+  
+    <nav class="md-nav" aria-label="Whitelist and blacklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ip-address" class="md-nav__link">
+    IP address
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ports" class="md-nav__link">
+    Ports
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#embed" class="md-nav__link">
+    embed
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Rules</h1>
+                
+                <p>Melody rules are used to apply tags on matching packets. They have multiple use cases, such as monitoring emerging threats, automated droppers, vulnerability scanners...</p>
+<p>Take a look in the <code>$melody/rule-available</code> and <code>$melody/internal/rules/test_resources</code> folders to quickly find working examples. </p>
+<h2 id="first-look">First look<a class="headerlink" href="#first-look" title="Permanent link">#</a></h2>
+<p>A rule file can contain multiple rule descriptions. </p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>This example detects CVE-2020-14882 (Oracle Weblogic RCE) scans or exploitation attempts by matching either of the two URI on the HTTP level :</p>
+<div class="highlight"><pre><span></span><code><span class="nt">CVE-2020-14882 Oracle Weblogic Server RCE</span><span class="p">:</span>
+  <span class="nt">layer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
+  <span class="nt">meta</span><span class="p">:</span>
+    <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3e1d86d8-fba6-4e15-8c74-941c3375fd3e</span>
+    <span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+    <span class="nt">author</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BonjourMalware</span>
+    <span class="nt">status</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stable</span>
+    <span class="nt">created</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2020/11/07</span>
+    <span class="nt">modified</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2020/11/07</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="s">&quot;Checking</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">trying</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">exploit</span><span class="nv"> </span><span class="s">CVE-2020-14882&quot;</span>
+    <span class="nt">references</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;https://nvd.nist.gov/vuln/detail/CVE-2020-14882&quot;</span>
+  <span class="nt">match</span><span class="p">:</span>
+    <span class="nt">http.method</span><span class="p">:</span>
+      <span class="nt">is</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;POST&quot;</span>
+    <span class="nt">http.uri</span><span class="p">:</span>
+      <span class="nt">contains|any</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;/console/images/%252E%252E%252Fconsole.portal&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;/console/css/%2e&quot;</span>
+  <span class="nt">tags</span><span class="p">:</span>
+    <span class="nt">cve</span><span class="p">:</span> <span class="s">&quot;cve-2020-14882&quot;</span>
+    <span class="nt">vendor</span><span class="p">:</span> <span class="s">&quot;oracle&quot;</span>
+    <span class="nt">product</span><span class="p">:</span> <span class="s">&quot;weblogic&quot;</span>
+    <span class="nt">impact</span><span class="p">:</span> <span class="s">&quot;rce&quot;</span>
+</code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can whitelist or blacklist ports and IP addresses with the <code>whitelist</code> sections <code>blacklist</code> (not shown here).</p>
+</div>
+<h2 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">#</a></h2>
+<p>The rules have 7 sections : <code>layer</code>, <code>meta</code>, <code>match</code>, <code>whitelist</code>, <code>blacklist</code>, <code>tags</code> and <code>embed</code>.</p>
+<h3 id="layer">layer<a class="headerlink" href="#layer" title="Permanent link">#</a></h3>
+<p>The rule will look for matches in the specified <code>layer</code>'s protocol data.</p>
+<p>Each layer expose different fields depending on the protocol they represent. They're detailed in the <a href="/layers/">Layers</a> page.</p>
+<p>The following layers are supported by Melody :</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>IPv4</th>
+<th>IPv6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>http</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>tcp</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>udp</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>icmpv4</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>icmpv6</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>A single rule only applies to the targeted layer. Use multiple rules if you want to match multiple layers.</p>
+</div>
+<h3 id="meta">meta<a class="headerlink" href="#meta" title="Permanent link">#</a></h3>
+<p>The <code>meta</code> section contains all the rule's metadata. Every key are mandatory, except <code>references</code>. </p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+<th>Values</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>id</strong></td>
+<td><em>string</em></td>
+<td>Rule's unique identifier. Each rule must have a unique UUIDv4</td>
+<td>-</td>
+<td><pre>id: c30370f7-aaa8-41d0-a392-b56c94869128</pre></td>
+</tr>
+<tr>
+<td><strong>version</strong></td>
+<td><em>string</em></td>
+<td>Rule syntax version</td>
+<td>1.0</td>
+<td><pre>version: 1.0</pre></td>
+</tr>
+<tr>
+<td><strong>author</strong></td>
+<td><em>string</em></td>
+<td>The name of the rule's author</td>
+<td>-</td>
+<td><pre>author: BonjourMalware</pre></td>
+</tr>
+<tr>
+<td><strong>status</strong></td>
+<td><em>string</em></td>
+<td>The status gives an indication of the usability of the rule</td>
+<td>stable, experimental</td>
+<td><pre>status: stable</pre></td>
+</tr>
+<tr>
+<td><strong>created</strong></td>
+<td><em>yyyy/mm/dd</em></td>
+<td>Creation date</td>
+<td>-</td>
+<td><pre>created: 2020/11/07</pre></td>
+</tr>
+<tr>
+<td><strong>modified</strong></td>
+<td><em>yyyy/mm/dd</em></td>
+<td>Last modification date</td>
+<td>-</td>
+<td><pre>modified: 2020/11/07</pre></td>
+</tr>
+<tr>
+<td><strong>description</strong></td>
+<td><em>string</em></td>
+<td>A quick description of what the rule is attempting to match</td>
+<td>-</td>
+<td><pre>description: Checking or trying to exploit CVE-2020-14882</pre></td>
+</tr>
+<tr>
+<td><strong>references</strong></td>
+<td><em>array</em></td>
+<td>The status gives an indication of the usability of the rule</td>
+<td>-</td>
+<td><pre>references: <br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- "https://github.com/jas502n/CVE-2020-14882"<br>&nbsp;&nbsp;&nbsp;&nbsp;- ...</pre></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You must generate a new UUIDv4 for the <code>id</code> of every rule you create.</p>
+<p>Sample code for Python :
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+</code></pre></div></p>
+<p>Go (<a href="https://play.golang.org/p/9qDBHpZ2QqY">playground</a>) :
+<div class="highlight"><pre><span></span><code><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+    <span class="s">&quot;github.com/google/uuid&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nx">main</span><span class="p">(){</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">uuid</span><span class="p">.</span><span class="nx">New</span><span class="p">())</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</div>
+<h3 id="match">match<a class="headerlink" href="#match" title="Permanent link">#</a></h3>
+<p>The <code>match</code> block contains a set of <em>conditions</em> that will be checked on every packet of the rule's <code>layer</code> type.</p>
+<p>Here is the structure of the <code>match</code> section :</p>
+<div class="highlight"><pre><span></span><code><span class="nt">match</span><span class="p">:</span>
+  <span class="nt">any</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">true|false</span><span class="p p-Indicator">]</span>                 <span class="c1"># false by default</span>
+  <span class="nt">field1</span><span class="p">:</span>                           <span class="c1"># complex condition</span>
+    <span class="nt">any</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">true|false</span><span class="p p-Indicator">]</span>               <span class="c1"># false by default</span>
+    <span class="nt">operator1|modifier1|modifier2</span><span class="p">:</span>  <span class="c1"># matching operator with its modifiers</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">value1</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">value2</span>
+    <span class="nt">operator2</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">value</span>
+  <span class="nt">field2</span><span class="p">:</span>                           <span class="c1"># array condition</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">value1</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">value2</span>
+  <span class="nt">field3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">value</span>                     <span class="c1"># string or number condition</span>
+</code></pre></div>
+<h4 id="conditions">Conditions<a class="headerlink" href="#conditions" title="Permanent link">#</a></h4>
+<p>A <em>condition</em> corresponds to a field in a packet, specified by its name.</p>
+<p>The available <em>conditions</em> depends on the <code>layer</code> key. The keys are namespaced according to the type they belong to.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><code>udp.payload</code>, <code>tcp.flags</code>, <code>http.uri</code>...</p>
+</div>
+<p>There are 3 types of <em>conditions</em> : <code>number</code>, <code>flags</code> or <code>complex</code>. </p>
+<h5 id="number">Number<a class="headerlink" href="#number" title="Permanent link">#</a></h5>
+<p>A number.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">tcp.window</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">512</span>
+</code></pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>number</code> types takes advantage of YAML to support octal (0o1234), hex (0x1234) and decimal (1234) representation. </p>
+</div>
+<h5 id="flags">Flags<a class="headerlink" href="#flags" title="Permanent link">#</a></h5>
+<p><code>flags</code> <em>condition</em> are made of a list of flag combination to match.</p>
+<p>The <em>condition</em> is valid as soon as a match is found (OR).</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code>tcp.flags:
+  - &quot;PA&quot;
+  - &quot;S&quot;
+</code></pre></div>
+<p>This rule will match a TCP packet with its flag bits set to "PA" (PSH-ACK, 0x18) or "S" (SYN, 0x2).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only two fields support <code>flags</code> <em>condition</em> : <code>tcp.flags</code> and <code>tcp.fragbits</code>.</p>
+</div>
+<h5 id="complex">Complex<a class="headerlink" href="#complex" title="Permanent link">#</a></h5>
+<p>The <code>complex</code> <em>condition</em> type supports <em>matching operators</em> and inline <em>modifiers</em>.</p>
+<p>To check which fields support <code>complex</code> <em>conditions</em>, take a look at the <a href="/layers">layers documentation</a>.</p>
+<h6 id="matching-operators">Matching operators<a class="headerlink" href="#matching-operators" title="Permanent link">#</a></h6>
+<p>The <em>matching operator</em> specifies how to handle data.</p>
+<p>A single <em>condition</em> can be made of a set of <em>matching operators</em>.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>By default, a rule needs to validate all the <em>conditions</em> to match. However, you can specify <code>any: true</code> to force a rule to test all of its conditions and return a match as soon as it find a valid one.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">udp.payload</span><span class="p">:</span>
+  <span class="nt">contains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;after</span><span class="nv"> </span><span class="s">all,</span><span class="nv"> </span><span class="s">we&#39;re</span><span class="nv"> </span><span class="s">all</span><span class="nv"> </span><span class="s">alike.&quot;</span>
+  <span class="nt">startswith</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;Damn</span><span class="nv"> </span><span class="s">kids&quot;</span>
+  <span class="nt">any</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>In this example, the <em>condition</em> key is <code>udp.payload</code> and the <em>matching operators</em> are <code>contains</code> and <code>startswith</code>. </p>
+<p>This rule will match if the payload of an UDP packet startswith the string "Damn kids" OR contains "after all, we're all alike.". </p>
+<p>The rule needs both to match if we remove the <code>any: true</code> option.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>is</td>
+<td>The packet's field value is <strong>strictly equal</strong> to the <em>condition</em>'s value</td>
+</tr>
+<tr>
+<td>contains</td>
+<td>The packet's field value <strong>contains</strong> the <em>condition</em>'s value</td>
+</tr>
+<tr>
+<td>startswith</td>
+<td>The packet's field value <strong>starts</strong> with the <em>condition</em>'s value</td>
+</tr>
+<tr>
+<td>endswith</td>
+<td>The packet's field value <strong>ends</strong> with the <em>condition</em>'s value</td>
+</tr>
+</tbody>
+</table>
+<h6 id="modifiers">Modifiers<a class="headerlink" href="#modifiers" title="Permanent link">#</a></h6>
+<p><em>Modifiers</em> are a way to quickly set options for the <em>matching operator</em>.</p>
+<p>They live on the same line, split by <code>|</code>. All <em>modifiers</em> can be mixed at once.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>By default, a <em>condition</em> needs to match all of the given values (AND). However, you can use the <code>|any</code> <em>modifier</em> to reverse it and force it to test all the values and to return on the first match.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">http.body</span><span class="p">:</span>
+  <span class="nt">contains|any|nocase</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;Enter</span><span class="nv"> </span><span class="s">my</span><span class="nv"> </span><span class="s">world&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;the</span><span class="nv"> </span><span class="s">beauty</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">baud&quot;</span>
+</code></pre></div>
+<p>In this example, the <em>modifiers</em> are <code>any</code> and <code>nocase</code>. This rule will match if the URI field of an HTTP packet contains any item in the list.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>any</td>
+<td>The rule match if <strong>any</strong> of the values in the list matches</td>
+<td>-</td>
+</tr>
+<tr>
+<td>nocase</td>
+<td>The match is <strong>case insensitive</strong></td>
+<td>abcd == aBcD == ABCD</td>
+</tr>
+<tr>
+<td>regex</td>
+<td>The value is a <strong>regular expression</strong></td>
+<td>'(?:[0-9]{1,3}.){3}[0-9]{1,3}' == 192.0.2.1</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Although the regex is compiled only once, it can cause severe overhead while matching packets. Use it with caution.</p>
+</div>
+<h6 id="hybrid-pattern">Hybrid pattern<a class="headerlink" href="#hybrid-pattern" title="Permanent link">#</a></h6>
+<p><code>complex</code> <em>condition</em>'s support hex values by wrapping them between two <code>|</code>.</p>
+<p>You can mix hex and ascii in a single string as well.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">http.body</span><span class="p">:</span>
+  <span class="nt">contains</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;|45</span><span class="nv"> </span><span class="s">6e</span><span class="nv"> </span><span class="s">74</span><span class="nv"> </span><span class="s">65</span><span class="nv"> </span><span class="s">72206d79|</span><span class="nv"> </span><span class="s">world&quot;</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>'0x' hex notation (<code>|0xbe 0xef|</code>) is invalid. You can mix spaced and not spaced hex bytes though.</p>
+</div>
+</div>
+<h3 id="whitelist-and-blacklist">Whitelist and blacklist<a class="headerlink" href="#whitelist-and-blacklist" title="Permanent link">#</a></h3>
+<p>These two fields can be used to filter the packets on which the rule is applied.</p>
+<p>IP source addresses and ports are supported.</p>
+<h4 id="ip-address">IP address<a class="headerlink" href="#ip-address" title="Permanent link">#</a></h4>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">whitelist</span><span class="p">:</span>
+  <span class="nt">ips</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+</code></pre></div>
+<p>This example only tries to match the packets coming from 127.0.0.1.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">blacklist</span><span class="p">:</span>
+  <span class="nt">ips</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+</code></pre></div>
+<p>Use the blacklist keyword to reverse the logic and apply the rule to all packets but the one coming from 127.0.0.1.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">whitelist</span><span class="p">:</span>
+  <span class="nt">ips</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.0/24</span>
+</code></pre></div>
+<p>CIDR notation supported.</p>
+</div>
+<h4 id="ports">Ports<a class="headerlink" href="#ports" title="Permanent link">#</a></h4>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">whitelist</span><span class="p">:</span>
+  <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+</code></pre></div>
+<p>This example only tries to match the packets going to port 80 .</p>
+<div class="highlight"><pre><span></span><code><span class="nt">blacklist</span><span class="p">:</span>
+  <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+</code></pre></div>
+<p>Use the blacklist keyword to reverse the logic and apply the rule to all packets but the one going to port 80.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">whitelist</span><span class="p">:</span>
+  <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">8000 - 9000</span>
+</code></pre></div>
+<p>Port ranges are supported. You can choose to put spaces or not.</p>
+</div>
+<h3 id="tags">tags<a class="headerlink" href="#tags" title="Permanent link">#</a></h3>
+<p>Each of the key/value pair in the <code>tags</code> object will be appended to the <code>matches</code> field of each of the matching packets.</p>
+<h3 id="embed">embed<a class="headerlink" href="#embed" title="Permanent link">#</a></h3>
+<p>This is a block where the user can will embed any data in the <code>embedded</code> key of the matching packet. It can be used as an alternative to <code>tags</code> to add contextual information.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="nt">embed</span><span class="p">:</span>
+  <span class="nt">my_crime</span><span class="p">:</span> <span class="s">&quot;curiosity&quot;</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</code></pre></div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../installation/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Installation
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../layers/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Layers
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../assets/javascripts/bundle.b3a72adc.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

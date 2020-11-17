@@ -1,0 +1,1140 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.4">
+    
+    
+      
+        <title>Layers - Melody Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.358818c7.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f0267088.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#00bdd6">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="cyan" data-md-color-accent="">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#http" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Melody Documentation" class="md-header-nav__button md-logo" aria-label="Melody Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Melody Documentation
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Layers
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Melody Documentation" class="md-nav__button md-logo" aria-label="Melody Documentation">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Melody Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../features/" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../requirements/" class="md-nav__link">
+      Requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../quickstart/" class="md-nav__link">
+      Quickstart
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../installation/" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../rules/" class="md-nav__link">
+      Rules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Layers
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Layers
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    HTTP
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tcp" class="md-nav__link">
+    TCP
+  </a>
+  
+    <nav class="md-nav" aria-label="TCP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_1" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_1" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udp" class="md-nav__link">
+    UDP
+  </a>
+  
+    <nav class="md-nav" aria-label="UDP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_2" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_2" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmpv4" class="md-nav__link">
+    ICMPv4
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMPv4">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_3" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_3" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmpv6" class="md-nav__link">
+    ICMPv6
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMPv6">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_4" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_4" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../links/" class="md-nav__link">
+      Links
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    HTTP
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tcp" class="md-nav__link">
+    TCP
+  </a>
+  
+    <nav class="md-nav" aria-label="TCP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_1" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_1" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#udp" class="md-nav__link">
+    UDP
+  </a>
+  
+    <nav class="md-nav" aria-label="UDP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_2" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_2" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmpv4" class="md-nav__link">
+    ICMPv4
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMPv4">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_3" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_3" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#icmpv6" class="md-nav__link">
+    ICMPv6
+  </a>
+  
+    <nav class="md-nav" aria-label="ICMPv6">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rules_4" class="md-nav__link">
+    Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-data_4" class="md-nav__link">
+    Log data
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Layers</h1>
+                
+                <h2 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">#</a></h2>
+<h3 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http.uri</code></td>
+<td><em>complex</em></td>
+<td><pre>http.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"</pre></td>
+</tr>
+<tr>
+<td><code>http.body</code></td>
+<td><em>complex</em></td>
+<td><pre>http.body:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "I made a discovery today."</pre></td>
+</tr>
+<tr>
+<td><code>http.headers</code></td>
+<td><em>complex</em></td>
+<td><pre>http.headers:<br>&nbsp;&nbsp;is:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "User-agent: Mozilla/5.0 zgrab/0.x"</pre></td>
+</tr>
+<tr>
+<td><code>http.method</code></td>
+<td><em>complex</em></td>
+<td><pre>http.method:<br>&nbsp;&nbsp;is:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "POST"</pre></td>
+</tr>
+<tr>
+<td><code>http.proto</code></td>
+<td><em>complex</em></td>
+<td><pre>http.proto:<br>&nbsp;&nbsp;is:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "HTTP/1.1"</pre></td>
+</tr>
+<tr>
+<td><code>http.tls</code></td>
+<td><em>bool</em></td>
+<td><pre>false</pre></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>HTTP rules applies to HTTPS packets as well.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>HTTP being an application protocol, the full packet is assembled from multiple frames and thus does not have its transport information embedded.</p>
+<p>However, the reassembled packet data share its session with the TCP frames it comes from. You can link them together by looking up the session.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since HTTPS packets are captured by the webserver and not reassembled, they have their own session and are <strong>not</strong> linked with the assembled frames.    </p>
+</div>
+</div>
+<h3 id="log-data">Log data<a class="headerlink" href="#log-data" title="Permanent link">#</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;http&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;verb&quot;</span><span class="p">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;proto&quot;</span><span class="p">:</span> <span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;src_port&quot;</span><span class="p">:</span> <span class="mi">51746</span><span class="p">,</span>
+    <span class="nt">&quot;dst_host&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;user_agent&quot;</span><span class="p">:</span> <span class="s2">&quot;curl/7.58.0&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Content-Length&quot;</span><span class="p">:</span> <span class="s2">&quot;14&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s2">&quot;curl/7.58.0&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;headers_keys&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;User-Agent&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Accept&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Content-Length&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Content-Type&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;headers_values&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;curl/7.58.0&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;*/*&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;14&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;errors&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+    <span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Enter my world&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;base64&quot;</span><span class="p">:</span> <span class="s2">&quot;RW50ZXIgbXkgd29ybGQ=&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;is_tls&quot;</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T21:16:23.847161686+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;buq2v5oo4skos28gfp20&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;http&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dst_port&quot;</span><span class="p">:</span> <span class="mi">10080</span><span class="p">,</span>
+  <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">{},</span>
+  <span class="nt">&quot;embedded&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="tcp">TCP<a class="headerlink" href="#tcp" title="Permanent link">#</a></h2>
+<h3 id="rules_1">Rules<a class="headerlink" href="#rules_1" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tcp.payload</code></td>
+<td><em>complex</em></td>
+<td><pre>tcp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
+</tr>
+<tr>
+<td><code>tcp.flags</code></td>
+<td><em>flags</em></td>
+<td><pre>tcp.flags:<br>&nbsp;&nbsp;- "PA"<br>&nbsp;&nbsp;- "S"<pre></td>
+</tr>
+<tr>
+<td><code>tcp.fragbits</code></td>
+<td><em>flags</em></td>
+<td><pre>tcp.fragbits:<br>&nbsp;&nbsp;- "M"</pre></td>
+</tr>
+<tr>
+<td><code>tcp.dsize</code></td>
+<td><em>number</em></td>
+<td><pre>tcp.dsize: 1234</pre></td>
+</tr>
+<tr>
+<td><code>tcp.seq</code></td>
+<td><em>number</em></td>
+<td><pre>tcp.seq: 4321</pre></td>
+</tr>
+<tr>
+<td><code>tcp.ack</code></td>
+<td><em>number</em></td>
+<td><pre>tcp.ack: 0</pre></td>
+</tr>
+<tr>
+<td><code>tcp.window</code></td>
+<td><em>number</em></td>
+<td><pre>tcp.window: 512</pre></td>
+</tr>
+</tbody>
+</table>
+<p>TCP flags values :</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>F</code></td>
+<td>FIN</td>
+<td><pre>0x01</pre></td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>SYN</td>
+<td><pre>0x02</pre></td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>RST</td>
+<td><pre>0x04</pre></td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>PSH</td>
+<td><pre>0x08</pre></td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>ACK</td>
+<td><pre>0x10</pre></td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td>URG</td>
+<td><pre>0x20</pre></td>
+</tr>
+<tr>
+<td><code>E</code></td>
+<td>ECE</td>
+<td><pre>0x40</pre></td>
+</tr>
+<tr>
+<td><code>C</code></td>
+<td>CWR</td>
+<td><pre>0x80</pre></td>
+</tr>
+<tr>
+<td><code>0</code></td>
+<td>NULL</td>
+<td><pre>0x00</pre></td>
+</tr>
+</tbody>
+</table>
+<p>TCP fragbits values :</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>M</code></td>
+<td>More Fragments</td>
+<td><pre>0x01</pre></td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>Don't Fragment</td>
+<td><pre>0x02</pre></td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>Reserved Bit</td>
+<td><pre>0x04</pre></td>
+</tr>
+</tbody>
+</table>
+<h3 id="log-data_1">Log data<a class="headerlink" href="#log-data_1" title="Permanent link">#</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;tcp&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;window&quot;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span>
+    <span class="nt">&quot;seq&quot;</span><span class="p">:</span> <span class="mi">1906765553</span><span class="p">,</span>
+    <span class="nt">&quot;ack&quot;</span><span class="p">:</span> <span class="mi">2514263732</span><span class="p">,</span>
+    <span class="nt">&quot;data_offset&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="nt">&quot;flags&quot;</span><span class="p">:</span> <span class="s2">&quot;PA&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;urgent&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;I made a discovery today. I found a computer.\n&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;base64&quot;</span><span class="p">:</span> <span class="s2">&quot;SSBtYWRlIGEgZGlzY292ZXJ5IHRvZGF5LiAgSSBmb3VuZCBhIGNvbXB1dGVyLgo=&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="nt">&quot;ihl&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nt">&quot;tos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">39114</span><span class="p">,</span>
+    <span class="nt">&quot;fragbits&quot;</span><span class="p">:</span> <span class="s2">&quot;DF&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;frag_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="mi">6</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-16T15:50:01.277828+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;bup9368o4skolf20rt8g&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;tcp&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dst_port&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">,</span>
+  <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">{},</span>
+  <span class="nt">&quot;embedded&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="udp">UDP<a class="headerlink" href="#udp" title="Permanent link">#</a></h2>
+<h3 id="rules_2">Rules<a class="headerlink" href="#rules_2" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>udp.payload</code></td>
+<td><em>complex</em></td>
+<td><pre>udp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
+</tr>
+<tr>
+<td><code>udp.checksum</code></td>
+<td><em>number</em></td>
+<td><pre>udp.checksum: 0xfe37</pre></td>
+</tr>
+<tr>
+<td><code>udp.length</code></td>
+<td><em>number</em></td>
+<td><pre>udp.length: 36</pre></td>
+</tr>
+<tr>
+<td><code>udp.dsize</code></td>
+<td><em>number</em></td>
+<td><pre>udp.dsize: 28</pre></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code>udp.dsize</code> check the payload size, while the <code>udp.length</code> check the UDP packet's length.</p>
+</div>
+<h3 id="log-data_2">Log data<a class="headerlink" href="#log-data_2" title="Permanent link">#</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;udp&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;I made a discovery today. I found a computer.\n&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;base64&quot;</span><span class="p">:</span> <span class="s2">&quot;SSBtYWRlIGEgZGlzY292ZXJ5IHRvZGF5LiBJIGZvdW5kIGEgY29tcHV0ZXIuCg==&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">54</span><span class="p">,</span>
+    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">65097</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="nt">&quot;ihl&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nt">&quot;tos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">74</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3230</span><span class="p">,</span>
+    <span class="nt">&quot;fragbits&quot;</span><span class="p">:</span> <span class="s2">&quot;DF&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;frag_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="mi">17</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T19:02:12.90819+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;buq1090o4sktrqnfoe6g&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;udp&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dst_port&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">,</span>
+  <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">{},</span>
+  <span class="nt">&quot;embedded&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="icmpv4">ICMPv4<a class="headerlink" href="#icmpv4" title="Permanent link">#</a></h2>
+<h3 id="rules_3">Rules<a class="headerlink" href="#rules_3" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>icmpv4.type</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.type: 0x8</pre></td>
+</tr>
+<tr>
+<td><code>icmpv4.typecode</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.typecode: 2048</pre></td>
+</tr>
+<tr>
+<td><code>icmpv4.checksum</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.checksum: 0x0416</pre></td>
+</tr>
+<tr>
+<td><code>icmpv4.code</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.code: 0</pre></td>
+</tr>
+<tr>
+<td><code>icmpv4.seq</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.seq: 1</pre></td>
+</tr>
+</tbody>
+</table>
+<h3 id="log-data_3">Log data<a class="headerlink" href="#log-data_3" title="Permanent link">#</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;icmpv4&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type_code&quot;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;type_code_name&quot;</span><span class="p">:</span> <span class="s2">&quot;EchoRequest&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">23981</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8140</span><span class="p">,</span>
+    <span class="nt">&quot;seq&quot;</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="nt">&quot;ihl&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nt">&quot;tos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">50747</span><span class="p">,</span>
+    <span class="nt">&quot;fragbits&quot;</span><span class="p">:</span> <span class="s2">&quot;DF&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;frag_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T19:05:24.541282+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;n/a&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;icmpv4&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dst_port&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">{},</span>
+  <span class="nt">&quot;embedded&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+<h2 id="icmpv6">ICMPv6<a class="headerlink" href="#icmpv6" title="Permanent link">#</a></h2>
+<h3 id="rules_4">Rules<a class="headerlink" href="#rules_4" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>icmpv6.type</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv6.type: 0x80</pre></td>
+</tr>
+<tr>
+<td><code>icmpv6.typecode</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv6.typecode: 32768</pre></td>
+</tr>
+<tr>
+<td><code>icmpv6.checksum</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv6.checksum: 0x275b</pre></td>
+</tr>
+<tr>
+<td><code>icmpv6.code</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv6.code: 0</pre></td>
+</tr>
+</tbody>
+</table>
+<h3 id="log-data_4">Log data<a class="headerlink" href="#log-data_4" title="Permanent link">#</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;icmpv6&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type_code&quot;</span><span class="p">:</span> <span class="mi">32768</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;type_code_name&quot;</span><span class="p">:</span> <span class="s2">&quot;EchoRequest&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">55474</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="nt">&quot;next_header&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+    <span class="nt">&quot;next_header_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ICMPv6&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;traffic_class&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;flow_label&quot;</span><span class="p">:</span> <span class="mi">366894</span><span class="p">,</span>
+    <span class="nt">&quot;hop_limit&quot;</span><span class="p">:</span> <span class="mi">64</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T19:06:25.056576+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;n/a&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;icmpv6&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;::1&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;dst_port&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nt">&quot;matches&quot;</span><span class="p">:</span> <span class="p">{},</span>
+  <span class="nt">&quot;embedded&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../rules/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Rules
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../links/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Links
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.7e0ee788.min.js"></script>
+      <script src="../assets/javascripts/bundle.b3a72adc.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

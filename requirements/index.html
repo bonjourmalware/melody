@@ -14,7 +14,7 @@
     
     
       
-        <title>Links - Melody Documentation</title>
+        <title>Requirements - Melody Documentation</title>
       
     
     
@@ -60,6 +60,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#go-version" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -86,7 +91,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Links
+              Requirements
             
           </span>
         </div>
@@ -170,11 +175,59 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="../requirements/" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Requirements
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
       Requirements
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#go-version" class="md-nav__link">
+    Go version
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libpcap" class="md-nav__link">
+    libpcap
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https-dummy-server" class="md-nav__link">
+    HTTPS dummy server
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -230,18 +283,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../links/" class="md-nav__link">
       Links
     </a>
-    
   </li>
 
     
@@ -252,18 +298,85 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#go-version" class="md-nav__link">
+    Go version
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libpcap" class="md-nav__link">
+    libpcap
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https-dummy-server" class="md-nav__link">
+    HTTPS dummy server
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
                 
                 
-                  <h1>Links</h1>
+                  <h1>Requirements</h1>
                 
-                <ul>
-<li>The project is maintained in the <a href="https://github.com/bonjourmalware/melody">Github repository</a></li>
-<li>Follow <a href="https://twitter/bonjourmalware">@bonjourmalware</a> on Twitter for updates</li>
-</ul>
+                <h2 id="go-version">Go version<a class="headerlink" href="#go-version" title="Permanent link">#</a></h2>
+<p>Minimum supported Go version is 1.11, but we recommend using Go 1.13+ since that's the lowest version we're using for testing.</p>
+<h2 id="libpcap">libpcap<a class="headerlink" href="#libpcap" title="Permanent link">#</a></h2>
+<p>You'll need the <code>libpcap</code> C headers to build the program.</p>
+<p>Install it with :</p>
+<div class="highlight"><pre><span></span><code>sudo apt update
+sudo apt install libpcap-dev
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You won't need them if you're using Docker or a pre-compiled release binary.</p>
+</div>
+<h2 id="https-dummy-server">HTTPS dummy server<a class="headerlink" href="#https-dummy-server" title="Permanent link">#</a></h2>
+<p>You'll need TLS certificates in order to use the built-in dummy HTTPS server.</p>
+<p>Use one of these commands to generate them for you :</p>
+<div class="highlight"><pre><span></span><code>make certs
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code>mkdir -p var/https/certs
+openssl req -x509 -subj &quot;/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost&quot; -newkey rsa:4096 -keyout var/https/certs/key.pem -out var/https/certs/cert.pem -days 3650 -nodes
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using these commands will overwrite any <code>cert.pem</code> or <code>key.pem</code> file already present in <code>$melody/var/https/certs/</code> </p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can also use your own by putting the <code>key.pem</code> and <code>cert.pem</code> in <code>$melody/var/https/certs</code>. <strong>Keep in mind that it might be used by attackers to fingerprint or gain information on your infrastructure.</strong></p>
+</div>
                 
               
               
@@ -282,7 +395,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../layers/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../features/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -291,11 +404,25 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Layers
+                Features
               </div>
             </div>
           </a>
         
+        
+          <a href="../quickstart/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Quickstart
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
         
       </nav>
     </div>

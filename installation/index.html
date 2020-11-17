@@ -25,7 +25,7 @@
         
           
           
-          <meta name="theme-color" content="#009485">
+          <meta name="theme-color" content="#00bdd6">
         
       
     
@@ -52,13 +52,18 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="teal" data-md-color-accent="">
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="cyan" data-md-color-accent="">
       
   
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#systemd" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -160,8 +165,116 @@
 
 
   <li class="md-nav__item">
-    <a href="../introduction/" class="md-nav__link">
-      Introduction
+    <a href="../features/" class="md-nav__link">
+      Features
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../requirements/" class="md-nav__link">
+      Requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../quickstart/" class="md-nav__link">
+      Quickstart
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Installation
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Installation
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#systemd" class="md-nav__link">
+    Systemd
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supervisord" class="md-nav__link">
+    Supervisord
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" class="md-nav__link">
+    Uninstall
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../rules/" class="md-nav__link">
+      Rules
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../layers/" class="md-nav__link">
+      Layers
     </a>
   </li>
 
@@ -185,6 +298,48 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#systemd" class="md-nav__link">
+    Systemd
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supervisord" class="md-nav__link">
+    Supervisord
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstall" class="md-nav__link">
+    Uninstall
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
@@ -193,7 +348,94 @@
                 
                   <h1>Installation</h1>
                 
-                
+                <p>To install Melody, use <code>make install</code> or enter the following commands :</p>
+<div class="highlight"><pre><span></span><code>go build -ldflags<span class="o">=</span><span class="s2">&quot;-s -w -extldflags=-static&quot;</span> -o melody
+sudo setcap cap_net_raw,cap_setpcap<span class="o">=</span>ep ./melody
+
+mkdir /opt/melody
+ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/melody&quot;</span> /opt/melody/
+ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yml&quot;</span> /opt/melody/config.yml
+ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/filter.bpf&quot;</span> /opt/melody/filter.bpf
+ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/rules&quot;</span> /opt/melody/rules
+
+<span class="nb">echo</span> <span class="s2">&quot;&gt; Setting listening interface to \&quot;</span><span class="k">$(</span>route <span class="p">|</span> grep <span class="s1">&#39;^default&#39;</span> <span class="p">|</span> grep -o <span class="s1">&#39;[^ ]*$&#39;</span><span class="k">)</span><span class="s2">\&quot;&quot;</span>
+sed -i <span class="s2">&quot;s/# listen.interface: \&quot;lo\&quot;/listen.interface: \&quot;</span><span class="k">$(</span>route <span class="p">|</span> grep <span class="s1">&#39;^default&#39;</span> <span class="p">|</span> grep -o <span class="s1">&#39;[^ ]*$&#39;</span><span class="k">)</span><span class="s2">\&quot;/g&quot;</span> /opt/melody/config.yml
+<span class="nb">echo</span>
+<span class="nb">echo</span> -n <span class="s2">&quot;Current listening interface :\n\t&quot;</span>
+grep listen.interface /opt/melody/config.yml
+
+<span class="nb">echo</span> <span class="s2">&quot;Current BPF is &#39;</span><span class="k">$(</span>cat /opt/melody/filter.bpf<span class="k">)</span><span class="s2">&#39;&quot;</span>
+
+<span class="c1"># Don&#39;t forget to filter the noise by editing filter.bpf</span>
+</code></pre></div>
+<h2 id="systemd">Systemd<a class="headerlink" href="#systemd" title="Permanent link">#</a></h2>
+<p>You can tweak the provided service file to use Melody with <code>systemd</code>.</p>
+<p>The file can be found in <code>$melody/etc/melody.service</code>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code>[Unit]
+Description=Melody sensor
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/melody
+ExecStart=/opt/melody/melody
+Restart=on-failure
+# User=melody
+# Groupd=melody
+
+[Install]
+WantedBy=multi-user.target
+</code></pre></div>
+</div>
+<p>Install it with :</p>
+<div class="highlight"><pre><span></span><code>make service
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code>sudo ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/etc/melody.service&quot;</span> /etc/systemd/system/melody.service
+sudo systemctl daemon-reload
+sudo systemctl <span class="nb">enable</span> melody
+sudo systemctl status melody
+</code></pre></div>
+<h2 id="supervisord">Supervisord<a class="headerlink" href="#supervisord" title="Permanent link">#</a></h2>
+<p>You can also tweak the provided configuration file to use Melody with <code>supervisord</code>.</p>
+<p>The file can be found in <code>$melody/etc/melody.conf</code>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code>[program:melody]
+command=/opt/melody/melody
+directory=/opt/melody
+stdout_logfile=/opt/melody/melody.out
+stderr_logfile=/opt/melody/melody.err
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+</code></pre></div>
+</div>
+<p>Install it with :</p>
+<div class="highlight"><pre><span></span><code>make supervisor
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code>sudo ln -s <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/etc/melody.conf /etc/supervisor/conf.d/melody.conf
+sudo supervisorctl reload
+sudo supervisorctl status all
+</code></pre></div>
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">#</a></h2>
+<p>Uninstall by removing log directories (default <code>$melody/logs</code>), service files (<code>/etc/systemd/system/melody.service</code> and <code>/etc/supervisor/conf.d/melody.conf</code>) and Melody home directory (default <code>/opt/melody</code>).</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>Uncomment and use these command carefully.
+<div class="highlight"><pre><span></span><code><span class="c1"># sudo systemctl stop melody &amp;&amp; rm /etc/systemd/system/melody.service</span>
+<span class="c1"># sudo supervisorctl stop melody &amp;&amp; rm /etc/supervisor/conf.d/melody.conf</span>
+<span class="c1"># rm -rf /opt/melody</span>
+</code></pre></div></p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Keep in mind that removing Melody's home directory will most likely remove its logs directory as well. All log data might be lost.</p>
+</div>
+</div>
                 
               
               
@@ -208,6 +450,41 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../quickstart/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Quickstart
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../rules/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Rules
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
