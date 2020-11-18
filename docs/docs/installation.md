@@ -1,14 +1,12 @@
-To install Melody, use `make install` or enter the following commands :
+To install Melody, clone the repo or grab the latest :
 
 ```bash
+git clone https://github.com/bonjourmalware/melody /opt/melody
+
+cd /opt/melody
+
 go build -ldflags="-s -w -extldflags=-static" -o melody
 sudo setcap cap_net_raw,cap_setpcap=ep ./melody
-
-mkdir /opt/melody
-ln -s "$(pwd)/melody" /opt/melody/
-ln -s "$(pwd)/config.yml" /opt/melody/config.yml
-ln -s "$(pwd)/filter.bpf" /opt/melody/filter.bpf
-ln -s "$(pwd)/rules" /opt/melody/rules
 
 echo "> Setting listening interface to \"$(route | grep '^default' | grep -o '[^ ]*$')\""
 sed -i "s/# listen.interface: \"lo\"/listen.interface: \"$(route | grep '^default' | grep -o '[^ ]*$')\"/g" /opt/melody/config.yml
@@ -38,8 +36,8 @@ The file can be found in `$melody/etc/melody.service`.
     WorkingDirectory=/opt/melody
     ExecStart=/opt/melody/melody
     Restart=on-failure
-    # User=melody
-    # Group=melody
+    User=melody
+    Group=melody
     
     [Install]
     WantedBy=multi-user.target
@@ -94,13 +92,13 @@ sudo supervisorctl status all
 ```
 
 ## Uninstall
-Uninstall by removing log directories (default `$melody/logs`), service files (`/etc/systemd/system/melody.service` and `/etc/supervisor/conf.d/melody.conf`) and Melody home directory (default `/opt/melody`).
+Uninstall by removing the log directories (default `$melody/logs`), the service files (`/etc/systemd/system/melody.service` and `/etc/supervisor/conf.d/melody.conf`) and the Melody home directory (default `/opt/melody`).
 
 !!! Example
     Uncomment and use these command carefully.
     ```bash
-    # sudo systemctl stop melody && rm /etc/systemd/system/melody.service
-    # sudo supervisorctl stop melody && rm /etc/supervisor/conf.d/melody.conf
+    # sudo systemctl stop melody && sudo rm /etc/systemd/system/melody.service
+    # sudo supervisorctl stop melody && sudo rm /etc/supervisor/conf.d/melody.conf
     # rm -rf /opt/melody
     ```
     

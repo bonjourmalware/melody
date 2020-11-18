@@ -53,7 +53,7 @@ Additional features on the roadmap include :
 
 ## TL;DR
 ### Release
-Get the latest release at `https://github.com/bonjourmalware/actions-lab/releases`.
+Get the latest release at `https://github.com/bonjourmalware/melody/releases`.
 
 ```bash
 make install            # Set default outfacing interface
