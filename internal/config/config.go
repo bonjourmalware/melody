@@ -51,6 +51,8 @@ logs.errors.rotation.compress: true
 logs.http.post.max_size: "10KB"
 logs.tcp.payload.max_size: "10KB"
 logs.udp.payload.max_size: "10KB"
+logs.icmpv4.payload.max_size: "10KB"
+logs.icmpv6.payload.max_size: "10KB"
 
 rules.dir: "rules/rules-enabled"
 rules.match.protocols: ["all"]
@@ -136,11 +138,13 @@ type Config struct {
 	BPFFile  string `yaml:"filters.bpf.file"`
 	BPF      string
 
-	Interface          string   `yaml:"listen.interface"`
-	MaxPOSTDataSizeRaw string   `yaml:"logs.http.post.max_size"`
-	MaxTCPDataSizeRaw  string   `yaml:"logs.tcp.payload.max_size"`
-	MaxUDPDataSizeRaw  string   `yaml:"logs.udp.payload.max_size"`
-	MatchProtocols     []string `yaml:"rules.match.protocols"`
+	Interface            string   `yaml:"listen.interface"`
+	MaxPOSTDataSizeRaw   string   `yaml:"logs.http.post.max_size"`
+	MaxTCPDataSizeRaw    string   `yaml:"logs.tcp.payload.max_size"`
+	MaxUDPDataSizeRaw    string   `yaml:"logs.udp.payload.max_size"`
+	MaxICMPv4DataSizeRaw string   `yaml:"logs.icmpv4.payload.max_size"`
+	MaxICMPv6DataSizeRaw string   `yaml:"logs.icmpv6.payload.max_size"`
+	MatchProtocols       []string `yaml:"rules.match.protocols"`
 
 	ServerHTTPEnable                bool              `yaml:"server.http.enable"`
 	ServerHTTPPort                  int               `yaml:"server.http.port"`
@@ -162,10 +166,12 @@ type Config struct {
 	DiscardProto4 map[string]interface{}
 	DiscardProto6 map[string]interface{}
 
-	MaxPOSTDataSize uint64
-	MaxTCPDataSize  uint64
-	MaxUDPDataSize  uint64
-	PcapFile        *os.File
+	MaxPOSTDataSize   uint64
+	MaxTCPDataSize    uint64
+	MaxUDPDataSize    uint64
+	MaxICMPv4DataSize uint64
+	MaxICMPv6DataSize uint64
+	PcapFile          *os.File
 }
 
 // Load set the default values and parse the user's config
@@ -321,6 +327,20 @@ func (cfg *Config) parseConfigAt(filepath *string) error {
 	cfg.MaxUDPDataSize, err = rawDatasizeToBytes(cfg.MaxUDPDataSizeRaw)
 	if err != nil {
 		log.Printf("Failed to parse the logs.udp.post.max_size value (%s)\n", cfg.MaxUDPDataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.MaxICMPv4DataSize, err = rawDatasizeToBytes(cfg.MaxICMPv4DataSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.icmpv4.post.max_size value (%s)\n", cfg.MaxICMPv4DataSizeRaw)
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	cfg.MaxICMPv6DataSize, err = rawDatasizeToBytes(cfg.MaxICMPv6DataSizeRaw)
+	if err != nil {
+		log.Printf("Failed to parse the logs.icmpv6.post.max_size value (%s)\n", cfg.MaxICMPv6DataSizeRaw)
 		log.Println(err)
 		os.Exit(1)
 	}

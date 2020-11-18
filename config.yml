@@ -37,6 +37,8 @@
 # logs.http.post.max_size: "10kb"
 # logs.tcp.payload.max_size: "10kb"
 # logs.udp.payload.max_size: "10kb"
+# logs.icmpv4.payload.max_size: "10KB"
+# logs.icmpv6.payload.max_size: "10KB"
 
 ##
 ## Rules

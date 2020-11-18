@@ -62,7 +62,7 @@ func (ev ICMPv6Event) ToLog() EventLog {
 		Code:         ev.ICMPv6Layer.Header.TypeCode.Code(),
 		TypeCodeName: ev.ICMPv6Layer.Header.TypeCode.String(),
 		Checksum:     ev.ICMPv6Layer.Header.Checksum,
-		Payload:      logdata.NewPayloadLogData(ev.ICMPv6Layer.Header.Payload, config.Cfg.MaxUDPDataSize),
+		Payload:      logdata.NewPayloadLogData(ev.ICMPv6Layer.Header.Payload, config.Cfg.MaxICMPv6DataSize),
 	}
 
 	ev.LogData.IP = logdata.IPv6LogData{
