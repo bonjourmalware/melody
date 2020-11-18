@@ -47,9 +47,9 @@ The rules have 7 sections : `layer`, `meta`, `match`, `whitelist`, `blacklist`, 
 ### layer
 The rule will look for matches in the specified `layer`'s protocol data.
 
-Each layer expose different fields depending on the protocol they represent. They're detailed in the [Layers](/layers/) page.
+Each `layer` expose different fields depending on the protocol they represent. They're detailed in the [Layers](/layers/) page.
 
-The following layers are supported by Melody :
+The following layers are supported :
 
 |Key|IPv4|IPv6|
 |---|---|---|
@@ -63,7 +63,7 @@ The following layers are supported by Melody :
     A single rule only applies to the targeted layer. Use multiple rules if you want to match multiple layers.
 
 ### meta
-The `meta` section contains all the rule's metadata. Every key are mandatory, except `references`. 
+The `meta` section contains all the rule's metadata. Every keys are mandatory, except `references`. 
 
 |Key|Type|Description|Values|Examples|
 |---|---|---|---|---|
