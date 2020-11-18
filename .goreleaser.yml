@@ -7,7 +7,6 @@ builds:
     goos:
       - linux
       - windows
-      - darwin
 archives:
   -
     files:
