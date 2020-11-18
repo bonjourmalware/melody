@@ -106,7 +106,7 @@ sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 
 ### Grab a release
 
-You can grab the latest release by visiting https://github.com/bonjourmalware/melody/releases/latest.
+You can grab the latest release by visiting [https://github.com/bonjourmalware/melody/releases/latest](https://github.com/bonjourmalware/melody/releases/latest).
 
 ### Docker
 You can also use Docker and pull the image from Docker Hub :

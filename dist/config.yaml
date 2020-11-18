@@ -1,0 +1,90 @@
+project_name: melody
+release:
+  github:
+    owner: bonjourmalware
+    name: melody
+  name_template: '{{.Tag}}'
+milestones:
+- repo:
+    owner: bonjourmalware
+    name: melody
+  name_template: '{{ .Tag }}'
+scoop:
+  name: melody
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@carlosbecker.com
+  commit_msg_template: Scoop update for {{ .ProjectName }} version {{ .Tag }}
+builds:
+- id: melody
+  goos:
+  - linux
+  - windows
+  goarch:
+  - amd64
+  - "386"
+  goarm:
+  - "6"
+  targets:
+  - linux_amd64
+  - windows_amd64
+  ignore:
+  - goos: ""
+    goarch: "386"
+    goarm: ""
+    gomips: ""
+  dir: .
+  main: .
+  ldflags:
+  - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser
+  binary: melody
+  env:
+  - CGO_ENABLED=1
+  lang: go
+  gobinary: go
+archives:
+- id: default
+  builds:
+  - melody
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+  replacements:
+    amd64: x86_64
+    linux: Linux
+    windows: Windows
+  format: tar.gz
+  wrap_in_directory: "true"
+  files:
+  - rules/*
+  - etc/*
+  - var/*
+  - filter.bpf
+  - config.yml
+  - Dockerfile
+  - Makefile
+  allow_different_binary_count: false
+snapshot:
+  name_template: '{{ .Tag }}-next'
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+changelog:
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+  sort: asc
+dist: dist
+env_files:
+  github_token: ~/.config/goreleaser/github_token
+  gitlab_token: ~/.config/goreleaser/gitlab_token
+  gitea_token: ~/.config/goreleaser/gitea_token
+before:
+  hooks:
+  - go mod download
+source:
+  name_template: '{{ .ProjectName }}-{{ .Version }}'
+  format: tar.gz
+github_urls:
+  download: https://github.com
+gitlab_urls:
+  download: https://gitlab.com
