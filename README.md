@@ -38,7 +38,6 @@ Here are some key features of Melody :
 
 Additional features on the roadmap include :
 
-+ Set command lines options from an environment variable for Docker use
 + Dedicated helper program to create, test and manage rules
 + Centralized rules management
 
