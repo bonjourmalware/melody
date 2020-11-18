@@ -15,6 +15,7 @@ type ICMPv4LogData struct {
 	Checksum     uint16                `json:"checksum"`
 	ID           uint16                `json:"id"`
 	Seq          uint16                `json:"seq"`
+	Payload      Payload               `json:"payload"`
 }
 
 // ICMPv4EventLog is the event log struct for ICMPv4 packets

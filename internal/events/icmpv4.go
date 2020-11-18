@@ -65,6 +65,7 @@ func (ev ICMPv4Event) ToLog() EventLog {
 		Checksum:     ev.ICMPv4Layer.Header.Checksum,
 		ID:           ev.ICMPv4Layer.Header.Id,
 		Seq:          ev.ICMPv4Layer.Header.Seq,
+		Payload:      logdata.NewPayloadLogData(ev.ICMPv4Layer.Header.Payload, config.Cfg.MaxUDPDataSize),
 	}
 
 	ev.LogData.IP = logdata.NewIPv4LogData(ev.IPv4Layer)

@@ -13,6 +13,7 @@ type ICMPv6LogData struct {
 	Code         uint8                 `json:"code"`
 	TypeCodeName string                `json:"type_code_name"`
 	Checksum     uint16                `json:"checksum"`
+	Payload      Payload               `json:"payload"`
 }
 
 // ICMPv6EventLog is the event log struct for ICMPv6 packets

@@ -4,6 +4,7 @@ Get the release for your system at `https://github.com/bonjourmalware/actions-la
 
 ```bash
 make install            # Create Melody's home in /opt
+cd /opt/melody
 make certs              # Make self signed certs for the HTTPS fileserver
 make default_rules      # Enable the default rules
 make service            # Create a systemd service to restart the program automatically and launch it at startup 
@@ -42,8 +43,12 @@ mkdir -p /opt/melody/logs
 cd /opt/melody/
 
 docker pull bonjourmalware/melody:latest
+
+MELODY_CLI="" # Put your CLI options here. Example : MELODY_CLI="-s -o 'http.server.port: 5555'"
+
 docker run \
     --net=host \
+    -e "MELODY_CLI=$MELODY_CLI" \
     --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \  # Remove this line if you're using the default filter
     --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \  # Remove this line if you're using the default config
     --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \                      # The directory must exists in your current directory before running the container

@@ -50,22 +50,23 @@ type TCPRule struct {
 type ParsedTCPRule struct {
 	IPOption *ConditionsList
 	Fragbits []*uint8
-	Dsize    *uint
 	Flags    []*uint8
+	Dsize    *uint
 	Seq      *uint32
 	Ack      *uint32
-	Payload  *ConditionsList
 	Window   *uint16
+	Payload  *ConditionsList
 }
 
 // ICMPv4Rule describes the raw "match" section of a rule targeting ICMPv4
 type ICMPv4Rule struct {
-	TypeCode *uint16 `yaml:"icmpv4.typecode"`
-	Type     *uint8  `yaml:"icmpv4.type"`
-	Code     *uint8  `yaml:"icmpv4.code"`
-	Checksum *uint16 `yaml:"icmpv4.checksum"`
-	Seq      *uint16 `yaml:"icmpv4.seq"`
-	Any      bool    `yaml:"any"`
+	TypeCode *uint16       `yaml:"icmpv4.typecode"`
+	Type     *uint8        `yaml:"icmpv4.type"`
+	Code     *uint8        `yaml:"icmpv4.code"`
+	Checksum *uint16       `yaml:"icmpv4.checksum"`
+	Seq      *uint16       `yaml:"icmpv4.seq"`
+	Payload  RawConditions `yaml:"icmpv4.payload"`
+	Any      bool          `yaml:"any"`
 }
 
 // ParsedICMPv4Rule describes the parsed "match" section of a rule targeting ICMPv4
@@ -75,15 +76,17 @@ type ParsedICMPv4Rule struct {
 	Code     *uint8
 	Checksum *uint16
 	Seq      *uint16
+	Payload  *ConditionsList
 }
 
 // ICMPv6Rule describes the raw "match" section of a rule targeting ICMPv6
 type ICMPv6Rule struct {
-	TypeCode *uint16 `yaml:"icmpv6.typecode"`
-	Type     *uint8  `yaml:"icmpv6.type"`
-	Code     *uint8  `yaml:"icmpv6.code"`
-	Checksum *uint16 `yaml:"icmpv6.checksum"`
-	Any      bool    `yaml:"any"`
+	TypeCode *uint16       `yaml:"icmpv6.typecode"`
+	Type     *uint8        `yaml:"icmpv6.type"`
+	Code     *uint8        `yaml:"icmpv6.code"`
+	Checksum *uint16       `yaml:"icmpv6.checksum"`
+	Payload  RawConditions `yaml:"icmpv6.payload"`
+	Any      bool          `yaml:"any"`
 }
 
 // ParsedICMPv6Rule describes the parsed "match" section of a rule targeting ICMPv6
@@ -92,6 +95,7 @@ type ParsedICMPv6Rule struct {
 	Type     *uint8
 	Code     *uint8
 	Checksum *uint16
+	Payload  *ConditionsList
 }
 
 // UDPRule describes the raw "match" section of a rule targeting UDP
@@ -243,6 +247,7 @@ func (rawRule RawRule) Parse() Rule {
 			Code:     buf.Code,
 			Checksum: buf.Checksum,
 			Seq:      buf.Seq,
+			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
 		}
 
 		rule.MatchAll = !buf.Any
@@ -261,6 +266,7 @@ func (rawRule RawRule) Parse() Rule {
 			Type:     buf.Type,
 			Code:     buf.Code,
 			Checksum: buf.Checksum,
+			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
 		}
 
 		rule.MatchAll = !buf.Any
