@@ -58,6 +58,8 @@ func (ev ICMPv6Event) ToLog() EventLog {
 
 	ev.LogData.ICMPv6 = logdata.ICMPv6LogData{
 		TypeCode:     ev.ICMPv6Layer.Header.TypeCode,
+		Type:         ev.ICMPv6Layer.Header.TypeCode.Type(),
+		Code:         ev.ICMPv6Layer.Header.TypeCode.Code(),
 		TypeCodeName: ev.ICMPv6Layer.Header.TypeCode.String(),
 		Checksum:     ev.ICMPv6Layer.Header.Checksum,
 		Payload:      logdata.NewPayloadLogData(ev.ICMPv6Layer.Header.Payload, config.Cfg.MaxUDPDataSize),

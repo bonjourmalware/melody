@@ -214,22 +214,27 @@ TCP fragbits values :
         "type": 8,
         "code": 0,
         "type_code_name": "EchoRequest",
-        "checksum": 23981,
-        "id": 8140,
-        "seq": 1
+        "checksum": 10240,
+        "id": 0,
+        "seq": 0,
+        "payload": {
+          "content": "the world of the electron and the switch",
+          "base64": "dGhlIHdvcmxkIG9mIHRoZSBlbGVjdHJvbiBhbmQgdGhlIHN3aXRjaA==",
+          "truncated": false
+        }
       },
       "ip": {
         "version": 4,
         "ihl": 5,
         "tos": 0,
-        "length": 84,
-        "id": 50747,
-        "fragbits": "DF",
+        "length": 68,
+        "id": 1,
+        "fragbits": "",
         "frag_offset": 0,
         "ttl": 64,
         "protocol": 1
       },
-      "timestamp": "2020-11-17T19:05:24.541282+01:00",
+      "timestamp": "2020-11-18T12:47:25.101191+01:00",
       "session": "n/a",
       "type": "icmpv4",
       "src_ip": "127.0.0.1",
@@ -248,6 +253,7 @@ TCP fragbits values :
 |`icmpv6.typecode`|*number*|<pre>icmpv6.typecode: 32768</pre>|
 |`icmpv6.checksum`|*number*|<pre>icmpv6.checksum: 0x275b</pre>|
 |`icmpv6.code`|*number*|<pre>icmpv6.code: 0</pre>|
+|`icmpv6.payload`|*complex*|<pre>icmpv6.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- ""<pre>|
 
 ### Log data
 
@@ -260,18 +266,23 @@ TCP fragbits values :
         "type": 128,
         "code": 0,
         "type_code_name": "EchoRequest",
-        "checksum": 55474
+        "checksum": 44947,
+        "payload": {
+          "content": "\u0000\u0000\u0000\u0000the world of the electron and the switch",
+          "base64": "AAAAAHRoZSB3b3JsZCBvZiB0aGUgZWxlY3Ryb24gYW5kIHRoZSBzd2l0Y2g=",
+          "truncated": false
+        }
       },
       "ip": {
         "version": 6,
-        "length": 64,
+        "length": 48,
         "next_header": 58,
         "next_header_name": "ICMPv6",
         "traffic_class": 0,
-        "flow_label": 366894,
+        "flow_label": 0,
         "hop_limit": 64
       },
-      "timestamp": "2020-11-17T19:06:25.056576+01:00",
+      "timestamp": "2020-11-18T12:42:47.461931+01:00",
       "session": "n/a",
       "type": "icmpv6",
       "src_ip": "::1",
