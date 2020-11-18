@@ -1,0 +1,12 @@
+[Unit]
+Description=Melody sensor
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/melody
+ExecStart=/opt/melody/melody
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
