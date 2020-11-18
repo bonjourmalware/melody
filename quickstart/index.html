@@ -688,11 +688,12 @@
                 
                 <h3 id="tldr">TL;DR<a class="headerlink" href="#tldr" title="Permanent link">#</a></h3>
 <h4 id="release">Release<a class="headerlink" href="#release" title="Permanent link">#</a></h4>
-<p>Get the release for your system at <code>https://github.com/bonjourmalware/actions-lab/releases</code>.</p>
-<div class="highlight"><pre><span></span><code>make install            <span class="c1"># Create Melody&#39;s home in /opt</span>
+<p>Get the latest release at <code>https://github.com/bonjourmalware/actions-lab/releases</code>.</p>
+<div class="highlight"><pre><span></span><code>make install            <span class="c1"># Set default outfacing interface</span>
 make certs              <span class="c1"># Make self signed certs for the HTTPS fileserver</span>
 make default_rules      <span class="c1"># Enable the default rules</span>
 make service            <span class="c1"># Create a systemd service to restart the program automatically and launch it at startup </span>
+                        <span class="c1"># Note that the script expects that you&#39;ve installed Melody in /opt/melody</span>
 
 sudo systemctl stop melody  <span class="c1"># Stop the service while we&#39;re configuring it</span>
 </code></pre></div>
@@ -700,7 +701,7 @@ sudo systemctl stop melody  <span class="c1"># Stop the service while we&#39;re 
 <div class="highlight"><pre><span></span><code>sudo systemctl start melody     <span class="c1"># Start Melody</span>
 sudo systemctl status melody    <span class="c1"># Check that Melody is running    </span>
 </code></pre></div>
-<p>The logs you start to pile up in <code>/opt/melody/logs/melody.ndjson</code>.</p>
+<p>The logs should start to pile up in <code>/opt/melody/logs/melody.ndjson</code>.</p>
 <div class="highlight"><pre><span></span><code>tail -f /opt/melody/logs/melody.ndjson <span class="c1"># | jq</span>
 </code></pre></div>
 <h4 id="from-source">From source<a class="headerlink" href="#from-source" title="Permanent link">#</a></h4>
@@ -714,14 +715,18 @@ make build
 <span class="nb">cd</span> /opt/melody/
 
 docker pull bonjourmalware/melody:latest
+
+<span class="nv">MELODY_CLI</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="c1"># Put your CLI options here. Example : MELODY_CLI=&quot;-s -o &#39;http.server.port: 5555&#39;&quot;</span>
+
 docker run <span class="se">\</span>
     --net<span class="o">=</span>host <span class="se">\</span>
+    -e <span class="s2">&quot;MELODY_CLI=</span><span class="nv">$MELODY_CLI</span><span class="s2">&quot;</span> <span class="se">\</span>
     --mount <span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/filter.bpf,target<span class="o">=</span>/app/filter.bpf,readonly <span class="se">\ </span> <span class="c1"># Remove this line if you&#39;re using the default filter</span>
     --mount <span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/config.yml,target<span class="o">=</span>/app/config.yml,readonly <span class="se">\ </span> <span class="c1"># Remove this line if you&#39;re using the default config</span>
     --mount <span class="nv">type</span><span class="o">=</span>bind,source<span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>/logs,target<span class="o">=</span>/app/logs/ <span class="se">\ </span>                     <span class="c1"># The directory must exists in your current directory before running the container</span>
     melody
 </code></pre></div>
-<p>The logs you start to pile up in <code>/opt/melody/logs/melody.ndjson</code>.</p>
+<p>The logs should start to pile up in <code>/opt/melody/logs/melody.ndjson</code>.</p>
 <h3 id="before-we-start">Before we start<a class="headerlink" href="#before-we-start" title="Permanent link">#</a></h3>
 <p>Hi !</p>
 <p>You'll need the following info :</p>
@@ -761,7 +766,7 @@ sudo apt install libpcap-dev
 sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 </code></pre></div>
 <h3 id="grab-a-release">Grab a release<a class="headerlink" href="#grab-a-release" title="Permanent link">#</a></h3>
-<p>You can grab the latest release by visiting https://github.com/bonjourmalware/melody/releases/latest.</p>
+<p>You can grab the latest release by visiting <a href="https://github.com/bonjourmalware/melody/releases/latest">https://github.com/bonjourmalware/melody/releases/latest</a>.</p>
 <h3 id="docker_1">Docker<a class="headerlink" href="#docker_1" title="Permanent link">#</a></h3>
 <p>You can also use Docker and pull the image from Docker Hub :</p>
 <div class="highlight"><pre><span></span><code>docker pull bonjourmalware/melody:latest

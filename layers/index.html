@@ -694,7 +694,7 @@
 <tr>
 <td><code>tcp.payload</code></td>
 <td><em>complex</em></td>
-<td><pre>tcp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
+<td><pre>tcp.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
 </tr>
 <tr>
 <td><code>tcp.flags</code></td>
@@ -864,7 +864,7 @@
 <tr>
 <td><code>udp.payload</code></td>
 <td><em>complex</em></td>
-<td><pre>udp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
+<td><pre>udp.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre></td>
 </tr>
 <tr>
 <td><code>udp.checksum</code></td>
@@ -933,9 +933,9 @@
 </thead>
 <tbody>
 <tr>
-<td><code>icmpv4.type</code></td>
-<td><em>number</em></td>
-<td><pre>icmpv4.type: 0x8</pre></td>
+<td><code>icmpv4.payload</code></td>
+<td><em>complex</em></td>
+<td><pre>icmpv4.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "the world of the electron and the switch"<pre></td>
 </tr>
 <tr>
 <td><code>icmpv4.typecode</code></td>
@@ -943,9 +943,9 @@
 <td><pre>icmpv4.typecode: 2048</pre></td>
 </tr>
 <tr>
-<td><code>icmpv4.checksum</code></td>
+<td><code>icmpv4.type</code></td>
 <td><em>number</em></td>
-<td><pre>icmpv4.checksum: 0x0416</pre></td>
+<td><pre>icmpv4.type: 0x8</pre></td>
 </tr>
 <tr>
 <td><code>icmpv4.code</code></td>
@@ -956,6 +956,11 @@
 <td><code>icmpv4.seq</code></td>
 <td><em>number</em></td>
 <td><pre>icmpv4.seq: 1</pre></td>
+</tr>
+<tr>
+<td><code>icmpv4.checksum</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv4.checksum: 0x0416</pre></td>
 </tr>
 </tbody>
 </table>
@@ -968,22 +973,27 @@
     <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
     <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nt">&quot;type_code_name&quot;</span><span class="p">:</span> <span class="s2">&quot;EchoRequest&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">23981</span><span class="p">,</span>
-    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">8140</span><span class="p">,</span>
-    <span class="nt">&quot;seq&quot;</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">10240</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;the world of the electron and the switch&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;base64&quot;</span><span class="p">:</span> <span class="s2">&quot;dGhlIHdvcmxkIG9mIHRoZSBlbGVjdHJvbiBhbmQgdGhlIHN3aXRjaA==&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
   <span class="p">},</span>
   <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
     <span class="nt">&quot;ihl&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
     <span class="nt">&quot;tos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
-    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">50747</span><span class="p">,</span>
-    <span class="nt">&quot;fragbits&quot;</span><span class="p">:</span> <span class="s2">&quot;DF&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;fragbits&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;frag_offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nt">&quot;ttl&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
     <span class="nt">&quot;protocol&quot;</span><span class="p">:</span> <span class="mi">1</span>
   <span class="p">},</span>
-  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T19:05:24.541282+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-18T12:47:25.101191+01:00&quot;</span><span class="p">,</span>
   <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;n/a&quot;</span><span class="p">,</span>
   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;icmpv4&quot;</span><span class="p">,</span>
   <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
@@ -1005,9 +1015,9 @@
 </thead>
 <tbody>
 <tr>
-<td><code>icmpv6.type</code></td>
-<td><em>number</em></td>
-<td><pre>icmpv6.type: 0x80</pre></td>
+<td><code>icmpv6.payload</code></td>
+<td><em>complex</em></td>
+<td><pre>icmpv6.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "the world of the electron and the switch"<pre></td>
 </tr>
 <tr>
 <td><code>icmpv6.typecode</code></td>
@@ -1015,14 +1025,19 @@
 <td><pre>icmpv6.typecode: 32768</pre></td>
 </tr>
 <tr>
-<td><code>icmpv6.checksum</code></td>
+<td><code>icmpv6.type</code></td>
 <td><em>number</em></td>
-<td><pre>icmpv6.checksum: 0x275b</pre></td>
+<td><pre>icmpv6.type: 0x80</pre></td>
 </tr>
 <tr>
 <td><code>icmpv6.code</code></td>
 <td><em>number</em></td>
 <td><pre>icmpv6.code: 0</pre></td>
+</tr>
+<tr>
+<td><code>icmpv6.checksum</code></td>
+<td><em>number</em></td>
+<td><pre>icmpv6.checksum: 0x275b</pre></td>
 </tr>
 </tbody>
 </table>
@@ -1032,21 +1047,26 @@
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
   <span class="nt">&quot;icmpv6&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;type_code&quot;</span><span class="p">:</span> <span class="mi">32768</span><span class="p">,</span>
-    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
     <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nt">&quot;type_code_name&quot;</span><span class="p">:</span> <span class="s2">&quot;EchoRequest&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">55474</span>
+    <span class="nt">&quot;checksum&quot;</span><span class="p">:</span> <span class="mi">44947</span><span class="p">,</span>
+    <span class="nt">&quot;payload&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;\u0000\u0000\u0000\u0000the world of the electron and the switch&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;base64&quot;</span><span class="p">:</span> <span class="s2">&quot;AAAAAHRoZSB3b3JsZCBvZiB0aGUgZWxlY3Ryb24gYW5kIHRoZSBzd2l0Y2g=&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;truncated&quot;</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
   <span class="p">},</span>
   <span class="nt">&quot;ip&quot;</span><span class="p">:</span> <span class="p">{</span>
     <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="nt">&quot;length&quot;</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
     <span class="nt">&quot;next_header&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
     <span class="nt">&quot;next_header_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ICMPv6&quot;</span><span class="p">,</span>
     <span class="nt">&quot;traffic_class&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nt">&quot;flow_label&quot;</span><span class="p">:</span> <span class="mi">366894</span><span class="p">,</span>
+    <span class="nt">&quot;flow_label&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nt">&quot;hop_limit&quot;</span><span class="p">:</span> <span class="mi">64</span>
   <span class="p">},</span>
-  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-17T19:06:25.056576+01:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-11-18T12:42:47.461931+01:00&quot;</span><span class="p">,</span>
   <span class="nt">&quot;session&quot;</span><span class="p">:</span> <span class="s2">&quot;n/a&quot;</span><span class="p">,</span>
   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;icmpv6&quot;</span><span class="p">,</span>
   <span class="nt">&quot;src_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;::1&quot;</span><span class="p">,</span>
