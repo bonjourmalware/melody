@@ -348,15 +348,13 @@
                 
                   <h1>Installation</h1>
                 
-                <p>To install Melody, use <code>make install</code> or enter the following commands :</p>
-<div class="highlight"><pre><span></span><code>go build -ldflags<span class="o">=</span><span class="s2">&quot;-s -w -extldflags=-static&quot;</span> -o melody
-sudo setcap cap_net_raw,cap_setpcap<span class="o">=</span>ep ./melody
+                <p>To install Melody, clone the repo or grab the latest :</p>
+<div class="highlight"><pre><span></span><code>git clone https://github.com/bonjourmalware/melody /opt/melody
 
-mkdir /opt/melody
-ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/melody&quot;</span> /opt/melody/
-ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/config.yml&quot;</span> /opt/melody/config.yml
-ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/filter.bpf&quot;</span> /opt/melody/filter.bpf
-ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/rules&quot;</span> /opt/melody/rules
+<span class="nb">cd</span> /opt/melody
+
+go build -ldflags<span class="o">=</span><span class="s2">&quot;-s -w -extldflags=-static&quot;</span> -o melody
+sudo setcap cap_net_raw,cap_setpcap<span class="o">=</span>ep ./melody
 
 <span class="nb">echo</span> <span class="s2">&quot;&gt; Setting listening interface to \&quot;</span><span class="k">$(</span>route <span class="p">|</span> grep <span class="s1">&#39;^default&#39;</span> <span class="p">|</span> grep -o <span class="s1">&#39;[^ ]*$&#39;</span><span class="k">)</span><span class="s2">\&quot;&quot;</span>
 sed -i <span class="s2">&quot;s/# listen.interface: \&quot;lo\&quot;/listen.interface: \&quot;</span><span class="k">$(</span>route <span class="p">|</span> grep <span class="s1">&#39;^default&#39;</span> <span class="p">|</span> grep -o <span class="s1">&#39;[^ ]*$&#39;</span><span class="k">)</span><span class="s2">\&quot;/g&quot;</span> /opt/melody/config.yml
@@ -382,8 +380,8 @@ Type=simple
 WorkingDirectory=/opt/melody
 ExecStart=/opt/melody/melody
 Restart=on-failure
-# User=melody
-# Group=melody
+User=melody
+Group=melody
 
 [Install]
 WantedBy=multi-user.target
@@ -423,12 +421,12 @@ sudo supervisorctl reload
 sudo supervisorctl status all
 </code></pre></div>
 <h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">#</a></h2>
-<p>Uninstall by removing log directories (default <code>$melody/logs</code>), service files (<code>/etc/systemd/system/melody.service</code> and <code>/etc/supervisor/conf.d/melody.conf</code>) and Melody home directory (default <code>/opt/melody</code>).</p>
+<p>Uninstall by removing the log directories (default <code>$melody/logs</code>), the service files (<code>/etc/systemd/system/melody.service</code> and <code>/etc/supervisor/conf.d/melody.conf</code>) and the Melody home directory (default <code>/opt/melody</code>).</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>Uncomment and use these command carefully.
-<div class="highlight"><pre><span></span><code><span class="c1"># sudo systemctl stop melody &amp;&amp; rm /etc/systemd/system/melody.service</span>
-<span class="c1"># sudo supervisorctl stop melody &amp;&amp; rm /etc/supervisor/conf.d/melody.conf</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># sudo systemctl stop melody &amp;&amp; sudo rm /etc/systemd/system/melody.service</span>
+<span class="c1"># sudo supervisorctl stop melody &amp;&amp; sudo rm /etc/supervisor/conf.d/melody.conf</span>
 <span class="c1"># rm -rf /opt/melody</span>
 </code></pre></div></p>
 <div class="admonition danger">
