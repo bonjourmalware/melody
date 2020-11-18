@@ -257,7 +257,7 @@ TCP fragbits values :
     {
       "icmpv6": {
         "type_code": 32768,
-        "type": 0,
+        "type": 128,
         "code": 0,
         "type_code_name": "EchoRequest",
         "checksum": 55474

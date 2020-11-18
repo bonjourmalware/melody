@@ -1,19 +1,20 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
 
 	"github.com/bonjourmalware/melody/internal/engine"
-	"github.com/bonjourmalware/melody/internal/sensor"
-
 	"github.com/bonjourmalware/melody/internal/rules"
+	"github.com/bonjourmalware/melody/internal/sensor"
 
 	"github.com/bonjourmalware/melody/internal/logging"
 
 	"github.com/bonjourmalware/melody/internal/config"
+	"github.com/google/shlex"
 	"github.com/pborman/getopt/v2"
 )
 
@@ -40,6 +41,17 @@ func init() {
 	config.Cli.Dump = getopt.BoolLong("dump", 'd', "Output raw packet details instead of JSON")
 	getopt.FlagLong(&config.Cli.FreeConfig, "option", 'o', "Override configuration keys")
 	getopt.Parse()
+
+	if line := os.Getenv("MELODY_CLI"); line != "" {
+		chunks, err := shlex.Split(line)
+		if err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "Failed to chunk MELODY_CLI env variable")
+			os.Exit(1)
+		}
+
+		chunks = append([]string{os.Args[0]}, chunks...)
+		getopt.CommandLine.Parse(chunks)
+	}
 
 	config.Cfg.Load()
 	err := logging.InitLoggers()
