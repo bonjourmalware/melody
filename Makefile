@@ -30,7 +30,7 @@ run_local_stdout: build
 	./melody -s
 
 build:
-	go build -ldflags="-s -w -extldflags=-static" -o melody
+	go build -ldflags="-s -w" -o melody
 	sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 
 install:
