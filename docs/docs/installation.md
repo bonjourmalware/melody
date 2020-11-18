@@ -39,7 +39,7 @@ The file can be found in `$melody/etc/melody.service`.
     ExecStart=/opt/melody/melody
     Restart=on-failure
     # User=melody
-    # Groupd=melody
+    # Group=melody
     
     [Install]
     WantedBy=multi-user.target
