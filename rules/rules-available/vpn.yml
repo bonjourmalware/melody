@@ -15,12 +15,11 @@ CVE-2020-19781 (Citrix ADC/Gateway):
       contains:
         - "/vpns/"
   tags:
-    - "cve-2020-19781"
-    - "techno.vpn"
-    - "vendor.citrix"
-    - "product.netscaler_application_delivery_controller"
-    - "product.netscaler_gateway"
-    - "impact.information_disclosure"
+    cve: "cve-2020-19781"
+    techno: "vpn"
+    vendor: "citrix"
+    product: "netscaler_application_delivery_controller"
+    impact: "information_disclosure"
 
 CVE-2018-13379 (Fortinet FortiOS SSL VPN):
   layer: http
