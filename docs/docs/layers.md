@@ -69,6 +69,9 @@
       "embedded": {}
     }
     ```
+    
+    !!! Info
+        The `errors` field contains the error met while parsing the request body or the Host field.
 
 ## TCP
 ### Rules
