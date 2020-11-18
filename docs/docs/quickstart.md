@@ -1,13 +1,13 @@
 ### TL;DR
 #### Release
-Get the release for your system at `https://github.com/bonjourmalware/actions-lab/releases`.
+Get the latest release at `https://github.com/bonjourmalware/actions-lab/releases`.
 
 ```bash
-make install            # Create Melody's home in /opt
-cd /opt/melody
+make install            # Set default outfacing interface
 make certs              # Make self signed certs for the HTTPS fileserver
 make default_rules      # Enable the default rules
 make service            # Create a systemd service to restart the program automatically and launch it at startup 
+                        # Note that the script expects that you've installed Melody in /opt/melody
 
 sudo systemctl stop melody  # Stop the service while we're configuring it
 ```
@@ -19,7 +19,7 @@ sudo systemctl start melody     # Start Melody
 sudo systemctl status melody    # Check that Melody is running    
 ```
 
-The logs you start to pile up in `/opt/melody/logs/melody.ndjson`.
+The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.
 
 ```bash
 tail -f /opt/melody/logs/melody.ndjson # | jq
@@ -55,7 +55,7 @@ docker run \
     melody
 ```
 
-The logs you start to pile up in `/opt/melody/logs/melody.ndjson`.
+The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.
 
 ### Before we start
 
