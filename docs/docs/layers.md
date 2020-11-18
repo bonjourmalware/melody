@@ -74,7 +74,7 @@
 ### Rules
 |Key|Type|Example|
 |---|---|---|
-|`tcp.payload`|*complex*|<pre>tcp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre>|
+|`tcp.payload`|*complex*|<pre>tcp.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre>|
 |`tcp.flags`|*flags*|<pre>tcp.flags:<br>&nbsp;&nbsp;- "PA"<br>&nbsp;&nbsp;- "S"<pre>|
 |`tcp.fragbits`|*flags*|<pre>tcp.fragbits:<br>&nbsp;&nbsp;- "M"</pre>|
 |`tcp.dsize`|*number*|<pre>tcp.dsize: 1234</pre>|
@@ -148,7 +148,7 @@ TCP fragbits values :
 
 |Key|Type|Example|
 |---|---|---|
-|`udp.payload`|*complex*|<pre>udp.uri:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre>|
+|`udp.payload`|*complex*|<pre>udp.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "/console/css/%2e"<pre>|
 |`udp.checksum`|*number*|<pre>udp.checksum: 0xfe37</pre>|
 |`udp.length`|*number*|<pre>udp.length: 36</pre>|
 |`udp.dsize`|*number*|<pre>udp.dsize: 28</pre>|
@@ -197,11 +197,12 @@ TCP fragbits values :
 
 |Key|Type|Example|
 |---|---|---|
-|`icmpv4.type`|*number*|<pre>icmpv4.type: 0x8</pre>|
+|`icmpv4.payload`|*complex*|<pre>icmpv4.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "the world of the electron and the switch"<pre>|
 |`icmpv4.typecode`|*number*|<pre>icmpv4.typecode: 2048</pre>|
-|`icmpv4.checksum`|*number*|<pre>icmpv4.checksum: 0x0416</pre>|
+|`icmpv4.type`|*number*|<pre>icmpv4.type: 0x8</pre>|
 |`icmpv4.code`|*number*|<pre>icmpv4.code: 0</pre>|
 |`icmpv4.seq`|*number*|<pre>icmpv4.seq: 1</pre>|
+|`icmpv4.checksum`|*number*|<pre>icmpv4.checksum: 0x0416</pre>|
 
 ### Log data
 
@@ -249,11 +250,11 @@ TCP fragbits values :
 
 |Key|Type|Example|
 |---|---|---|
-|`icmpv6.type`|*number*|<pre>icmpv6.type: 0x80</pre>|
+|`icmpv6.payload`|*complex*|<pre>icmpv6.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "the world of the electron and the switch"<pre>|
 |`icmpv6.typecode`|*number*|<pre>icmpv6.typecode: 32768</pre>|
-|`icmpv6.checksum`|*number*|<pre>icmpv6.checksum: 0x275b</pre>|
+|`icmpv6.type`|*number*|<pre>icmpv6.type: 0x80</pre>|
 |`icmpv6.code`|*number*|<pre>icmpv6.code: 0</pre>|
-|`icmpv6.payload`|*complex*|<pre>icmpv6.payload:<br>&nbsp;&nbsp;contains:<br>&nbsp;&nbsp;&nbsp;&nbsp;- ""<pre>|
+|`icmpv6.checksum`|*number*|<pre>icmpv6.checksum: 0x275b</pre>|
 
 ### Log data
 
