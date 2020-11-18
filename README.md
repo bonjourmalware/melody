@@ -40,6 +40,14 @@ Additional features on the roadmap include :
 + Dedicated helper program to create, test and manage rules
 + Centralized rules management
 
+# Use cases
+
++ Extract trends and patterns from Internet's noise 
++ Index malicious activity, exploitation attempts and targeted scanners
++ Monitor emerging threats exploitation
++ Keep an eye on specific threats
++ Log every packet sent to your application from the internet and block malicious activity
+
 # Quickstart
 [Quickstart details.](https://bonjourmalware.github.io/melody/installation)
 
@@ -100,14 +108,6 @@ docker run \
 ```
 
 The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.
-
-# Use cases
-
-+ Extract trends and patterns from Internet's noise 
-+ Index malicious activity, exploitation attempts and targeted scanners
-+ Monitor emerging threats exploitation
-+ Keep an eye on specific threats
-+ Log every packet sent to your application from the internet and block malicious activity
 
 # Rules
 
