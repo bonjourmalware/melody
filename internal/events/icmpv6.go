@@ -5,7 +5,7 @@ import (
 
 	"github.com/bonjourmalware/melody/internal/config"
 	"github.com/bonjourmalware/melody/internal/events/helpers"
-	"github.com/bonjourmalware/melody/internal/events/logdata"
+	"github.com/bonjourmalware/melody/internal/logdata"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 )
@@ -45,16 +45,18 @@ func (ev ICMPv6Event) ToLog() EventLog {
 	//ev.LogData.NsTimestamp = strconv.FormatInt(time.Now().UnixNano(), 10)
 	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
 
-	ev.LogData.Type = ev.Kind
-	ev.LogData.SourceIP = ev.SourceIP
-	ev.LogData.DestPort = ev.DestPort
-	ev.LogData.Session = ev.Session
+	//ev.LogData.Type = ev.Kind
+	//ev.LogData.SourceIP = ev.SourceIP
+	//ev.LogData.DestPort = ev.DestPort
+	//ev.LogData.Session = ev.Session
+	//
+	//if len(ev.Tags) == 0 {
+	//	ev.LogData.Tags = make(map[string][]string)
+	//} else {
+	//	ev.LogData.Tags = ev.Tags
+	//}
 
-	if len(ev.Tags) == 0 {
-		ev.LogData.Tags = make(map[string][]string)
-	} else {
-		ev.LogData.Tags = ev.Tags
-	}
+	ev.LogData.Init(ev.BaseEvent)
 
 	ev.LogData.ICMPv6 = logdata.ICMPv6LogData{
 		TypeCode:     ev.ICMPv6Layer.Header.TypeCode,

@@ -6,7 +6,7 @@ import (
 
 	"github.com/bonjourmalware/melody/internal/events/helpers"
 
-	"github.com/bonjourmalware/melody/internal/events/logdata"
+	"github.com/bonjourmalware/melody/internal/logdata"
 
 	"github.com/bonjourmalware/melody/internal/sessions"
 
@@ -64,16 +64,18 @@ func (ev TCPEvent) ToLog() EventLog {
 
 	ev.LogData = logdata.TCPEventLog{}
 	ev.LogData.Timestamp = ev.Timestamp.Format(time.RFC3339Nano)
-	ev.LogData.Type = ev.Kind
-	ev.LogData.SourceIP = ev.SourceIP
-	ev.LogData.DestPort = ev.DestPort
-	ev.LogData.Session = ev.Session
-
-	if len(ev.Tags) == 0 {
-		ev.LogData.Tags = make(map[string][]string)
-	} else {
-		ev.LogData.Tags = ev.Tags
-	}
+	//ev.LogData.Type = ev.Kind
+	//ev.LogData.SourceIP = ev.SourceIP
+	//ev.LogData.DestPort = ev.DestPort
+	//ev.LogData.Session = ev.Session
+	//
+	//if len(ev.Tags) == 0 {
+	//	ev.LogData.Tags = make(map[string][]string)
+	//} else {
+	//	ev.LogData.Tags = ev.Tags
+	//}
+	//
+	ev.LogData.Init(ev.BaseEvent)
 
 	switch ev.IPVersion {
 	case 4:

@@ -1,14 +1,14 @@
 package events
 
-import "github.com/google/gopacket/layers"
+import (
+	"github.com/bonjourmalware/melody/internal/loggable"
+	"github.com/google/gopacket/layers"
+)
 
 // Event is the interface implementing common methods to generated events
 type Event interface {
 	//Match(rule rules.Rule) bool
 	ToLog() EventLog
-	GetKind() string
-	GetSourceIP() string
-	GetDestPort() uint16
 	GetIPHeader() *layers.IPv4
 	GetICMPv6Header() *layers.ICMPv6
 	GetICMPv4Header() *layers.ICMPv4
@@ -18,6 +18,7 @@ type Event interface {
 
 	AddTags(tags map[string]string)
 	AddAdditional(add map[string]string)
+	loggable.Loggable
 }
 
 // EventLog is the interface implementing common methods to generated events' log data

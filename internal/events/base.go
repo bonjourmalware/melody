@@ -1,6 +1,7 @@
 package events
 
 import (
+	"github.com/bonjourmalware/melody/internal/loggable"
 	"time"
 )
 
@@ -15,6 +16,7 @@ type BaseEvent struct {
 	Timestamp  time.Time
 	Additional map[string]string
 	Event
+	loggable.Loggable
 }
 
 // Tags is an abstraction of map[string]interface{} allowing for the use of a set-like structure and a more graceful
@@ -34,6 +36,16 @@ func (ev BaseEvent) GetSourceIP() string {
 // GetDestPort fetches the DestPort of an event
 func (ev BaseEvent) GetDestPort() uint16 {
 	return ev.DestPort
+}
+
+// GetSession fetches the Session of an event
+func (ev BaseEvent) GetSession() string {
+	return ev.Session
+}
+
+// GetTags fetches the Tags of an event
+func (ev BaseEvent) GetTags() map[string][]string {
+	return ev.Tags
 }
 
 // AddAdditional fetches the Additional values of an event
@@ -69,23 +81,15 @@ func (ev *BaseEvent) AddTags(tags map[string]string) {
 	}
 }
 
-// ToArray converts an optimized Tags to an array
-//func (t *Tags) ToArray() []string {
-//	var ret []string
-//	for tag := range *t {
-//		ret = append(ret, tag)
+////ToInlineArray converts a Tags map to an array of its values with the keys and values merged with a '.'
+//func (t *Tags) ToInlineArray() []string {
+//	var inlineTags []string
+//
+//	for key, values := range *t {
+//		for _, val := range values {
+//			inlineTags = append(inlineTags, fmt.Sprintf("%s.%s", key, val))
+//		}
 //	}
 //
-//	return ret
+//	return inlineTags
 //}
-
-// ToArray converts an optimized Tags to an array
-//func (t *Tags) ToJSON() map[string][]string {
-//	var ret []string
-//	for tag := range *t {
-//		ret = append(ret, tag)
-//	}
-//
-//	return ret
-//}
-//
