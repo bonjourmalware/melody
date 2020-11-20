@@ -15,7 +15,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
       is:
         - "POST"
     http.uri:
-      contains|any:
+      contains|any|nocase:
         - "/console/images/%252E%252E%252Fconsole.portal"
         - "/console/css/%2e"
   tags:
