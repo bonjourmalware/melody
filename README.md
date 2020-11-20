@@ -8,6 +8,7 @@
     <a href="https://coveralls.io/github/bonjourmalware/melody"><img src="https://coveralls.io/repos/github/bonjourmalware/melody/badge.svg" alt="Coverage Status"/></a>
     <a href="https://hub.docker.com/r/bonjourmalware/melody/builds"><img src="https://img.shields.io/docker/cloud/build/bonjourmalware/melody" alt="Docker build status"/></a>
     <a href="https://hub.docker.com/r/bonjourmalware/melody/builds"><img src="https://img.shields.io/docker/image-size/bonjourmalware/melody" alt="Docker image size"/></a>
+    <a href="https://github.com/bonjourmalware/melody/releases/latest"><img src="https://img.shields.io/github/release/bonjourmalware/melody.svg?style=flat-square" alt="Latest release"/></a>
 </p>
 
 <p align="center">
