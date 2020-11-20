@@ -6,7 +6,7 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
     author: BonjourMalware
     status: stable
     created: 2020/11/07
-    modified: 2020/11/07
+    modified: 2020/20/07
     description: "Checking or trying to exploit CVE-2020-14882"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"
@@ -15,9 +15,12 @@ CVE-2020-14882 Oracle Weblogic Server RCE:
       is:
         - "POST"
     http.uri:
-      contains|any|nocase:
-        - "/console/images/%252E%252E%252Fconsole.portal"
-        - "/console/css/%2e"
+      startswith|any:
+        - "/console/css"
+        - "/console/images"
+      endswith|any|nocase:
+        - "console.portal"
+        - "/css/%2e"
   tags:
     cve: "cve-2020-14882"
     vendor: "oracle"
