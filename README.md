@@ -119,25 +119,24 @@ The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.
 ```yaml
 CVE-2020-14882 Oracle Weblogic Server RCE:
   layer: http
-  version: 1.0
   meta:
     id: 3e1d86d8-fba6-4e15-8c74-941c3375fd3e
     version: 1.0
     author: BonjourMalware
     status: stable
     created: 2020/11/07
-    modified: 2020/11/07
+    modified: 2020/20/07
     description: "Checking or trying to exploit CVE-2020-14882"
     references:
       - "https://nvd.nist.gov/vuln/detail/CVE-2020-14882"
   match:
-    http.method:
-      is:
-        - "POST"
     http.uri:
-      contains|any:
-        - "/console/images/%252E%252E%252Fconsole.portal"
-        - "/console/css/%2e"
+      startswith|any|nocase:
+        - "/console/css/"
+        - "/console/images"
+      contains|any|nocase:
+        - "console.portal"
+        - "consolejndi.portal?test_handle="
   tags:
     cve: "cve-2020-14882"
     vendor: "oracle"
