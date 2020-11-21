@@ -66,6 +66,7 @@
       "src_ip": "127.0.0.1",
       "dst_port": 10080,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```
@@ -142,6 +143,7 @@ TCP fragbits values :
       "src_ip": "127.0.0.1",
       "dst_port": 1234,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```
@@ -191,6 +193,7 @@ TCP fragbits values :
       "src_ip": "127.0.0.1",
       "dst_port": 1234,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```
@@ -244,6 +247,7 @@ TCP fragbits values :
       "src_ip": "127.0.0.1",
       "dst_port": 0,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```
@@ -292,6 +296,7 @@ TCP fragbits values :
       "src_ip": "::1",
       "dst_port": 0,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```

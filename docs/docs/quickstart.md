@@ -355,6 +355,7 @@ You can redirect the output to stdout by using the `-s` switch.
       "src_ip": "127.0.0.1",
       "dst_port": 1234,
       "matches": {},
+      "inline_matches": [],
       "embedded": {}
     }
     ```
