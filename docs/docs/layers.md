@@ -1,4 +1,4 @@
-## HTTP
+## HTTP / HTTPS
 ### Rules
 
 |Key|Type|Example|
@@ -10,16 +10,13 @@
 |`http.proto`|*complex*|<pre>http.proto:<br>&nbsp;&nbsp;is:<br>&nbsp;&nbsp;&nbsp;&nbsp;- "HTTP/1.1"</pre>|
 |`http.tls`|*bool*|<pre>false</pre>|
 
-!!! Note
-    HTTP rules applies to HTTPS packets as well.
-    
 !!! Important
     HTTP being an application protocol, the full packet is assembled from multiple frames and thus does not have its transport information embedded.
      
     However, the reassembled packet data share its session with the TCP frames it comes from. You can link them together by looking up the session.
     
-    !!! Note
-        Since HTTPS packets are captured by the webserver and not reassembled, they have their own session and are **not** linked with the assembled frames.    
+!!! Note
+    HTTPS packets are captured via the webserver and not reassembled : they have their own session and are **not** linked with the source frames.    
 
 ### Log data
 

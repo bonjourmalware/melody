@@ -38,7 +38,7 @@ A rule file can contain multiple rule descriptions.
     ```
 
 !!! Tip
-    You can whitelist or blacklist ports and IP addresses with the `whitelist` sections `blacklist` (not shown here).
+    Check the [the `whitelist` and `blacklist` section](#whitelist-and-blacklist) to filter ports and IP addresses.
 
 ## Structure
 
@@ -240,7 +240,21 @@ You can mix hex and ascii in a single string as well.
     !!! Note
         '0x' hex notation (`|0xbe 0xef|`) is invalid. You can mix spaced and not spaced hex bytes though.
 
-### Whitelist and blacklist
+
+### tags
+Each of the key/value pair in the `tags` object will be appended to the `matches` field of each of the matching packets.
+
+### embed
+This is a block where the user can will embed any data in the `embedded` key of the matching packet. It can be used as an alternative to `tags` to add contextual information.
+
+!!! Example
+    ```yaml
+    embed:
+      my_crime: "curiosity"
+      ...
+    ```
+
+### whitelist and blacklist
 
 These two fields can be used to filter the packets on which the rule is applied.
 
@@ -301,16 +315,3 @@ IP source addresses and ports are supported.
     ```
     
     Port ranges are supported. You can choose to put spaces or not.
-
-### tags
-Each of the key/value pair in the `tags` object will be appended to the `matches` field of each of the matching packets.
-
-### embed
-This is a block where the user can will embed any data in the `embedded` key of the matching packet. It can be used as an alternative to `tags` to add contextual information.
-
-!!! Example
-    ```yaml
-    embed:
-      my_crime: "curiosity"
-      ...
-    ```

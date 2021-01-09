@@ -68,8 +68,8 @@ You'll need the following info :
 + All the IP addresses to exclude from monitoring
 
 !!! Tip
-    Don't forget to exclude the IP from which you're SSH'ing
-
+    You will most likely want to ban at least the address from which you access the server and the addresses used for monitoring (don't forget your hosting provider's).
+    
 Clone the repo to get the default rules and configuration files :
 
 ```git
@@ -81,6 +81,9 @@ git clone https://github.com/bonjourmalware/melody
 
 ### Firewall
 Don't forget to check your firewall to ensure you're not blocking packets from reaching the sensor.
+
+!!! Tip
+    You might want to disengage your hosting provider DDoS protection.
 
 ### Build from source
 

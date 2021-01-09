@@ -22,3 +22,6 @@ markdown_extensions:
 plugins:
     - search
     - awesome-pages
+
+repo_url: https://github.com/bonjourmalware/melody
+repo_name: bonjourmalware/melody
