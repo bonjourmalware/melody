@@ -1,6 +1,3 @@
-!!! warning
-    This documentation is actively being built and reach its final form in the coming weeks.
-
 Welcome to the ~**Melodoc**~.
 
 Melody is an internet sensor built for threat intelligence. This tool have multiple use cases :
