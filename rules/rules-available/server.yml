@@ -54,3 +54,26 @@ CVE-2020-13942 Apache Unomi RCE:
     vendor: "apache"
     product: "unomi"
     impact: "rce"
+
+CVE-2021-21972 VMware vSphere:
+  layer: http
+  meta:
+    id: 54fb9b52-6d37-4478-91bc-dd1c85acdb2b
+    version: 1.0
+    author: BonjourMalware
+    status: experimental
+    created: 2021/03/02
+    modified: 2021/03/02
+    description: "Checking or trying to exploit CVE-2021-21972"
+    references:
+      - "https://nvd.nist.gov/vuln/detail/CVE-2021-21972"
+      - "https://swarm.ptsecurity.com/unauth-rce-vmware/"
+  match:
+    http.uri:
+      startswith|nocase:
+        - "/ui/vropspluginui/rest/services"
+  tags:
+    cve: "cve-2021-21972"
+    vendor: "vmware"
+    product: "vsphere"
+    impact: "rce"
