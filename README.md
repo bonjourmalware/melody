@@ -78,8 +78,8 @@ There is a lot of rom for improvement though, so here are some features that I'd
 # Preview
 
 <p>
-<img src="https://raw.githubusercontent.com/bonjourmalware/melody/master/media/melody_demo.gif" height="600" />
-<img src="https://raw.githubusercontent.com/bonjourmalware/melody/master/media/melody_demo_dash.png" height="600" />
+<img src="https://raw.githubusercontent.com/bonjourmalware/melody/master/readme/melody_demo.gif" height="600" />
+<img src="https://raw.githubusercontent.com/bonjourmalware/melody/master/readme/melody_demo_dash.png" height="600" />
 </p>
 
 # Quickstart
