@@ -4,6 +4,7 @@ Get the latest release at `https://github.com/bonjourmalware/melody/releases`.
 
 ```bash
 make install            # Set default outfacing interface
+make cap                # Set network capabilities to start Melody without elevated privileges
 make certs              # Make self signed certs for the HTTPS fileserver
 make default_rules      # Enable the default rules
 make service            # Create a systemd service to restart the program automatically and launch it at startup 
@@ -39,20 +40,24 @@ Then continue with the steps from the [release](#release) TL;DR.
 #### Docker
 
 ```bash
+make certs                        # Make self signed certs for the HTTPS fileserver
+make default_rules                # Enable the default rules
 mkdir -p /opt/melody/logs
 cd /opt/melody/
 
 docker pull bonjourmalware/melody:latest
 
-MELODY_CLI="" # Put your CLI options here. Example : MELODY_CLI="-s -o 'http.server.port: 5555'"
+MELODY_CLI="" # Put your CLI options here. Example : export MELODY_CLI="-s -i 'lo' -F 'dst port 5555' -o 'server.http.port: 5555'"
 
 docker run \
     --net=host \
     -e "MELODY_CLI=$MELODY_CLI" \
-    --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \  # Remove this line if you're using the default filter
-    --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \  # Remove this line if you're using the default config
-    --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \                      # The directory must exists in your current directory before running the container
-    melody
+    --mount type=bind,source="$(pwd)/filter.bpf",target=/app/filter.bpf,readonly \
+    --mount type=bind,source="$(pwd)/config.yml",target=/app/config.yml,readonly \
+    --mount type=bind,source="$(pwd)/var",target=/app/var,readonly \
+    --mount type=bind,source="$(pwd)/rules",target=/app/rules,readonly \
+    --mount type=bind,source="$(pwd)/logs",target=/app/logs/ \
+    bonjourmalware/melody
 ```
 
 The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.
@@ -118,14 +123,31 @@ You can also use Docker and pull the image from Docker Hub :
 docker pull bonjourmalware/melody:latest
 ```
 
+Don't forget to create the `logs` directory, or the mount will fail :
+
+```
+mkdir -p /opt/melody/logs
+```
+
 Run it with :
 
 ```
+make docker_run
+```
+
+or
+
+```
+export MELODY_CLI="" # Put your CLI options here. Example : export MELODY_CLI="-s -i 'lo' -F 'dst port 5555' -o 'server.http.port: 5555'"
+
 docker run \
     --net=host \
-    --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \
-    --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \      
-    --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \      
+    -e "MELODY_CLI=$MELODY_CLI" \
+    --mount type=bind,source="$(pwd)/filter.bpf",target=/app/filter.bpf,readonly \
+    --mount type=bind,source="$(pwd)/config.yml",target=/app/config.yml,readonly \
+    --mount type=bind,source="$(pwd)/var",target=/app/var,readonly \
+    --mount type=bind,source="$(pwd)/rules",target=/app/rules,readonly \
+    --mount type=bind,source="$(pwd)/logs",target=/app/logs/ \
     melody
 ```
 
@@ -138,7 +160,7 @@ You'll want to look at a few things before getting started :
 + Set the `listen.interface` to the one on which you want Melody to be listening on
 
 !!! Tip
-    On most recent linux distribution, you can run `route | grep '^default' | grep -o '[^ ]*$'` to find the default WAN card.
+    On most recent linux distribution, you can run `route | grep '^default' | grep -o '[^ ]*$'` to find the default WAN card. Note that you'll need the `net-tools` package (`sudo apt install net-tools`) in order to use the `route` command. 
 
 !!! Tip
     On Windows, you'll want an interface name like `\Device\NPF_{4E273621-5161-46C8-895A-48D0E52A0B83}`.
@@ -155,9 +177,9 @@ You'll want to look at a few things before getting started :
 !!! Note
     Note that Melody listen on `lo` by default. You can override the listening interface with the `-i` switch.
 
-+ The dummy HTTP/S servers are enabled by default. Disable it if you're not interested by this data, or you're putting Melody next to a web application
++ The dummy HTTP/S servers are enabled by default. Disable it if you're not interested by this kind of data, or you're putting Melody next to a web application
 
-+ Default rules are disabled by default. You can enable them by creating a symlink for each rule to enable in the active rule directory specified in the configuration file (`$melody/rules/rules-enabled` by default)
++ Default rules are disabled by default. You can enable them by creating a symlink for each rule in the active rule directory specified in the configuration file (`$melody/rules/rules-enabled` by default)
 
 !!! Tip
     To create a symlink, use the following command from the root of the projet :

@@ -91,10 +91,10 @@ Get the latest release at `https://github.com/bonjourmalware/melody/releases`.
 
 ```bash
 make install            # Set default outfacing interface
+make cap                # Set network capabilities to start Melody without elevated privileges
 make certs              # Make self signed certs for the HTTPS fileserver
 make default_rules      # Enable the default rules
 make service            # Create a systemd service to restart the program automatically and launch it at startup 
-                        # Note that the script expects that you've installed Melody in /opt/melody
 
 sudo systemctl stop melody  # Stop the service while we're configuring it
 ```
@@ -125,20 +125,24 @@ Then continue with the steps from the [release](#release) TL;DR.
 ### Docker
 
 ```bash
+make certs                        # Make self signed certs for the HTTPS fileserver
+make default_rules                # Enable the default rules
 mkdir -p /opt/melody/logs
 cd /opt/melody/
 
 docker pull bonjourmalware/melody:latest
 
-MELODY_CLI="" # Put your CLI options here. Example : MELODY_CLI="-s -o 'http.server.port: 5555'"
+MELODY_CLI="" # Put your CLI options here. Example : export MELODY_CLI="-s -i 'lo' -F 'dst port 5555' -o 'server.http.port: 5555'"
 
 docker run \
     --net=host \
     -e "MELODY_CLI=$MELODY_CLI" \
-    --mount type=bind,source="$(pwd)"/filter.bpf,target=/app/filter.bpf,readonly \  # Remove this line if you're using the default filter
-    --mount type=bind,source="$(pwd)"/config.yml,target=/app/config.yml,readonly \  # Remove this line if you're using the default config
-    --mount type=bind,source="$(pwd)"/logs,target=/app/logs/ \                      # The directory must exists in your current directory before running the container
-    melody
+    --mount type=bind,source="$(pwd)/filter.bpf",target=/app/filter.bpf,readonly \
+    --mount type=bind,source="$(pwd)/config.yml",target=/app/config.yml,readonly \
+    --mount type=bind,source="$(pwd)/var",target=/app/var,readonly \
+    --mount type=bind,source="$(pwd)/rules",target=/app/rules,readonly \
+    --mount type=bind,source="$(pwd)/logs",target=/app/logs/ \
+    bonjourmalware/melody
 ```
 
 The logs should start to pile up in `/opt/melody/logs/melody.ndjson`.

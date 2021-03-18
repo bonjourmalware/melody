@@ -8,6 +8,9 @@ cd /opt/melody
 go build -ldflags="-s -w -extldflags=-static" -o melody
 sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 
+echo "Ensure net-tools is installed in order to use the 'route' command"
+sudo apt install net-tools
+
 echo "> Setting listening interface to \"$(route | grep '^default' | grep -o '[^ ]*$')\""
 sed -i "s/# listen.interface: \"lo\"/listen.interface: \"$(route | grep '^default' | grep -o '[^ ]*$')\"/g" /opt/melody/config.yml
 echo
@@ -92,7 +95,7 @@ sudo supervisorctl status all
 ```
 
 ## Uninstall
-Uninstall by removing the log directories (default `$melody/logs`), the service files (`/etc/systemd/system/melody.service` and `/etc/supervisor/conf.d/melody.conf`) and the Melody home directory (default `/opt/melody`).
+Uninstall Melody by removing the log directories (default `$melody/logs`), the service files (`/etc/systemd/system/melody.service` and `/etc/supervisor/conf.d/melody.conf`) and the Melody home directory (default `/opt/melody`).
 
 !!! Example
     Uncomment and use these command carefully.
@@ -103,4 +106,4 @@ Uninstall by removing the log directories (default `$melody/logs`), the service 
     ```
     
     !!! Danger
-        Keep in mind that removing Melody's home directory will most likely remove its logs directory as well. All log data might be lost.
+        Keep in mind that removing Melody's home directory will most likely remove its logs directory as well. All logged data might be lost.

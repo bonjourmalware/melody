@@ -15,14 +15,20 @@ default_rules:
 docker_build:
 	docker build . -t melody
 
-## docker_run : Run Docker image
+## docker_run : Run local Docker image
 docker_run:
+	@echo "This will only run the locally built image."
+	@echo "Swap 'melody' with bonjourmalware/melody if you want to run the latest release."
+	@echo "MELODY_CLI example : 'export MELODY_CLI=\"-s -i lo -F 'dst port 10080'\"'"
+	@-mkdir logs
 	docker run \
 		--net=host \
 		-e "MELODY_CLI=${MELODY_CLI}" \
-		--mount type=bind,source="$(shell pwd)"/filter.bpf,target=/app/filter.bpf,readonly \
-		--mount type=bind,source="$(shell pwd)"/config.yml,target=/app/config.yml,readonly \
-		--mount type=bind,source="$(shell pwd)"/logs,target=/app/logs/ \
+		--mount type=bind,source="$(shell pwd)/filter.bpf",target=/app/filter.bpf,readonly \
+		--mount type=bind,source="$(shell pwd)/config.yml",target=/app/config.yml,readonly \
+		--mount type=bind,source="$(shell pwd)/var",target=/app/var,readonly \
+		--mount type=bind,source="$(shell pwd)/rules",target=/app/rules,readonly \
+		--mount type=bind,source="$(shell pwd)/logs",target=/app/logs/ \
 		melody
 
 ## docker : Build and run Docker image
@@ -36,13 +42,19 @@ docs:
 run_local_stdout: build
 	./melody -s
 
-## build : Build and set the necessary capabilities to start Melody without elevated privileges
+## build : Build and set network capabilities to start Melody without elevated privileges
 build:
 	go build -ldflags="-s -w" -o melody
 	sudo setcap cap_net_raw,cap_setpcap=ep ./melody
 
+## cap : Set network capabilities to start Melody without elevated privileges
+cap:
+	sudo setcap cap_net_raw,cap_setpcap=ep ./melody
+
 ## install : Patch listen.interface config key with the current default interface
 install:
+	@echo "Ensure net-tools is installed in order to use the 'route' command"
+	sudo apt install net-tools
 	@echo "> Setting listening interface to \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\""
 	sed -i "s/# listen.interface: \"lo\"/listen.interface: \"$(shell route | grep '^default' | grep -o '[^ ]*$$')\"/g" ./config.yml
 	@echo
@@ -64,7 +76,7 @@ supervisor:
 service:
 	sudo ln -s $(shell pwd)/etc/melody.service /etc/systemd/system/melody.service
 	sudo systemctl daemon-reload && sudo systemctl enable melody
-	sudo systemctl status melody
+	sudo systemctl stop 'melody && sudo systemctl status melody
 
 ## help : Show this help
 help: Makefile
