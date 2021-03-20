@@ -4,12 +4,12 @@ default: help
 
 ## certs : Create TLS certs used by the HTTPS dummy server in "var/https/certs"
 certs:
-	mkdir -p var/https/certs
+	-mkdir -p var/https/certs
 	openssl req -x509 -subj "/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd/CN=localhost" -newkey rsa:4096 -keyout var/https/certs/key.pem -out var/https/certs/cert.pem -days 3650 -nodes
 
-## default_rules : Enable all the rule files present in ./rules/rules-available/
-default_rules:
-	ln -rs ./rules/rules-available/* ./rules/rules-enabled/
+## enable_all_rules : Enable all the rule files present in ./rules/rules-available/
+enable_all_rules:
+	ln -rs ./rules/rules-available/*.yml ./rules/rules-enabled/
 
 ## docker_build : Build Docker image
 docker_build:
