@@ -1,0 +1,17 @@
+version: "3"
+services:
+  melody:
+    build: .
+    restart: always
+    network_mode: "host"
+    ports:
+      - "10080:10080"
+      - "10443:10443"
+    environment:
+      - MELODY_CLI=${MELODY_CLI}
+    volumes:
+      - ./filter.bpf:/app/filter.bpf:ro
+      - ./config.yml:/app/config.yml:ro
+      - ./var:/app/var:ro
+      - ./rules:/app/rules:ro
+      - ./logs:/app/logs
