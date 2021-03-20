@@ -7,8 +7,8 @@ builds:
     goos:
       - linux
       - windows
-    ignore:
-      - goarch: 386
+    goarch:
+      - amd64
 archives:
   -
     files:
