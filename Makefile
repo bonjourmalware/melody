@@ -76,7 +76,7 @@ supervisor:
 service:
 	sudo ln -s $(shell pwd)/etc/melody.service /etc/systemd/system/melody.service
 	sudo systemctl daemon-reload && sudo systemctl enable melody
-	sudo systemctl stop 'melody && sudo systemctl status melody
+	sudo systemctl stop 'melody && sudo systemctl status melody'
 
 ## help : Show this help
 help: Makefile
