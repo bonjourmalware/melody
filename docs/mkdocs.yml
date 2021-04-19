@@ -12,6 +12,7 @@ nav:
 - Layers: layers.md
 #- Use cases: use_cases.md
 - Links: links.md
+- Meloctl: meloctl.md
 
 markdown_extensions:
   - admonition
