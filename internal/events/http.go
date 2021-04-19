@@ -16,7 +16,7 @@ import (
 
 	"github.com/bonjourmalware/melody/internal/config"
 
-	"github.com/bonjourmalware/melody/internal/parsing"
+	"github.com/bonjourmalware/melody/internal/httpparser"
 	"github.com/google/gopacket"
 )
 
@@ -118,7 +118,7 @@ func NewHTTPEvent(r *http.Request, network gopacket.Flow, transport gopacket.Flo
 	dstPort, _ := strconv.ParseUint(transport.Dst().String(), 10, 16)
 	srcPort, _ := strconv.ParseUint(transport.Src().String(), 10, 16)
 
-	params, err = parsing.GetBodyPayload(r)
+	params, err = httpparser.GetBodyPayload(r)
 	if err != nil {
 		errs = append(errs, err.Error())
 	}
@@ -180,7 +180,7 @@ func NewHTTPEventFromRequest(r *http.Request) (*HTTPEvent, error) {
 		errs = append(errs, err.Error())
 	}
 
-	params, err = parsing.GetBodyPayload(r)
+	params, err = httpparser.GetBodyPayload(r)
 	if err != nil {
 		errs = append(errs, err.Error())
 	}

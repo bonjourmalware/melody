@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/bonjourmalware/melody/internal/logging"
+
 	"github.com/bonjourmalware/melody/internal/config"
 
 	"gopkg.in/yaml.v3"
@@ -23,6 +25,7 @@ type GlobalRawRules []RawRules
 
 // LoadRulesDir walks the given directory to find rule files and load them into GlobalRules
 func LoadRulesDir(rulesDir string) uint {
+	var err error
 	var globalRawRules GlobalRawRules
 	var total uint
 
@@ -30,6 +33,43 @@ func LoadRulesDir(rulesDir string) uint {
 		".gitkeep",
 	}
 
+	globalRawRules, err = ParseRulesDir(rulesDir, skiplist)
+	if err != nil {
+		log.Println(fmt.Sprintf("Failed to parse rule directory [%s]", rulesDir))
+		log.Println(err)
+		os.Exit(1)
+	}
+
+	for _, rawRules := range globalRawRules {
+		rules := Rules{}
+		for ruleName, rawRule := range rawRules {
+			rule, err := rawRule.Parse()
+			if err != nil {
+				logging.Warnings.Println(err)
+				continue
+			}
+			rule.Name = ruleName
+
+			rules = append(rules, rule)
+		}
+
+		for _, proto := range config.Cfg.MatchProtocols {
+			GlobalRules[proto] = append(GlobalRules[proto], rules.Filter(func(rule Rule) bool { return rule.Layer == proto }))
+		}
+	}
+
+	for _, protocolRules := range GlobalRules {
+		for _, ruleset := range protocolRules {
+			total += uint(len(ruleset))
+		}
+	}
+
+	return total
+}
+
+// ParseRulesDir walks a directory and parses each of the rule file it encounters
+func ParseRulesDir(rulesDir string, skiplist []string) ([]RawRules, error) {
+	var rawRules []RawRules
 	err := filepath.Walk(rulesDir,
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -45,52 +85,22 @@ func LoadRulesDir(rulesDir string) uint {
 				}
 			}
 
-			log.Println("Parsing", path)
 			if strings.HasSuffix(path, ".yml") {
+				log.Println("Parsing", path)
 				parsed, err := ParseYAMLRulesFile(path)
 				if err != nil {
-					log.Println(fmt.Sprintf("Failed to read YAML rule file [%s]", path))
-					log.Println(err)
-					os.Exit(1)
+					return fmt.Errorf("failed to read YAML rule file [%s] : %s", path, err)
 				}
 
-				globalRawRules = append(globalRawRules, parsed)
+				rawRules = append(rawRules, parsed)
 			} else {
-				log.Println("invalid rule file (wanted : .yml) :", path)
+				return fmt.Errorf("invalid rule file (wanted : .yml) : %s", path)
 			}
 
 			return nil
 		})
 
-	if err != nil {
-		log.Println(fmt.Sprintf("Failed to parse rule directory [%s]", rulesDir))
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	for _, rawRules := range globalRawRules {
-		rules := Rules{}
-		for ruleName, rawRule := range rawRules {
-			rule := rawRule.Parse()
-			rule.Name = ruleName
-
-			rules = append(rules, rule)
-		}
-
-		for _, proto := range config.Cfg.MatchProtocols {
-			GlobalRules[proto] = append(GlobalRules[proto], rules.Filter(func(rule Rule) bool { return rule.Layer == proto }))
-		}
-
-		//GlobalRules = append(GlobalRules, rules)
-	}
-
-	for _, protocolRules := range GlobalRules {
-		for _, ruleset := range protocolRules {
-			total += uint(len(ruleset))
-		}
-	}
-
-	return total
+	return rawRules, err
 }
 
 // ParseYAMLRulesFile is an helper that parses the given YAML file and return a set of raw rules as RawRules

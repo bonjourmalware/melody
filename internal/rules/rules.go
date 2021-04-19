@@ -2,6 +2,7 @@ package rules
 
 import (
 	"github.com/bonjourmalware/melody/internal/filters"
+	"github.com/bonjourmalware/melody/internal/logging"
 )
 
 // Rules abstracts an array of Rule
@@ -46,9 +47,15 @@ func NewRule(rawRule RawRule) Rule {
 	ipsList.ParseRules(rawRule.Whitelist.IPs, rawRule.Blacklist.IPs)
 	portsList.ParseRules(rawRule.Whitelist.Ports, rawRule.Blacklist.Ports)
 
+	parsedIPProtocol, err := rawRule.IPProtocol.ParseList()
+	if err != nil {
+		logging.Errors.Printf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		return Rule{}
+	}
+
 	rule := Rule{
 		Tags:       rawRule.Tags,
-		IPProtocol: rawRule.IPProtocol.ParseList(rawRule.Metadata.ID),
+		IPProtocol: parsedIPProtocol,
 		ID:         rawRule.Metadata.ID,
 		Layer:      rawRule.Layer,
 		Ports:      portsList,
@@ -60,7 +67,7 @@ func NewRule(rawRule RawRule) Rule {
 	return rule
 }
 
-// Filter is an helper filtering out one or multiple Rule according to a function returning true or false
+// Filter is a helper filtering out one or multiple Rule according to a function returning true or false
 // Similar to array.filter() in python
 func (rules Rules) Filter(fn func(rule Rule) bool) Rules {
 	res := Rules{}
@@ -75,13 +82,13 @@ func (rules Rules) Filter(fn func(rule Rule) bool) Rules {
 }
 
 // Parse parses raw rules to create a set of rules as Rules
-func (rawRules RawRules) Parse() Rules {
-	rules := Rules{}
-	for rname, rule := range rawRules {
-		parsedRule := rule.Parse()
-		parsedRule.Name = rname
-		rules = append(rules, parsedRule)
-	}
-
-	return rules
-}
+//func (rawRules RawRules) Parse() Rules {
+//	rules := Rules{}
+//	for rname, rule := range rawRules {
+//		parsedRule := rule.Parse()
+//		parsedRule.Name = rname
+//		rules = append(rules, parsedRule)
+//	}
+//
+//	return rules
+//}

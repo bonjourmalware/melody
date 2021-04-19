@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+	"github.com/bonjourmalware/melody/internal/fileutils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -83,7 +85,7 @@ server.https.response.headers:
 
 var (
 	// Cfg exposes the global config
-	Cfg = new(Config)
+	Cfg *Config
 	// Cli exposes the CLI config
 	Cli = new(CLI)
 
@@ -174,15 +176,16 @@ type Config struct {
 	PcapFile          *os.File
 }
 
-// Load set the default values and parse the user's config
-func (cfg *Config) Load() {
+// NewConfig creates a default Config struct
+func NewConfig() *Config {
+	cfg := &Config{}
 	if err := yaml.Unmarshal([]byte(defaultConfig), cfg); err != nil {
 		log.Println("Failed to load default config")
 		log.Println(err)
 		os.Exit(1)
 	}
 
-	if err := cfg.parseConfigAt(nil); err != nil {
+	if err := cfg.ParseConfigAt(nil); err != nil {
 		log.Println("Failed to parse default config")
 		log.Println(err)
 		os.Exit(1)
@@ -193,21 +196,26 @@ func (cfg *Config) Load() {
 	cfg.ConfigFilePath = "config.yml"
 	cfg.BPFFilePath = "filter.bpf"
 
+	// Default BPF filter
+	cfg.BPF = "inbound and not net 127.0.0.0/24"
+
+	return cfg
+}
+
+// Load set the default values and parse the user's config
+func (cfg *Config) Load() error {
 	cfg.loadCLIConfigEnv()
 
 	if err := cfg.parseConfig(); err != nil {
-		log.Println("Failed to read config file")
-		log.Println(err)
-		log.Println("Fallback on default config values")
+		return fmt.Errorf("failed to read config file : %s", err.Error())
 	}
 
 	if err := cfg.parseBPF(); err != nil {
-		log.Println("Failed to read BPF file")
-		log.Println(err)
-		log.Printf("Fallback on default filter ('%s')\n", cfg.BPF)
+		return fmt.Errorf("failed to read BPF file : %s", err.Error())
 	}
 
 	cfg.loadCLIOverrides()
+	return nil
 }
 
 func rawDatasizeToBytes(raw string) (uint64, error) {
@@ -233,8 +241,8 @@ func (cfg *Config) parseConfig() error {
 	var ok bool
 	homeDirConfigPath := filepath.Join(Cfg.ConfigDirPath, Cfg.ConfigFilePath)
 
-	if ok, err = exists(homeDirConfigPath); ok {
-		err := cfg.parseConfigAt(&Cfg.ConfigFilePath)
+	if ok, err = fileutils.Exists(homeDirConfigPath); ok {
+		err := cfg.ParseConfigAt(&Cfg.ConfigFilePath)
 		if err != nil {
 			return err
 		}
@@ -248,10 +256,7 @@ func (cfg *Config) parseBPF() error {
 	var ok bool
 	homeDirBPFPath := filepath.Join(Cfg.ConfigDirPath, Cfg.BPFFilePath)
 
-	// Default BPF filter
-	cfg.BPF = "inbound and not net 127.0.0.0/24"
-
-	if ok, err = exists(homeDirBPFPath); ok {
+	if ok, err = fileutils.Exists(homeDirBPFPath); ok {
 		err := cfg.parseBPFAt(homeDirBPFPath)
 		if err != nil {
 			return err
@@ -271,7 +276,8 @@ func (cfg *Config) parseBPFAt(filepath string) error {
 	return nil
 }
 
-func (cfg *Config) parseConfigAt(filepath *string) error {
+// ParseConfigAt parse the config file at the given filepath
+func (cfg *Config) ParseConfigAt(filepath *string) error {
 	var err error
 
 	if filepath != nil {
@@ -285,12 +291,12 @@ func (cfg *Config) parseConfigAt(filepath *string) error {
 		}
 	}
 
-	if len(Cfg.MatchProtocols) == 0 {
-		Cfg.MatchProtocols = SupportedProtocols
+	if len(cfg.MatchProtocols) == 0 {
+		cfg.MatchProtocols = SupportedProtocols
 	} else {
-		for _, proto := range Cfg.MatchProtocols {
+		for _, proto := range cfg.MatchProtocols {
 			if proto == "all" {
-				Cfg.MatchProtocols = SupportedProtocols
+				cfg.MatchProtocols = SupportedProtocols
 				break
 			}
 		}
@@ -298,87 +304,88 @@ func (cfg *Config) parseConfigAt(filepath *string) error {
 
 	cfg.LogsSensorMaxSize, err = rawDatasizeToMegabytes(cfg.LogsSensorMaxSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.sensor.max_size value (%s)\n", cfg.LogsSensorMaxSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.sensor.max_size value ('%s')", cfg.LogsSensorMaxSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.LogsErrorsMaxSize, err = rawDatasizeToMegabytes(cfg.LogsErrorsMaxSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.errors.max_size value (%s)\n", cfg.LogsErrorsMaxSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.errors.max_size value ('%s')", cfg.LogsErrorsMaxSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.MaxPOSTDataSize, err = rawDatasizeToBytes(cfg.MaxPOSTDataSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.http.post.max_size value (%s)\n", cfg.MaxPOSTDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.http.post.max_size value ('%s')", cfg.MaxPOSTDataSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.MaxTCPDataSize, err = rawDatasizeToBytes(cfg.MaxTCPDataSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.tcp.post.max_size value (%s)\n", cfg.MaxTCPDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.tcp.post.max_size value ('%s')", cfg.MaxTCPDataSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.MaxUDPDataSize, err = rawDatasizeToBytes(cfg.MaxUDPDataSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.udp.post.max_size value (%s)\n", cfg.MaxUDPDataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.udp.post.max_size value ('%s')", cfg.MaxUDPDataSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.MaxICMPv4DataSize, err = rawDatasizeToBytes(cfg.MaxICMPv4DataSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.icmpv4.post.max_size value (%s)\n", cfg.MaxICMPv4DataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.icmpv4.post.max_size value ('%s')", cfg.MaxICMPv4DataSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	cfg.MaxICMPv6DataSize, err = rawDatasizeToBytes(cfg.MaxICMPv6DataSizeRaw)
 	if err != nil {
-		log.Printf("Failed to parse the logs.icmpv6.post.max_size value (%s)\n", cfg.MaxICMPv6DataSizeRaw)
-		log.Println(err)
-		os.Exit(1)
+		return fmt.Errorf("failed to parse the logs.icmpv6.post.max_size value ('%s')", cfg.MaxICMPv6DataSizeRaw)
+		//log.Println(err)
+		//os.Exit(1)
 	}
 
 	if Cli.PcapFilePath != nil && *Cli.PcapFilePath != "" {
 		f, err := os.Open(*Cli.PcapFilePath)
 		if err != nil {
-			log.Println(err)
-			os.Exit(1)
+			return err
+			//log.Println(err)
+			//os.Exit(1)
 		}
 
 		cfg.PcapFile = f
 	}
 
-	Cfg.DiscardProto4 = make(map[string]interface{})
-	for _, proto := range Cfg.RawDiscardProto4 {
+	cfg.DiscardProto4 = make(map[string]interface{})
+	for _, proto := range cfg.RawDiscardProto4 {
 		if proto == "icmp" { // Allow for 'icmp' as an alias for icmpv4
-			Cfg.DiscardProto4["icmpv4"] = struct{}{}
+			cfg.DiscardProto4["icmpv4"] = struct{}{}
 		}
-		Cfg.DiscardProto4[proto] = struct{}{}
+		cfg.DiscardProto4[proto] = struct{}{}
 	}
 
-	Cfg.DiscardProto6 = make(map[string]interface{})
-	for _, proto := range Cfg.RawDiscardProto6 {
+	cfg.DiscardProto6 = make(map[string]interface{})
+	for _, proto := range cfg.RawDiscardProto6 {
 		if proto == "icmp" { // Allow for 'icmp' as an alias for icmpv6
-			Cfg.DiscardProto6["icmpv6"] = struct{}{}
+			cfg.DiscardProto6["icmpv6"] = struct{}{}
 		}
-		Cfg.DiscardProto6[proto] = struct{}{}
+		cfg.DiscardProto6[proto] = struct{}{}
 	}
 
-	if http.StatusText(Cfg.ServerHTTPMissingResponseStatus) == "" {
-		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPMissingResponseStatus)
-		os.Exit(1)
+	if http.StatusText(cfg.ServerHTTPMissingResponseStatus) == "" {
+		return fmt.Errorf("failed to parse the server.http.response.missing_status_code value : '%d' is not a valid HTTP code status", cfg.ServerHTTPMissingResponseStatus)
+		//os.Exit(1)
 	}
 
-	if http.StatusText(Cfg.ServerHTTPSMissingResponseStatus) == "" {
-		log.Printf("'%d' is not a valid HTTP code status\n", Cfg.ServerHTTPSMissingResponseStatus)
-		os.Exit(1)
+	if http.StatusText(cfg.ServerHTTPSMissingResponseStatus) == "" {
+		return fmt.Errorf("failed to parse the server.https.response.missing_status_code value : '%d' is not a valid HTTP code status", cfg.ServerHTTPMissingResponseStatus)
+		//os.Exit(1)
 	}
 
 	return nil

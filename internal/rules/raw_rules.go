@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -147,27 +148,35 @@ type RawRule struct {
 	Additional map[string]string `yaml:"embed"`
 }
 
+var (
+	validMatchKeysMap map[string]interface{} = LoadValidMatchKeysMap()
+)
+
 // Parse creates a Rule from a RawRule
-func (rawRule RawRule) Parse() Rule {
+func (rawRule RawRule) Parse() (Rule, error) {
 	var err error
 	rule := NewRule(rawRule)
 
 	if rawRule.Match == nil {
-		return rule
+		return rule, nil
 	}
 
 	rawMatch, err := yaml.Marshal(rawRule.Match)
 	if err != nil {
-		logging.Errors.Println(err)
+		logging.Errors.Printf("failed to parse rule '%s' : invalid yaml definition (%s)", rawRule.Metadata.ID, err)
 		// Fatal error
 		os.Exit(1)
 	}
 
 	for key := range rawRule.Match.(map[string]interface{}) {
-		// "any" is the only valid non-layer specific property in the "match" block
+		// "any" is the only valid non-layer specific property in the "match" block :
+		// It can be either "any" or <layer>.<property>
 		if key != "any" && !strings.HasPrefix(key, rawRule.Layer+".") {
-			logging.Warnings.Printf("Property '%s' is not supported with layer '%s'", key, rawRule.Layer)
-			return Rule{}
+			return Rule{}, fmt.Errorf("property '%s' is not supported with layer '%s'", key, rawRule.Layer)
+		}
+
+		if _, ok := validMatchKeysMap[key]; !ok {
+			return Rule{}, fmt.Errorf("unknown property '%s'", key)
 		}
 	}
 
@@ -177,16 +186,40 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Metadata.ID, rawRule.Layer, err)
-			return Rule{}
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedURI, err := buf.URI.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedBody, err := buf.Body.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedVerb, err := buf.Verb.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedHeaders, err := buf.Headers.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedProto, err := buf.Proto.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
 		}
 
 		rule.HTTP = ParsedHTTPRule{
-			URI:     buf.URI.ParseList(rawRule.Metadata.ID),
-			Body:    buf.Body.ParseList(rawRule.Metadata.ID),
-			Verb:    buf.Verb.ParseList(rawRule.Metadata.ID),
-			Headers: buf.Headers.ParseList(rawRule.Metadata.ID),
-			Proto:   buf.Proto.ParseList(rawRule.Metadata.ID),
+			URI:     parsedURI,
+			Body:    parsedBody,
+			Verb:    parsedVerb,
+			Headers: parsedHeaders,
+			Proto:   parsedProto,
 			TLS:     buf.TLS,
 		}
 
@@ -197,19 +230,28 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Metadata.ID, rawRule.Layer, err)
-			return Rule{}
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedIPOption, err := buf.IPOption.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedPayload, err := buf.Payload.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
 		}
 
 		rule.TCP = ParsedTCPRule{
-			IPOption: buf.IPOption.ParseList(rawRule.Metadata.ID),
+			IPOption: parsedIPOption,
 			Fragbits: buf.Fragbits.ParseList(),
 			Flags:    buf.Flags.ParseList(),
 			Window:   buf.Window,
 			Dsize:    buf.Dsize,
 			Seq:      buf.Seq,
 			Ack:      buf.Ack,
-			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
+			Payload:  parsedPayload,
 		}
 
 		rule.MatchAll = !buf.Any
@@ -219,15 +261,19 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Metadata.ID, rawRule.Layer, err)
-			return Rule{}
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedPayload, err := buf.Payload.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
 		}
 
 		rule.UDP = ParsedUDPRule{
 			Dsize:    buf.Dsize,
 			Length:   buf.Length,
 			Checksum: buf.Checksum,
-			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
+			Payload:  parsedPayload,
 		}
 
 		rule.MatchAll = !buf.Any
@@ -237,8 +283,12 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Metadata.ID, rawRule.Layer, err)
-			return Rule{}
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedPayload, err := buf.Payload.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
 		}
 
 		rule.ICMPv4 = ParsedICMPv4Rule{
@@ -247,7 +297,7 @@ func (rawRule RawRule) Parse() Rule {
 			Code:     buf.Code,
 			Checksum: buf.Checksum,
 			Seq:      buf.Seq,
-			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
+			Payload:  parsedPayload,
 		}
 
 		rule.MatchAll = !buf.Any
@@ -257,8 +307,12 @@ func (rawRule RawRule) Parse() Rule {
 
 		err = yaml.Unmarshal(rawMatch, &buf)
 		if err != nil {
-			logging.Warnings.Printf("failed to parse rule '%s' (layer: '%s') : %s", rawRule.Metadata.ID, rawRule.Layer, err)
-			return Rule{}
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
+		}
+
+		parsedPayload, err := buf.Payload.ParseList()
+		if err != nil {
+			return Rule{}, fmt.Errorf("failed to parse rule '%s' : %s", rawRule.Metadata.ID, err)
 		}
 
 		rule.ICMPv6 = ParsedICMPv6Rule{
@@ -266,11 +320,11 @@ func (rawRule RawRule) Parse() Rule {
 			Type:     buf.Type,
 			Code:     buf.Code,
 			Checksum: buf.Checksum,
-			Payload:  buf.Payload.ParseList(rawRule.Metadata.ID),
+			Payload:  parsedPayload,
 		}
 
 		rule.MatchAll = !buf.Any
 	}
 
-	return rule
+	return rule, nil
 }

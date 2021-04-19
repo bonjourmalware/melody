@@ -12,6 +12,10 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
+func init() {
+	config.Cfg = config.NewConfig()
+}
+
 func TestMatchingLogicFlow(t *testing.T) {
 	ruleFilename := "logic_flow_rules.yml"
 	pcapFilename := "logic_flow.pcap"
@@ -483,6 +487,7 @@ func TestMatchHTTPEvent(t *testing.T) {
 	var httpEvents []*events.HTTPEvent
 	var rule Rule
 
+	// config.Cfg is initialized at the top of this file in the init function
 	// Allow POST data to be parsed without loading the config.yml file
 	config.Cfg.MaxPOSTDataSize = 8191
 

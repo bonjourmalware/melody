@@ -142,9 +142,9 @@ func (cds Conditions) MatchBytesWithOptions(received []byte, condVal ConditionVa
 }
 
 // ParseList parses a RawConditions set to create a ConditionsList
-func (rclst RawConditions) ParseList(ruleID string) *ConditionsList {
+func (rclst RawConditions) ParseList() (*ConditionsList, error) {
 	if len(rclst.Groups) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	condsList := ConditionsList{
@@ -156,8 +156,7 @@ func (rclst RawConditions) ParseList(ruleID string) *ConditionsList {
 		bufCond = Conditions{}
 		err := bufCond.ParseOptions(options)
 		if err != nil {
-			log.Printf("Failed to parse rule %s : %s\n", ruleID, err)
-			return &ConditionsList{}
+			return nil, err
 		}
 		bufCond.ParseValues(val)
 		bufCond.Options.Offset = rclst.Offset
@@ -169,7 +168,7 @@ func (rclst RawConditions) ParseList(ruleID string) *ConditionsList {
 
 	//condsList.ParseMatchType(rclst.MatchType, ruleID)
 
-	return &condsList
+	return &condsList, nil
 }
 
 // ParseOptions parses a condition's name to extract the options separated by a |
@@ -182,7 +181,7 @@ func (cds *Conditions) ParseOptions(opt string) error {
 	newOption.All = true
 
 	if opt == "" {
-		return fmt.Errorf("options parsing failed for condition %s : matching mode cannot be empty", opt)
+		return fmt.Errorf("options httpparser failed for condition '%s' : matching mode cannot be empty", opt)
 	}
 
 	for _, chunk := range chunks {
@@ -206,12 +205,12 @@ func (cds *Conditions) ParseOptions(opt string) error {
 			modeQty++
 			newOption.Endswith = true
 		default:
-			return fmt.Errorf("options parsing failed for condition %s : unknown option \"%s\"", opt, chunk)
+			return fmt.Errorf("options httpparser failed for condition '%s' : unknown option \"%s\"", opt, chunk)
 		}
 	}
 
 	if modeQty > 1 {
-		return fmt.Errorf("options parsing failed for condition %s : there can only be one of <nocase|regex|is|contains|startswith|endswith>", opt)
+		return fmt.Errorf("options httpparser failed for condition '%s' : there can only be one of <nocase|regex|is|contains|startswith|endswith>", opt)
 	}
 
 	//newOption.All = any == false

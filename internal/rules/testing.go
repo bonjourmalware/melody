@@ -132,7 +132,10 @@ func LoadRuleFile(rulefile string) (map[string]Rule, error) {
 		return map[string]Rule{}, err
 	}
 	for name, rawRule := range rawRules {
-		ruleset[name] = rawRule.Parse()
+		ruleset[name], err = rawRule.Parse()
+		if err != nil {
+			return ruleset, err
+		}
 	}
 
 	return ruleset, nil
