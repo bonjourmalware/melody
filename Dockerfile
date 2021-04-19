@@ -17,7 +17,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -ldflags="-s -w -extldflags '-static'" -o /app/melody
+RUN go build -ldflags="-s -w -extldflags '-static'" -o /app/melody ./cmd/melody
 
 # Copy only what's needed
 FROM scratch
