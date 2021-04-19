@@ -30,6 +30,7 @@ archives:
       - var/*
       - filter.bpf
       - config.yml
+      - docker-compose.yml
       - Dockerfile
       - Makefile
     wrap_in_directory: true
