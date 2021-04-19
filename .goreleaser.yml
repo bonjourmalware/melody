@@ -2,7 +2,20 @@ before:
   hooks:
     - go mod download
 builds:
-  - env:
+  - id: melody
+    main: ./cmd/melody
+    binary: melody
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+  - id: meloctl
+    main: ./cmd/meloctl
+    binary: meloctl
+    env:
       - CGO_ENABLED=1
     goos:
       - linux
@@ -10,7 +23,7 @@ builds:
     goarch:
       - amd64
 archives:
-  -
+  - 
     files:
       - rules/*
       - etc/*
