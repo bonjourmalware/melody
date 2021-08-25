@@ -90,11 +90,11 @@ There is a lot of rom for improvement though, so here are some features that I'd
 Get the latest release at `https://github.com/bonjourmalware/melody/releases`.
 
 ```bash
-make install            # Set default outfacing interface
-make cap                # Set network capabilities to start Melody without elevated privileges
-make certs              # Make self signed certs for the HTTPS fileserver
-make default_rules      # Enable the default rules
-make service            # Create a systemd service to restart the program automatically and launch it at startup 
+make install               # Set default outfacing interface
+make cap                   # Set network capabilities to start Melody without elevated privileges
+make certs                 # Make self signed certs for the HTTPS fileserver
+make enable_all_rules      # Enable the default rules
+make service               # Create a systemd service to restart the program automatically and launch it at startup 
 
 sudo systemctl stop melody  # Stop the service while we're configuring it
 ```
@@ -125,8 +125,8 @@ Then continue with the steps from the [release](#release) TL;DR.
 ### Docker
 
 ```bash
-make certs                        # Make self signed certs for the HTTPS fileserver
-make default_rules                # Enable the default rules
+make certs                           # Make self signed certs for the HTTPS fileserver
+make enable_all_rules                # Enable the default rules
 mkdir -p /opt/melody/logs
 cd /opt/melody/
 
