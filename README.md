@@ -59,7 +59,7 @@ Here are some key features of Melody :
 Since I have to focus on other projects right now, I can't put much time in Melody's development.
 
 There is a lot of rom for improvement though, so here are some features that I'd like to implement someday :
-+ Dedicated helper program to create, test and manage rules
++ ~~Dedicated helper program to create, test and manage rules~~ -> Check Meloctl in `cmd/meloctl`
 + Centralized rules management
 + Per port mock application
 
